@@ -2,26 +2,112 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ── Design tokens (CSS variables) ─────────────────────────────────── */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --cream:       #F2EFE9;
+  --cream-warm:  #EEEAE0;
+  --ink:         #1C1B17;
+  --ink-muted:   #6B6862;
+  --terracotta:  #B85C38;
+  --line:        rgba(28, 27, 23, 0.12);
+  --ease-out:    cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+@layer base {
+  *, *::before, *::after { box-sizing: border-box; }
+
+  html, body {
+    background-color: var(--cream);
+    color: var(--ink);
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
 }
 
-body {
-  color: var(--foreground);
-  background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
+/* ── Keyframes ──────────────────────────────────────────────────────── */
+@keyframes fadeUp {
+  to { opacity: 1; transform: translateY(0); }
 }
 
+@keyframes heroReveal {
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeIn {
+  to { opacity: 0.55; }
+}
+
+@keyframes bob {
+  0%, 100% { transform: translateX(-50%) translateY(0); }
+  50%       { transform: translateX(-50%) translateY(5px); }
+}
+
+/* ── Entrance animations ────────────────────────────────────────────── */
 @layer utilities {
-  .text-balance {
-    text-wrap: balance;
+  .anim-annotation {
+    opacity: 0;
+    transform: translateY(12px);
+    animation: fadeUp 1.2s 0.3s var(--ease-out) forwards;
+  }
+
+  .anim-nav {
+    opacity: 0;
+    transform: translateY(12px);
+    animation: fadeUp 1.2s 0.5s var(--ease-out) forwards;
+  }
+
+  .anim-wordmark {
+    opacity: 0;
+    transform: translateY(40px);
+    animation: heroReveal 1.6s 0.7s var(--ease-out) forwards;
+  }
+
+  .anim-footer-mark {
+    opacity: 0;
+    animation: fadeUp 1.2s 1.2s var(--ease-out) forwards;
+  }
+
+  .anim-scroll-cue {
+    opacity: 0;
+    animation:
+      fadeIn 1.2s 1.5s ease forwards,
+      bob 2.4s 3s ease-in-out infinite;
   }
 }
+
+/* ── Component styles ───────────────────────────────────────────────── */
+@layer components {
+  /* Nav link with terracotta underline on hover */
+  .nav-link {
+    color: var(--ink);
+    text-decoration: none;
+    position: relative;
+    transition: color 0.4s ease;
+  }
+
+  .nav-link::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: -3px;
+    width: 0;
+    height: 1px;
+    background: var(--terracotta);
+    transition: width 0.4s var(--ease-out);
+  }
+
+  .nav-link:hover { color: var(--terracotta); }
+  .nav-link:hover::after { width: 100%; }
+
+  /* About body prose */
+  .about-body p + p { margin-top: 22px; }
+
+  .about-body em {
+    font-family: var(--font-instrument-serif), "Times New Roman", serif;
+    font-style: italic;
+    color: var(--ink-muted);
+    font-size: 17px;
+  }
+}
+

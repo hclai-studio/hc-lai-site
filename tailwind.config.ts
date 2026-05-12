@@ -9,8 +9,28 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        background: "var(--background)",
-        foreground: "var(--foreground)",
+        cream: "#F2EFE9",
+        "cream-warm": "#EEEAE0",
+        ink: "#1C1B17",
+        "ink-muted": "#6B6862",
+        terracotta: "#B85C38",
+        line: "rgba(28, 27, 23, 0.12)",
+      },
+      fontFamily: {
+        serif: ["var(--font-instrument-serif)", "Times New Roman", "serif"],
+        sans: ["var(--font-geist)", "system-ui", "-apple-system", "sans-serif"],
+        mono: ["var(--font-geist-mono)", "Menlo", "monospace"],
+      },
+      letterSpacing: {
+        "annotation": "0.005em",
+        "nav": "0.08em",
+        "mark": "0.12em",
+        "label": "0.18em",
+        "cue": "0.2em",
+      },
+      lineHeight: {
+        "wordmark": "0.86",
+        "heading": "0.98",
       },
     },
   },

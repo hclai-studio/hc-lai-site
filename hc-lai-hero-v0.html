@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>H.C. Lai</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Geist:wght@300;400;500;600&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  /* ---------- DESIGN TOKENS ---------- */
+  :root {
+    --cream: #F2EFE9;
+    --cream-warm: #EEEAE0;
+    --ink: #1C1B17;
+    --ink-muted: #6B6862;
+    --terracotta: #B85C38;
+    --line: rgba(28, 27, 23, 0.12);
+
+    --serif: 'Instrument Serif', 'Times New Roman', serif;
+    --sans: 'Geist', system-ui, -apple-system, sans-serif;
+    --mono: 'Geist Mono', 'Menlo', monospace;
+
+    --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html, body {
+    background: var(--cream);
+    color: var(--ink);
+    font-family: var(--sans);
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* clean cream background — no grain texture, per Claude-style preference */
+
+  /* ---------- HERO ---------- */
+  main.hero {
+    position: relative;
+    min-height: 100vh;
+    padding: 36px 48px 32px;
+    display: flex;
+    flex-direction: column;
+    z-index: 2;
+  }
+
+  header.top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 40px;
+  }
+
+  /* the editorial annotation, OHM-style */
+  .annotation {
+    font-size: 15px;
+    line-height: 1.5;
+    letter-spacing: 0.005em;
+    max-width: 360px;
+    opacity: 0;
+    transform: translateY(12px);
+    animation: fadeUp 1.2s 0.3s var(--ease-out) forwards;
+  }
+  .annotation .dash {
+    font-family: var(--serif);
+    margin-right: 4px;
+    color: var(--ink);
+  }
+  .annotation .role {
+    font-family: var(--serif);
+    font-style: italic;
+    color: var(--ink-muted);
+    font-size: 17px;
+  }
+  .annotation .medium {
+    font-family: var(--sans);
+    font-weight: 500;
+    color: var(--ink);
+  }
+
+  nav.top-nav {
+    display: flex;
+    gap: 28px;
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    text-transform: lowercase;
+    opacity: 0;
+    transform: translateY(12px);
+    animation: fadeUp 1.2s 0.5s var(--ease-out) forwards;
+  }
+  nav.top-nav a {
+    color: var(--ink);
+    text-decoration: none;
+    position: relative;
+    transition: color 0.4s ease;
+  }
+  nav.top-nav a::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: -3px;
+    width: 0;
+    height: 1px;
+    background: var(--terracotta);
+    transition: width 0.4s var(--ease-out);
+  }
+  nav.top-nav a:hover { color: var(--terracotta); }
+  nav.top-nav a:hover::after { width: 100%; }
+
+  /* the wordmark — the whole point */
+  .wordmark-wrap {
+    flex: 1;
+    display: flex;
+    align-items: flex-end;
+    justify-content: flex-start;
+    padding-bottom: 6vh;
+    will-change: transform;
+  }
+
+  .wordmark {
+    font-family: var(--serif);
+    font-weight: 400;
+    font-size: clamp(96px, 22vw, 380px);
+    line-height: 0.86;
+    letter-spacing: -0.04em;
+    color: var(--ink);
+    opacity: 0;
+    transform: translateY(40px);
+    animation: heroReveal 1.6s 0.7s var(--ease-out) forwards;
+  }
+  .wordmark .period { color: var(--terracotta); }
+
+  /* tiny brand mark, bottom-right */
+  .footer-mark {
+    position: absolute;
+    bottom: 32px;
+    right: 48px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    color: var(--ink-muted);
+    opacity: 0;
+    animation: fadeUp 1.2s 1.2s var(--ease-out) forwards;
+  }
+  .monogram {
+    width: 30px;
+    height: 30px;
+    border: 1px solid var(--ink);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--mono);
+    font-size: 9px;
+    font-weight: 500;
+    letter-spacing: 0;
+    color: var(--ink);
+  }
+
+  .scroll-cue {
+    position: absolute;
+    bottom: 38px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--ink-muted);
+    opacity: 0;
+    animation: fadeIn 1.2s 1.5s ease forwards, bob 2.4s 3s ease-in-out infinite;
+  }
+
+  /* ---------- ABOUT SECTION (preview of what's next) ---------- */
+  section.about {
+    position: relative;
+    z-index: 2;
+    padding: 140px 48px 160px;
+    display: grid;
+    grid-template-columns: 1fr 1.1fr;
+    gap: 80px;
+    align-items: start;
+    border-top: 1px solid var(--line);
+  }
+
+  .section-label {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--ink-muted);
+    margin-bottom: 28px;
+  }
+
+  section.about h2 {
+    font-family: var(--serif);
+    font-size: clamp(44px, 5.6vw, 84px);
+    font-weight: 400;
+    line-height: 0.98;
+    letter-spacing: -0.025em;
+    color: var(--ink);
+  }
+  section.about h2 em {
+    font-style: italic;
+    color: var(--ink-muted);
+  }
+
+  .about-body {
+    font-family: var(--sans);
+    font-size: 16px;
+    line-height: 1.65;
+    color: var(--ink);
+    max-width: 480px;
+    font-weight: 400;
+  }
+  .about-body p + p { margin-top: 22px; }
+  .about-body em {
+    font-family: var(--serif);
+    font-style: italic;
+    color: var(--ink-muted);
+    font-size: 17px;
+  }
+
+  /* ---------- RESPONSIVE ---------- */
+  @media (max-width: 768px) {
+    main.hero { padding: 24px 24px 28px; }
+    .footer-mark { right: 24px; }
+    .annotation { font-size: 13px; max-width: 240px; }
+    .annotation .role { font-size: 15px; }
+    .wordmark { font-size: clamp(64px, 17vw, 200px); }
+    nav.top-nav { gap: 18px; font-size: 10px; }
+    section.about {
+      grid-template-columns: 1fr;
+      gap: 40px;
+      padding: 80px 24px 100px;
+    }
+  }
+
+  /* ---------- KEYFRAMES ---------- */
+  @keyframes fadeUp {
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes heroReveal {
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes fadeIn {
+    to { opacity: 0.55; }
+  }
+  @keyframes bob {
+    0%, 100% { transform: translateX(-50%) translateY(0); }
+    50% { transform: translateX(-50%) translateY(5px); }
+  }
+</style>
+</head>
+
+<body>
+  <main class="hero">
+    <header class="top">
+      <p class="annotation">
+        <span class="dash">—</span><span class="role"> Designer of</span> <span class="medium">spaces and systems.</span>
+      </p>
+      <nav class="top-nav">
+        <a href="#work">work</a>
+        <a href="#about">about</a>
+        <a href="#contact">contact</a>
+      </nav>
+    </header>
+
+    <div class="wordmark-wrap" id="wordmarkWrap">
+      <h1 class="wordmark">H.C. Lai<span class="period">.</span></h1>
+    </div>
+
+    <div class="scroll-cue">scroll ↓</div>
+
+    <div class="footer-mark">
+      <span>HCL · 2026</span>
+      <span class="monogram">HCL</span>
+    </div>
+  </main>
+
+  <section class="about" id="about">
+    <div>
+      <p class="section-label">001 — About</p>
+      <h2>Trained in <em>architecture</em>.<br>Curious about <em>everything else</em>.</h2>
+    </div>
+    <div class="about-body">
+      <p><em>— placeholder.</em> 这里以后放你的自我介绍。三五句话，第一句是钩子，后面铺一两件让人想认识你的事。不写履历，写气质。</p>
+      <p>底下会接：精选作品（Notion 嵌入 / 自己排版都行）、思考随笔（可选）、和联系方式。</p>
+      <p>整页节奏会是：宣言 → 自我 → 作品 → 触达。每一段之间都是一次呼吸。</p>
+    </div>
+  </section>
+
+  <script>
+    // subtle mouse parallax on the wordmark, starts AFTER the entrance animation
+    const wrap = document.getElementById('wordmarkWrap');
+    let ready = false;
+    setTimeout(() => { ready = true; }, 2400);
+
+    document.addEventListener('mousemove', (e) => {
+      if (!ready) return;
+      const x = (e.clientX / window.innerWidth - 0.5) * 8;
+      const y = (e.clientY / window.innerHeight - 0.5) * 4;
+      wrap.style.transition = 'transform 0.9s cubic-bezier(0.16, 1, 0.3, 1)';
+      wrap.style.transform = `translate3d(${x}px, ${y}px, 0)`;
+    });
+  </script>
+</body>
+</html>
