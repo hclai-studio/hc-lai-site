@@ -18,8 +18,9 @@ const config: Config = {
       },
       fontFamily: {
         serif: ["var(--font-instrument-serif)", "Times New Roman", "serif"],
-        sans: ["var(--font-geist)", "system-ui", "-apple-system", "sans-serif"],
+        sans: ["var(--font-geist)", "Noto Serif SC", "system-ui", "-apple-system", "sans-serif"],
         mono: ["var(--font-geist-mono)", "Menlo", "monospace"],
+        "serif-cn": ["Noto Serif SC", "serif"],
       },
       letterSpacing: {
         "annotation": "0.005em",

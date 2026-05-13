@@ -21,7 +21,7 @@ export default function About() {
       </div>
 
       {/* ── Right: body text ─────────────────────────────────────── */}
-      <div className="about-body font-sans font-normal text-base leading-[1.65] text-ink max-w-[480px]">
+      <div className="about-body font-serif-cn font-normal text-base leading-[1.65] text-ink max-w-[480px]">
         <p>
           <span className="font-serif italic text-ink-muted">— </span>
           我是赖兴菁（H.C. Lai），关注空间、系统与人的关系。
