@@ -109,5 +109,39 @@
     color: var(--ink-muted);
     font-size: 17px;
   }
+
+  /* Contact section — fade-up via Intersection Observer */
+  .contact-section {
+    opacity: 0;
+    transform: translateY(24px);
+    transition: opacity 1.2s var(--ease-out), transform 1.2s var(--ease-out);
+  }
+
+  .contact-section.in-view {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* Email link — terracotta slide-underline on hover */
+  .contact-email {
+    color: var(--ink);
+    text-decoration: none;
+    position: relative;
+    transition: color 0.4s ease;
+  }
+
+  .contact-email::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: -2px;
+    width: 0;
+    height: 1px;
+    background: var(--terracotta);
+    transition: width 0.4s var(--ease-out);
+  }
+
+  .contact-email:hover { color: var(--terracotta); }
+  .contact-email:hover::after { width: 100%; }
 }
 

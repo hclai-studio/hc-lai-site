@@ -20,17 +20,20 @@ export default function About() {
         </h2>
       </div>
 
-      {/* ── Right: body text (placeholder) ───────────────────────── */}
+      {/* ── Right: body text ─────────────────────────────────────── */}
       <div className="about-body font-sans font-normal text-base leading-[1.65] text-ink max-w-[480px]">
         <p>
-          <em>— placeholder.</em>{" "}
-          这里以后放你的自我介绍。三五句话，第一句是钩子，后面铺一两件让人想认识你的事。不写履历，写气质。
+          <span className="font-serif italic text-ink-muted">— </span>
+          我是赖兴菁（H.C. Lai），关注空间、系统与人的关系。
         </p>
         <p>
-          底下会接：精选作品（Notion 嵌入 / 自己排版都行）、思考随笔（可选）、和联系方式。
+          从建筑到 AI，我一直在做同一件事：把复杂的规则、流动与协作，整理成可以被感知和使用的东西。
         </p>
         <p>
-          整页节奏会是：宣言 → 自我 → 作品 → 触达。每一段之间都是一次呼吸。
+          最近在尝试一些半自动化工作流与 AI 原型。
+        </p>
+        <p>
+          我始终在寻找更自然的人机协作方式。
         </p>
       </div>
     </section>

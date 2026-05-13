@@ -46,11 +46,9 @@ export default function Hero() {
 
         {/* Nav — mono, lowercase, terracotta hover underline */}
         <nav className="anim-nav flex gap-[18px] md:gap-7 font-mono lowercase text-[10px] md:text-[11px] tracking-[0.08em]">
-          {(["work", "about", "contact"] as const).map((item) => (
-            <a key={item} href={`#${item}`} className="nav-link">
-              {item}
-            </a>
-          ))}
+          <a href="#" className="nav-link">work</a>
+          <a href="#about" className="nav-link">about</a>
+          <a href="#contact" className="nav-link">contact</a>
         </nav>
       </header>
 
