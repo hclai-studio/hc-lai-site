@@ -102,7 +102,7 @@
   .nav-link:hover::after { width: 100%; }
 
   /* About body prose */
-  .about-body p + p { margin-top: 22px; }
+  .about-body p + p { margin-top: 28px; }
 
   .about-body em {
     font-family: var(--font-instrument-serif), "Times New Roman", serif;

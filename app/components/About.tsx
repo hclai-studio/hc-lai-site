@@ -21,10 +21,10 @@ export default function About() {
       </div>
 
       {/* ── Right: body text ─────────────────────────────────────── */}
-      <div className="about-body font-serif-cn font-normal text-base leading-[1.65] text-ink max-w-[480px]">
+      <div className="about-body font-serif-cn font-normal text-[17px] leading-[1.75] tracking-[0.02em] text-ink max-w-[480px]">
         <p>
-          <span className="font-serif italic text-ink-muted">— </span>
-          我是赖兴菁（H.C. Lai），关注空间、系统与人的关系。
+          <span className="font-serif italic text-ink-muted text-[19px]">— </span>
+          我是赖兴菁（<span className="font-serif not-italic">H.C. Lai</span>），关注空间、系统与人的关系。
         </p>
         <p>
           从建筑到 AI，我一直在做同一件事：把复杂的规则、流动与协作，整理成可以被感知和使用的东西。
