@@ -24,16 +24,13 @@ export default function About() {
       <div className="about-body font-serif-cn font-normal text-[17px] leading-[1.75] tracking-[0.02em] text-ink max-w-[480px]">
         <p>
           <span className="font-serif italic text-ink-muted text-[19px]">— </span>
-          我是赖兴菁（<span className="font-serif not-italic">H.C. Lai</span>），关注空间、系统与人的关系。
+          我是赖兴菁（<span className="font-serif not-italic">H.C. Lai</span>）。
         </p>
         <p>
-          从建筑到 AI，我一直在做同一件事：把复杂的规则、流动与协作，整理成可以被感知和使用的东西。
+          关注空间、系统与人的关系。
         </p>
         <p>
-          最近在尝试一些半自动化工作流与 AI 原型。
-        </p>
-        <p>
-          我始终在寻找更自然的人机协作方式。
+          在寻找更自然的人机协作方式。
         </p>
       </div>
     </section>
