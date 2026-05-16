@@ -21,6 +21,7 @@ const config: Config = {
         sans: ["var(--font-geist)", "Noto Serif SC", "system-ui", "-apple-system", "sans-serif"],
         mono: ["var(--font-geist-mono)", "Menlo", "monospace"],
         "serif-cn": ["Noto Serif SC", "serif"],
+        "sans-cn": ["Noto Sans SC", "sans-serif"],
       },
       letterSpacing: {
         "annotation": "0.005em",

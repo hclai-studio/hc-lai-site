@@ -11,6 +11,7 @@
   --terracotta:  #B85C38;
   --line:        rgba(28, 27, 23, 0.12);
   --ease-out:    cubic-bezier(0.16, 1, 0.3, 1);
+  --font-instrument-serif: 'Instrument Serif', 'Times New Roman', serif;
 }
 
 @layer base {
@@ -144,5 +145,51 @@
 
   .contact-email:hover { color: var(--terracotta); }
   .contact-email:hover::after { width: 100%; }
+}
+
+/* ── Work section rows ──────────────────────────────────────────── */
+
+.work-title {
+  font-family: 'Instrument Serif', 'Times New Roman', serif !important;
+  -webkit-font-smoothing: auto !important;
+}
+
+.work-row {
+  display: grid;
+  grid-template-columns: 64px 1fr 100px 40px;
+  gap: 32px;
+  align-items: start;
+  padding: 36px 0;
+  border-top: 1px solid var(--line);
+  text-decoration: none;
+  color: inherit;
+  transform: translateX(0);
+  transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.work-row-last { border-bottom: 1px solid var(--line); }
+
+.work-row:hover { transform: translateX(12px); }
+
+.work-arrow {
+  transition: color 0.5s cubic-bezier(0.16, 1, 0.3, 1),
+              transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.work-row:hover .work-arrow {
+  color: var(--terracotta);
+  transform: translateX(8px);
+}
+
+@media (max-width: 767px) {
+  .work-row {
+    grid-template-columns: 32px 1fr 24px;
+    gap: 16px;
+  }
+
+  .work-meta { display: none; }
+  .work-arrow { grid-column: 3; }
+  .work-title { font-size: 22px !important; }
+  .work-desc  { font-size: 14px !important; }
 }
 

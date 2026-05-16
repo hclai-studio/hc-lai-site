@@ -32,7 +32,7 @@ export default function Contact() {
       {/* ── Left: label + heading ─────────────────────────────────── */}
       <div>
         <p className="font-mono uppercase text-ink-muted text-[10px] tracking-[0.18em] mb-7">
-          002 — Contact
+          003 — Contact
         </p>
         <h2
           className="font-serif font-normal text-ink leading-[0.98] tracking-[-0.025em] [font-size:clamp(44px,5.6vw,84px)]"

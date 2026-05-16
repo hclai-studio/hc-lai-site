@@ -2,23 +2,6 @@ import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
 
-const instrumentSerif = localFont({
-  src: [
-    {
-      path: "./fonts/InstrumentSerif-Regular.woff2",
-      weight: "400",
-      style: "normal",
-    },
-    {
-      path: "./fonts/InstrumentSerif-Italic.woff2",
-      weight: "400",
-      style: "italic",
-    },
-  ],
-  variable: "--font-instrument-serif",
-  display: "swap",
-});
-
 const geist = localFont({
   src: "./fonts/GeistVF.woff",
   variable: "--font-geist",
@@ -49,12 +32,12 @@ export default function RootLayout({
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         {/* eslint-disable-next-line @next/next/no-page-custom-font */}
         <link
-          href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;500&display=swap"
+          href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Noto+Serif+SC:wght@400;500&family=Noto+Sans+SC:wght@400;600&display=swap"
           rel="stylesheet"
         />
       </head>
       <body
-        className={`${instrumentSerif.variable} ${geist.variable} ${geistMono.variable} font-sans antialiased bg-cream text-ink`}
+        className={`${geist.variable} ${geistMono.variable} font-sans antialiased bg-cream text-ink`}
       >
         {children}
       </body>

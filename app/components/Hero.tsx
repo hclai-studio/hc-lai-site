@@ -46,7 +46,7 @@ export default function Hero() {
 
         {/* Nav — mono, lowercase, terracotta hover underline */}
         <nav className="anim-nav flex gap-[18px] md:gap-7 font-mono lowercase text-[10px] md:text-[11px] tracking-[0.08em]">
-          <a href="#" className="nav-link">work</a>
+          <a href="#work" className="nav-link">work</a>
           <a href="#about" className="nav-link">about</a>
           <a href="#contact" className="nav-link">contact</a>
         </nav>
