@@ -147,6 +147,94 @@
   .contact-email:hover::after { width: 100%; }
 }
 
+/* ── Works detail page prose ───────────────────────────────────── */
+.prose-works {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 0 24px;
+  text-rendering: optimizeLegibility;
+}
+
+/* H2 — Geist SemiBold (English) + Noto Sans SC Bold (Chinese) */
+.prose-works h2 {
+  font-family: var(--font-geist), 'Noto Sans SC', system-ui, sans-serif;
+  font-weight: 600;
+  font-size: 28px;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+  margin-top: 80px;
+  margin-bottom: 24px;
+}
+
+/* H3 — Noto Sans SC Bold 700 */
+.prose-works h3 {
+  font-family: 'Noto Sans SC', sans-serif;
+  font-weight: 700;
+  font-size: 18px;
+  line-height: 1.5;
+  color: var(--ink);
+  margin-top: 40px;
+  margin-bottom: 12px;
+}
+
+/* Body — Georgia (English serif) + Noto Serif SC (CJK serif), 400, 17px */
+.prose-works p {
+  font-family: Georgia, 'Noto Serif SC', serif;
+  font-weight: 400;
+  font-size: 17px;
+  line-height: 1.85;
+  color: var(--ink);
+  margin-bottom: 0;
+}
+
+.prose-works p + p { margin-top: 24px; }
+
+.prose-works ul, .prose-works ol {
+  font-family: Georgia, 'Noto Serif SC', serif;
+  font-weight: 400;
+  font-size: 17px;
+  line-height: 1.85;
+  color: var(--ink);
+  padding-left: 1.5em;
+  margin-top: 16px;
+  margin-bottom: 16px;
+}
+
+.prose-works li + li { margin-top: 8px; }
+
+.prose-works code {
+  font-family: var(--font-geist-mono), 'Menlo', monospace;
+  font-size: 14px;
+  background: rgba(184, 92, 56, 0.08);
+  padding: 2px 6px;
+  border-radius: 3px;
+}
+
+.prose-works pre {
+  background: rgba(28, 27, 23, 0.04);
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  padding: 20px 24px;
+  overflow-x: auto;
+  margin-top: 24px;
+  margin-bottom: 24px;
+}
+
+.prose-works pre code {
+  background: transparent;
+  padding: 0;
+  font-size: 13px;
+  line-height: 1.7;
+  color: var(--ink);
+}
+
+/* Work list description — same serif stack as detail page body */
+.work-desc {
+  font-family: Georgia, 'Noto Serif SC', serif;
+  font-weight: 400;
+}
+
 /* ── Work section rows ──────────────────────────────────────────── */
 
 .work-title {

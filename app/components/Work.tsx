@@ -70,7 +70,7 @@ export default function Work() {
                 </p>
               </div>
               {/* Description — Noto Serif SC (not Sans SC), 15px, tracking 0.02em */}
-              <p className="work-desc font-serif-cn font-normal text-ink-muted text-[15px] leading-[1.65] tracking-[0.02em]">
+              <p className="work-desc text-ink-muted text-[17px] leading-[1.85] tracking-[0.02em]">
                 {work.description}
               </p>
             </div>
