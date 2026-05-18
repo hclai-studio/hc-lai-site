@@ -201,7 +201,11 @@
   margin-bottom: 16px;
 }
 
-.prose-works li + li { margin-top: 8px; }
+.prose-works ul li,
+.prose-works ol li {
+  line-height: 1.85;
+  margin-bottom: 12px;
+}
 
 .prose-works code {
   font-family: var(--font-geist-mono), 'Menlo', monospace;
