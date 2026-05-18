@@ -11,13 +11,13 @@
 
 A semi-automated decision workflow built around a real pain point — transitioning from architectural design into the AI industry. It uses the Claude API to parse job descriptions in real time, match against three differentiated resume and outreach versions, and output a structured "application decision card."
 
-工作流核心定位：**不替代人做判断，而是把"识别同名异向、版本匹配、风险归类"这类结构化但重复的判断成本降到趋近于零**，让使用者把精力留在真正需要权衡的取舍上。
+工作流核心定位：不替代人做判断，而是把"识别同名异向、版本匹配、风险归类"这类结构化但重复的判断成本降到趋近于零，让使用者把精力留在真正需要权衡的取舍上。
 
-The core positioning is **not to replace human judgment, but to drive the cost of structured-yet-repetitive decisions toward zero** — letting the user keep focus on the trade-offs that actually require thinking.
+The core positioning is not to replace human judgment, but to drive the cost of structured-yet-repetitive decisions toward zero — letting the user keep focus on the trade-offs that actually require thinking.
 
-两天内累计判断 **108 个岗位**，平均决策时间从 5 分钟 / 个降至 30 秒 / 个。
+两天内累计判断 **108 个岗位**，平均决策时间从 **5 分钟 / 个降至 30 秒 / 个**。
 
-Across two days, **108 positions** were processed; per-decision time dropped from roughly 5 minutes to 30 seconds.
+Across two days, **108 positions** were processed; per-decision time dropped from **roughly 5 minutes to 30 seconds**.
 
 ## 02 | 为什么做这个 Why I Built This
 
@@ -43,9 +43,9 @@ Each posting required reading JD → deciding direction → picking resume versi
 
 Coming from architecture into AI, recruiters often dismiss the resume at first glance. Silent rejections are the norm.
 
-第三点工具解决不了。**所以这个工具的目标不是"提高回复率"，是在"看不到回报的求职阶段，依然能按结构化节奏继续投递，不被疲惫吞没"**。
+第三点工具解决不了。所以这个工具的目标不是"提高回复率"，是在"看不到回报的求职阶段，依然能按结构化节奏继续投递，不被疲惫吞没"。
 
-The third pain point is not solvable by tooling. **So the goal of this workflow is not to "increase reply rate" — it is to keep moving at a structured pace during a phase where feedback is delayed, so that fatigue does not become the bottleneck.**
+The third pain point is not solvable by tooling. So the goal of this workflow is not to "increase reply rate" — it is to keep moving at a structured pace during a phase where feedback is delayed, so that fatigue does not become the bottleneck.
 
 ## 03 | 工作流怎么设计 Workflow Design
 
@@ -102,9 +102,9 @@ Attempted full automation via open-source boss-cli, wrapped in a safe layer that
 
 Outcome: single-shot read-only search worked; detail endpoint hit session-expiry constraints; batch search triggered the platform's risk-control marker. The wrapper executed an immediate STOP per design, protecting the account.
 
-**结论**：BOSS 平台对高频自动化不友好，**接口路径不适合作为主流程**。但 wrapper 的 STOP 机制和 diagnostics 设计被证明是有效的安全边界——这部分思路被保留下来，体现在后续工具的"只读不投"原则里。
+**结论**：BOSS 平台对高频自动化不友好，接口路径不适合作为主流程。但 wrapper 的 STOP 机制和 diagnostics 设计被证明是有效的安全边界——这部分思路被保留下来，体现在后续工具的"只读不投"原则里。
 
-Conclusion: BOSS is not friendly to high-frequency automation; **the API path cannot be the main pipeline**. But the wrapper's STOP and diagnostics design proved an effective safety boundary — this thinking carries into the "read-only, no actions" principle in later tools.
+Conclusion: BOSS is not friendly to high-frequency automation; the API path cannot be the main pipeline. But the wrapper's STOP and diagnostics design proved an effective safety boundary — this thinking carries into the "read-only, no actions" principle in later tools.
 
 ### 路径 2 | 油猴脚本浏览器浮窗注入 / Browser Overlay Injection
 
@@ -116,9 +116,9 @@ Planned a real-time decision card overlay injected into Boss's web pages. Full s
 
 Outcome: discovered strong anti-DevTools detection on Boss (opening DevTools immediately ejected the page) and a new dual-pane "list + preview" layout that defeated SPA route detection. Debugging cost far exceeded expected value.
 
-**结论**：浮窗思路本身是对的，**但选错了战场**。浮窗版的代码与架构被保留作为后续 LinkedIn / 猎聘适配的基础——这两个平台反爬强度低得多。
+**结论**：浮窗思路本身是对的，但选错了战场。浮窗版的代码与架构被保留作为后续 LinkedIn / 猎聘适配的基础——这两个平台反爬强度低得多。
 
-Conclusion: the overlay idea is right; the **battlefield was wrong**. The overlay code and architecture are preserved as a base for future LinkedIn / Liepin adaptations, where anti-scraping is far lighter.
+Conclusion: the overlay idea is right; the battlefield was wrong. The overlay code and architecture are preserved as a base for future LinkedIn / Liepin adaptations, where anti-scraping is far lighter.
 
 ### 路径 3 | 命令行半自动 / CLI Semi-automatic（当前主流程 Current Main Pipeline）
 
@@ -126,9 +126,9 @@ Conclusion: the overlay idea is right; the **battlefield was wrong**. The overla
 
 Returned to the simplest design: paste JD into terminal → call Claude → render decision card → human decides whether to apply.
 
-**结果**：30 秒 / 岗位，零风控风险，可叠加台账留存与跨日复盘。**这是目前在用的版本，承担了 108 个岗位的真实判断。**
+**结果**：**30 秒 / 岗位**，零风控风险，可叠加台账留存与跨日复盘。这是目前在用的版本，承担了 108 个岗位的真实判断。
 
-Outcome: 30 seconds per posting, zero risk-control exposure, with persistent logs for cross-day review. **This is the version in production, having processed 108 actual postings so far.**
+Outcome: **30 seconds per posting**, zero risk-control exposure, with persistent logs for cross-day review. This is the version in production, having processed 108 actual postings so far.
 
 **心得**：方案选型不是"哪个最先进"，是"哪个跟现实约束最匹配"。BOSS 平台高强度反爬就是约束，与其硬刚不如用最轻量的人机分工绕开它。
 
@@ -155,11 +155,11 @@ Takeaway: path selection is not about "which is most advanced" — it is about "
 - 平均决策耗时：**30 秒 / 岗位**（手动判断对照组：约 5 分钟）
 - 回复率：**统计中**（投递时间集中在五一假期，等待工作日反馈）
 
-**Effectiveness validation is incomplete by design** — postings were sent during the May holiday and recruiter responses are expected after the holiday. The data section will be updated with reply rates and interview conversion in subsequent revisions.
+Effectiveness validation is incomplete by design — postings were sent during the May holiday and recruiter responses are expected after the holiday. The data section will be updated with reply rates and interview conversion in subsequent revisions.
 
 ### 初步观察 / Initial Observations
 
-决策卡的"方向判断"在多次实测中**有效识别了 title 与实际方向的偏差**（例：title 标注"AI 产品经理（建筑专业）"，决策卡识别为"偏技术实验向，含 ComfyUI / 模型训练要求"）。
+决策卡的"方向判断"在多次实测中有效识别了 title 与实际方向的偏差（例：title 标注"AI 产品经理（建筑专业）"，决策卡识别为"偏技术实验向，含 ComfyUI / 模型训练要求"）。
 
 The "direction" field reliably caught title-vs-reality gaps in repeated tests.
 
@@ -167,7 +167,7 @@ The "direction" field reliably caught title-vs-reality gaps in repeated tests.
 
 Resume version recommendations have shown high consistency with retrospective judgment; no significant mismatch observed yet.
 
-部分极端案例（要求 5 年经验 / 要求 985 名校 / 要求纯算法背景）会被决策卡明确标为"暂不主攻"，与人工判断一致——**说明判断模板对"硬门槛"识别可靠**。
+部分极端案例（要求 5 年经验 / 要求 985 名校 / 要求纯算法背景）会被决策卡明确标为"暂不主攻"，与人工判断一致——说明判断模板对"硬门槛"识别可靠。
 
 Edge cases (5+ years required / Tier-1 universities only / pure algorithm background) are reliably flagged as "do not pursue" — confirming the template's reliability on hard filters.
 
@@ -179,7 +179,7 @@ What this tool can and cannot do — written plainly by its user.
 
 ### 它解决的事 / What It Does
 
-把"识别同名异向、匹配简历版本、归类风险信号"这类**结构化但重复**的决策成本降到趋近于零；把使用者的精力从"读 100 份 JD"释放出来，转向"沉淀作品集 / 准备面试 / 学习行业知识"。
+把"识别同名异向、匹配简历版本、归类风险信号"这类结构化但重复的决策成本降到趋近于零；把使用者的精力从"读 100 份 JD"释放出来，转向"沉淀作品集 / 准备面试 / 学习行业知识"。
 
 Drives the cost of structured-yet-repetitive decisions (catching title mismatches, matching resume versions, classifying risk signals) toward zero — and frees the user's energy from "read 100 JDs" to "build portfolio / prepare interviews / study the industry."
 
@@ -201,10 +201,10 @@ The tool deliberately keeps "click to chat / submit application" as a manual ste
 
 - 自动投递触发平台风控（路径 1 已验证）
 - 自动投递让使用者失去对每个岗位的最后一次审视机会
-- 求职是高风险决策，**保留人类最终决策权比追求"全自动"更重要**
+- 求职是高风险决策，保留人类最终决策权比追求"全自动"更重要
 
-Not because automation is technically impossible, but because: auto-apply triggers platform risk-control (verified in Path 1); auto-apply removes the user's last review checkpoint per posting; job hunting is a high-stakes decision — **preserving the human's final say matters more than chasing "fully automated."**
+Not because automation is technically impossible, but because: auto-apply triggers platform risk-control (verified in Path 1); auto-apply removes the user's last review checkpoint per posting; job hunting is a high-stakes decision — preserving the human's final say matters more than chasing "fully automated."
 
-这是工具的边界，也是它在 ops / 平台支持 / 客户成功这类岗位场景下应有的姿态——**半自动不是"功能不完整"，是对人类判断权的有意保留**。
+这是工具的边界，也是它在 ops / 平台支持 / 客户成功这类岗位场景下应有的姿态——半自动不是"功能不完整"，是对人类判断权的有意保留。
 
-This is the tool's boundary — and the posture it should maintain in ops / platform support / customer success contexts: **"Semi-automated" is not "incomplete automation" — it is a deliberate preservation of human judgment.**
+This is the tool's boundary — and the posture it should maintain in ops / platform support / customer success contexts: "Semi-automated" is not "incomplete automation" — it is a deliberate preservation of human judgment.
