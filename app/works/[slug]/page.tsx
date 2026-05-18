@@ -3,7 +3,8 @@ import { notFound } from 'next/navigation';
 type WorkModule = { default: React.ComponentType };
 
 const works: Record<string, () => Promise<WorkModule>> = {
-  nanobanana: () => import('@/content/works/nanobanana.mdx'),
+  nanobanana:    () => import('@/content/works/nanobanana.mdx'),
+  'job-decision': () => import('@/content/works/job-decision.mdx'),
 };
 
 export function generateStaticParams() {
@@ -11,8 +12,9 @@ export function generateStaticParams() {
 }
 
 const moreWork = [
-  { number: '01', titleEn: 'AI Workflow & Enablement Portfolio', href: '/works/ai-workflow' },
-  { number: '03', titleEn: 'Semi-automated Job Decision Workflow', href: '/works/job-decision' },
+  { number: '01', titleEn: 'AI Workflow & Enablement Portfolio',              href: '/works/ai-workflow' },
+  { number: '02', titleEn: 'Semi-agentic Architectural Image Iteration',      href: '/works/nanobanana' },
+  { number: '03', titleEn: 'Semi-automated Job Decision Workflow',            href: '/works/job-decision' },
 ];
 
 export default async function WorkPage({ params }: { params: { slug: string } }) {

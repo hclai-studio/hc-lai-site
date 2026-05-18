@@ -1,0 +1,210 @@
+<ProjectHeader
+  category="AI Workflow · Ops Tooling · Human-in-the-loop · Workflow Design"
+  titleEn="Semi-automated Job Decision Workflow"
+  titleCn="AI 求职决策助手 · 半自动化 JD 匹配工作流"
+  year="2026"
+/>
+
+## 01 | 项目概述 Project Summary
+
+一个围绕「建筑设计师转 AI 行业求职」真实痛点搭建的半自动化决策工作流。通过 Claude API 实时解析岗位 JD，匹配三版差异化简历与招呼语版本，输出结构化「投递决策卡」。
+
+A semi-automated decision workflow built around a real pain point — transitioning from architectural design into the AI industry. It uses the Claude API to parse job descriptions in real time, match against three differentiated resume and outreach versions, and output a structured "application decision card."
+
+工作流核心定位：**不替代人做判断，而是把"识别同名异向、版本匹配、风险归类"这类结构化但重复的判断成本降到趋近于零**，让使用者把精力留在真正需要权衡的取舍上。
+
+The core positioning is **not to replace human judgment, but to drive the cost of structured-yet-repetitive decisions toward zero** — letting the user keep focus on the trade-offs that actually require thinking.
+
+两天内累计判断 **108 个岗位**，平均决策时间从 5 分钟 / 个降至 30 秒 / 个。
+
+Across two days, **108 positions** were processed; per-decision time dropped from roughly 5 minutes to 30 seconds.
+
+## 02 | 为什么做这个 Why I Built This
+
+转行求职过程中遇到三个交叠的真问题。
+
+Three overlapping pain points encountered during this career-transition job search.
+
+### 同名异向 / Same Title, Different Reality
+
+同样叫"AI 产品运营"的岗位，实际工作内容差异极大——有的偏投流，有的偏内容，有的偏 prompt 工程。光看 title 无法判断方向。
+
+Jobs called "AI Product Operations" can mean ad performance, content ops, or prompt engineering. Title alone cannot tell.
+
+### 重复决策成本高 / High Repetitive Decision Cost
+
+每个岗位都要经历"读 JD → 判断方向 → 选简历版本 → 写招呼语 → 决定投不投"。一晚最多深度判断 10 个岗位，效率瓶颈在判断而非投递。
+
+Each posting required reading JD → deciding direction → picking resume version → writing greeting → final go/no-go. Throughput was capped at the decision step, not the application step.
+
+### 转行简历容易被秒拒 / Transition Resumes Get Filtered Fast
+
+建筑专业 + AI 方向求职，HR 看到第一眼时往往直接划走。投出去无回复是常态。
+
+Coming from architecture into AI, recruiters often dismiss the resume at first glance. Silent rejections are the norm.
+
+第三点工具解决不了。**所以这个工具的目标不是"提高回复率"，是在"看不到回报的求职阶段，依然能按结构化节奏继续投递，不被疲惫吞没"**。
+
+The third pain point is not solvable by tooling. **So the goal of this workflow is not to "increase reply rate" — it is to keep moving at a structured pace during a phase where feedback is delayed, so that fatigue does not become the bottleneck.**
+
+## 03 | 工作流怎么设计 Workflow Design
+
+```
+JD 文本输入（截图 OCR / 复制粘贴）
+        ↓
+Claude API 实时解析（嵌入个人背景 + 判断模板）
+        ↓
+五维度判断
+  · 岗位偏向（应用层 / support / workflow / ops vs 工程 / 算法）
+  · 核心要求（文档 / 协同 / 用户支持 / 工程实现）
+  · 个人匹配点
+  · 风险点（工程深度 / 英文要求 / title 名实不符）
+  · 综合结论（主投 / 可冲 / 暂不主攻）
+        ↓
+版本匹配
+  · 简历 A / B / C（产品运营 / 平台支持 / 应用运营）
+  · 招呼语 A / B / C（与简历同向）
+        ↓
+结构化决策卡输出（10 字段）
+        ↓
+本地双轨留存
+  · Markdown：每岗一份，便于回看
+  · CSV 台账：用于后续回复率统计
+```
+
+### 设计原则 / Design Principles
+
+**Workflow Design** —— 把重复人工判断转成可复用的结构化输出，每张决策卡 10 个字段固定，便于横向比对。
+
+Convert repetitive judgment into reusable structured output, with 10 fixed fields per card to allow horizontal comparison.
+
+**Human-in-the-loop** —— 工具只判断不投递，"立即沟通 / 投递 / 拒绝"由使用者手动完成。这一点是有意为之，07 节展开。
+
+Tool decides, human applies. "Initiate chat / submit / decline" remain manual actions — a deliberate boundary, expanded in section 07.
+
+**降级容错 / Graceful Degradation** —— 如果 JD 提取失败或方向无法识别，决策卡会显式输出"信息不足"或"无可用简历版本"，不强行做判断。
+
+When JD extraction fails or direction cannot be inferred, the card explicitly outputs "insufficient information" rather than forcing a decision.
+
+## 04 | 技术路径选择 Path Selection
+
+在到达当前命令行半自动版本之前，先后实践 / 评估过三条技术路径，每条因为不同原因调整方向。完整记录构成了项目的 **Failure Postmortem 档案**——这是 ops 工作里"决策可追溯"的核心实践。
+
+Before arriving at the current CLI semi-automatic version, three technical paths were explored and adjusted. The full record forms the project's **Failure Postmortem archive** — a core practice of "traceable decision-making" in ops work.
+
+### 路径 1 | BOSS CLI 接口自动化 / API Automation
+
+尝试通过开源 boss-cli 工具搭建"搜索 → 详情 → 筛选 → 招呼"全自动链路，包裹一层 safe wrapper 严格阻止越权操作（cookie 读取 / 自动登录 / 自动投递）。
+
+Attempted full automation via open-source boss-cli, wrapped in a safe layer that strictly blocked over-privileged actions (no cookie reads, no auto-login, no auto-apply).
+
+**结果**：单次只读 search 跑通过；详情接口受 session 时效限制；批量 search 触发平台风控信号（"风控" marker）。Wrapper 按既定规则立即 STOP，避免了账号风险。
+
+Outcome: single-shot read-only search worked; detail endpoint hit session-expiry constraints; batch search triggered the platform's risk-control marker. The wrapper executed an immediate STOP per design, protecting the account.
+
+**结论**：BOSS 平台对高频自动化不友好，**接口路径不适合作为主流程**。但 wrapper 的 STOP 机制和 diagnostics 设计被证明是有效的安全边界——这部分思路被保留下来，体现在后续工具的"只读不投"原则里。
+
+Conclusion: BOSS is not friendly to high-frequency automation; **the API path cannot be the main pipeline**. But the wrapper's STOP and diagnostics design proved an effective safety boundary — this thinking carries into the "read-only, no actions" principle in later tools.
+
+### 路径 2 | 油猴脚本浏览器浮窗注入 / Browser Overlay Injection
+
+打算在 Boss 直聘网页右侧实时注入决策卡浮窗。脚本完整生成（含 Tampermonkey + OpenRouter API + Shadow DOM 隔离 + GM_setValue 安全存储）。
+
+Planned a real-time decision card overlay injected into Boss's web pages. Full script generated (Tampermonkey + OpenRouter API + Shadow DOM isolation + GM_setValue secure storage).
+
+**结果**：发现 Boss 直聘有强反 DevTools 检测（打开开发者工具直接踢出页面），且新版"列表 + 预览面板"双栏布局让 SPA 路由检测失效，调试成本远高于预期收益。
+
+Outcome: discovered strong anti-DevTools detection on Boss (opening DevTools immediately ejected the page) and a new dual-pane "list + preview" layout that defeated SPA route detection. Debugging cost far exceeded expected value.
+
+**结论**：浮窗思路本身是对的，**但选错了战场**。浮窗版的代码与架构被保留作为后续 LinkedIn / 猎聘适配的基础——这两个平台反爬强度低得多。
+
+Conclusion: the overlay idea is right; the **battlefield was wrong**. The overlay code and architecture are preserved as a base for future LinkedIn / Liepin adaptations, where anti-scraping is far lighter.
+
+### 路径 3 | 命令行半自动 / CLI Semi-automatic（当前主流程 Current Main Pipeline）
+
+回归最朴素方案：终端输入 JD → 调 Claude → 输出决策卡 → 人工决定投不投。
+
+Returned to the simplest design: paste JD into terminal → call Claude → render decision card → human decides whether to apply.
+
+**结果**：30 秒 / 岗位，零风控风险，可叠加台账留存与跨日复盘。**这是目前在用的版本，承担了 108 个岗位的真实判断。**
+
+Outcome: 30 seconds per posting, zero risk-control exposure, with persistent logs for cross-day review. **This is the version in production, having processed 108 actual postings so far.**
+
+**心得**：方案选型不是"哪个最先进"，是"哪个跟现实约束最匹配"。BOSS 平台高强度反爬就是约束，与其硬刚不如用最轻量的人机分工绕开它。
+
+Takeaway: path selection is not about "which is most advanced" — it is about "which best matches the real constraints." Heavy anti-scraping is the constraint; rather than fighting it, use the lightest human-machine division to bypass it.
+
+## 05 | 工作台 MVP 展示 MVP Demo
+
+<WorkImage
+  src="/works/job-decision/decision-card.jpg"
+  caption="jd 命令行工具完整链路展示——从 JD 输入、AI 解析、决策卡输出到本地双轨留存。 / jd CLI tool full pipeline: from JD input through AI parsing to decision card output and local dual-track logging."
+/>
+
+<WorkImage
+  src="/works/job-decision/csv-log.jpg"
+  caption="决策卡 CSV 台账（节选 20 行）——每条记录包含日期、公司、岗位、方向判断、核心要求、风险点、推荐简历版本、推荐招呼语版本、结论与投递理由。 / CSV decision log (excerpt of 20 records) — each entry captures date, company, role, direction analysis, key requirements, risk flags, recommended resume version, recommended outreach version, conclusion, and application reasoning."
+/>
+
+## 06 | 方法论验证 Validation
+
+### 当前数据 / Current Data（验证中 Validating）
+
+- 累计判断岗位数：**108**
+- 实际投递数：约 30–50 个（按"主投"和"可冲"档投递）
+- 平均决策耗时：**30 秒 / 岗位**（手动判断对照组：约 5 分钟）
+- 回复率：**统计中**（投递时间集中在五一假期，等待工作日反馈）
+
+**Effectiveness validation is incomplete by design** — postings were sent during the May holiday and recruiter responses are expected after the holiday. The data section will be updated with reply rates and interview conversion in subsequent revisions.
+
+### 初步观察 / Initial Observations
+
+决策卡的"方向判断"在多次实测中**有效识别了 title 与实际方向的偏差**（例：title 标注"AI 产品经理（建筑专业）"，决策卡识别为"偏技术实验向，含 ComfyUI / 模型训练要求"）。
+
+The "direction" field reliably caught title-vs-reality gaps in repeated tests.
+
+简历版本推荐与个人事后判断的一致性较高，目前未发现明显错配。
+
+Resume version recommendations have shown high consistency with retrospective judgment; no significant mismatch observed yet.
+
+部分极端案例（要求 5 年经验 / 要求 985 名校 / 要求纯算法背景）会被决策卡明确标为"暂不主攻"，与人工判断一致——**说明判断模板对"硬门槛"识别可靠**。
+
+Edge cases (5+ years required / Tier-1 universities only / pure algorithm background) are reliably flagged as "do not pursue" — confirming the template's reliability on hard filters.
+
+## 07 | 反思与边界 Reflection & Boundary
+
+这个工具能做什么、不能做什么，作为创作者需要写清楚。
+
+What this tool can and cannot do — written plainly by its user.
+
+### 它解决的事 / What It Does
+
+把"识别同名异向、匹配简历版本、归类风险信号"这类**结构化但重复**的决策成本降到趋近于零；把使用者的精力从"读 100 份 JD"释放出来，转向"沉淀作品集 / 准备面试 / 学习行业知识"。
+
+Drives the cost of structured-yet-repetitive decisions (catching title mismatches, matching resume versions, classifying risk signals) toward zero — and frees the user's energy from "read 100 JDs" to "build portfolio / prepare interviews / study the industry."
+
+### 它没有解决的事 / What It Does Not Solve
+
+- 转行简历被 HR 第一眼劝退的根本困境（这是平台展示机制 + 招聘市场结构问题，不是工具能解决的）
+- 回复率本身（截至作品集发布日，108 个岗位的反馈仍在累积中）
+- 面试转化率与 offer 质量（更长的反馈周期）
+
+The structural reality that transition resumes get filtered fast (this is a platform display + hiring market issue, not a tooling issue), reply rate itself (data still accumulating), interview conversion and offer quality (longer feedback loop).
+
+### 关于"半自动"的取舍 / On the "Semi-automated" Trade-off
+
+工具刻意保留了"由使用者手动点击立即沟通 / 投递"这一步。
+
+The tool deliberately keeps "click to chat / submit application" as a manual step performed by the user.
+
+不是技术做不到自动投递，是：
+
+- 自动投递触发平台风控（路径 1 已验证）
+- 自动投递让使用者失去对每个岗位的最后一次审视机会
+- 求职是高风险决策，**保留人类最终决策权比追求"全自动"更重要**
+
+Not because automation is technically impossible, but because: auto-apply triggers platform risk-control (verified in Path 1); auto-apply removes the user's last review checkpoint per posting; job hunting is a high-stakes decision — **preserving the human's final say matters more than chasing "fully automated."**
+
+这是工具的边界，也是它在 ops / 平台支持 / 客户成功这类岗位场景下应有的姿态——**半自动不是"功能不完整"，是对人类判断权的有意保留**。
+
+This is the tool's boundary — and the posture it should maintain in ops / platform support / customer success contexts: **"Semi-automated" is not "incomplete automation" — it is a deliberate preservation of human judgment.**
