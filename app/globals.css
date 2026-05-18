@@ -153,6 +153,8 @@
   margin: 0 auto;
   padding: 0 24px;
   text-rendering: optimizeLegibility;
+  font-variant-numeric: lining-nums tabular-nums;
+  font-feature-settings: "lnum" 1, "tnum" 1;
 }
 
 /* H2 — Geist SemiBold (English) + Noto Sans SC Bold (Chinese) */
