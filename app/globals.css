@@ -153,8 +153,14 @@
   margin: 0 auto;
   padding: 0 24px;
   text-rendering: optimizeLegibility;
-  font-variant-numeric: lining-nums tabular-nums;
-  font-feature-settings: "lnum" 1, "tnum" 1;
+}
+
+/* Bold numbers in list items → Geist Mono for tabular lining figures */
+.prose-works li strong {
+  font-family: var(--font-geist-mono), monospace;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  font-size: 0.95em;
 }
 
 /* H2 — Geist SemiBold (English) + Noto Sans SC Bold (Chinese) */
