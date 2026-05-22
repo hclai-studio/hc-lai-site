@@ -257,8 +257,8 @@
 
 .work-title {
   font-family: 'Instrument Serif', 'Times New Roman', serif !important;
-  -webkit-font-smoothing: antialiased !important;
-  -webkit-text-stroke: 0.35px currentColor;
+  -webkit-font-smoothing: auto !important;
+  -webkit-text-stroke: 0.5px currentColor;
 }
 
 .work-row {
