@@ -3,6 +3,7 @@ import ProjectHeader from '@/app/components/mdx/ProjectHeader';
 import Caption from '@/app/components/mdx/Caption';
 import ImagePlaceholder from '@/app/components/mdx/ImagePlaceholder';
 import WorkImage from '@/app/components/mdx/WorkImage';
+import CaseExpandable from '@/app/components/mdx/CaseExpandable';
 
 export function useMDXComponents(components: MDXComponents): MDXComponents {
   return {
@@ -11,5 +12,6 @@ export function useMDXComponents(components: MDXComponents): MDXComponents {
     Caption,
     ImagePlaceholder,
     WorkImage,
+    CaseExpandable,
   };
 }

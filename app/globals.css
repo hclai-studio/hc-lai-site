@@ -253,6 +253,10 @@
   font-weight: 400;
 }
 
+/* ── CaseExpandable — hide native details marker ───────────────── */
+.case-summary::-webkit-details-marker { display: none; }
+.case-summary { list-style: none; }
+
 /* ── Work section rows ──────────────────────────────────────────── */
 
 .work-title {
