@@ -16,7 +16,7 @@ export default function ProjectHeader({ category, titleEn, titleCn, year }: Proj
       {/* English title — Instrument Serif, brand voice consistent with Hero */}
       <h1
         className="font-normal text-ink [font-size:clamp(48px,6vw,80px)] leading-[1.05] tracking-[-0.025em] max-w-[800px] mx-auto mb-5"
-        style={{ fontFamily: "'Instrument Serif', 'Times New Roman', serif", WebkitFontSmoothing: "auto" }}
+        style={{ fontFamily: "'Instrument Serif', 'Times New Roman', serif", WebkitFontSmoothing: "subpixel-antialiased" }}
       >
         {titleEn}
       </h1>

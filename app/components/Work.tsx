@@ -60,7 +60,7 @@ export default function Work() {
               <div>
                 <h3
                   className="work-title font-normal text-ink [font-size:clamp(28px,3.4vw,38px)] leading-[1.1] tracking-[-0.015em]"
-                  style={{ fontFamily: "'Instrument Serif', 'Times New Roman', serif", WebkitFontSmoothing: "auto" }}
+                  style={{ fontFamily: "'Instrument Serif', 'Times New Roman', serif", WebkitFontSmoothing: "subpixel-antialiased" }}
                 >
                   {work.titleEn}
                 </h3>

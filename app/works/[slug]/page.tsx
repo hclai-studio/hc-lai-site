@@ -45,7 +45,7 @@ export default async function WorkPage({ params }: { params: { slug: string } })
       <footer className="border-t border-line mx-6 md:mx-12 mt-[80px] pt-[60px] pb-[120px]">
         <p
           className="font-normal text-ink [font-size:clamp(28px,3vw,36px)] leading-[1.1] tracking-[-0.015em] mb-10"
-          style={{ fontFamily: "'Instrument Serif', 'Times New Roman', serif", WebkitFontSmoothing: "auto" }}
+          style={{ fontFamily: "'Instrument Serif', 'Times New Roman', serif", WebkitFontSmoothing: "subpixel-antialiased" }}
         >
           More work →
         </p>
@@ -59,7 +59,7 @@ export default async function WorkPage({ params }: { params: { slug: string } })
               <span className="font-mono text-ink-muted text-[11px] tracking-[0.1em] shrink-0">{w.number}</span>
               <span
                 className="font-normal text-ink text-[18px] leading-[1.2] tracking-[-0.01em]"
-                style={{ fontFamily: "'Instrument Serif', 'Times New Roman', serif", WebkitFontSmoothing: "auto" }}
+                style={{ fontFamily: "'Instrument Serif', 'Times New Roman', serif", WebkitFontSmoothing: "subpixel-antialiased" }}
               >
                 {w.titleEn}
               </span>
