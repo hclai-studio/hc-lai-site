@@ -2,12 +2,14 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Digits-only face: maps 0-9 + - / , . to Geist Mono for uniform lining figures */
+/* Digits-only face: 0-9 and numeric punctuation → Geist Mono lining figures */
 @font-face {
-  font-family: 'ListNumDigits';
+  font-family: 'NumDigitsOnly';
   src: url('./fonts/GeistMonoVF.woff') format('woff');
-  unicode-range: U+0030-0039, U+002D, U+002F, U+002C, U+002E;
+  unicode-range: U+0030-0039, U+002D, U+002F, U+002C, U+002E, U+0025;
   font-weight: 100 900;
+  font-feature-settings: "tnum" 1, "lnum" 1;
+  size-adjust: 95%;
   font-display: swap;
 }
 
@@ -162,14 +164,7 @@
   margin: 0 auto;
   padding: 0 24px;
   text-rendering: optimizeLegibility;
-}
-
-/* Bold numbers in list items → Geist Mono for tabular lining figures */
-.prose-works li strong {
-  font-family: var(--font-geist-mono), monospace;
-  font-weight: 600;
-  font-variant-numeric: tabular-nums;
-  font-size: 0.95em;
+  font-family: 'NumDigitsOnly', Georgia, 'Noto Serif SC', serif;
 }
 
 /* H2 — Geist SemiBold (English) + Noto Sans SC Bold (Chinese) */
@@ -197,7 +192,7 @@
 
 /* Body — Georgia (English serif) + Noto Serif SC (CJK serif), 400, 17px */
 .prose-works p {
-  font-family: Georgia, 'Noto Serif SC', serif;
+  font-family: 'NumDigitsOnly', Georgia, 'Noto Serif SC', serif;
   font-weight: 400;
   font-size: 17px;
   line-height: 1.85;
@@ -211,7 +206,7 @@
   display: flex;
   flex-direction: column;
   gap: 12px;
-  font-family: Georgia, 'Noto Serif SC', serif;
+  font-family: 'NumDigitsOnly', Georgia, 'Noto Serif SC', serif;
   font-weight: 400;
   font-size: 17px;
   color: var(--ink);
@@ -222,7 +217,6 @@
 
 .prose-works ul li,
 .prose-works ol li {
-  font-family: 'ListNumDigits', Georgia, 'Noto Serif SC', serif;
   margin: 0;
   line-height: 1.85;
 }
