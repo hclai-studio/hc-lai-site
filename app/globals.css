@@ -2,6 +2,15 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Digits-only face: maps 0-9 + - / , . to Geist Mono for uniform lining figures */
+@font-face {
+  font-family: 'ListNumDigits';
+  src: url('./fonts/GeistMonoVF.woff') format('woff');
+  unicode-range: U+0030-0039, U+002D, U+002F, U+002C, U+002E;
+  font-weight: 100 900;
+  font-display: swap;
+}
+
 /* ── Design tokens (CSS variables) ─────────────────────────────────── */
 :root {
   --cream:       #F2EFE9;
@@ -213,6 +222,7 @@
 
 .prose-works ul li,
 .prose-works ol li {
+  font-family: 'ListNumDigits', Georgia, 'Noto Serif SC', serif;
   margin: 0;
   line-height: 1.85;
 }
