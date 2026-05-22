@@ -1,0 +1,430 @@
+<ProjectHeader
+  category="AI Workflow · Structured Output · Project Communication"
+  titleEn="AI Workflow & Enablement Portfolio"
+  titleCn="AI 工作流与运营支持原型"
+  year="2026"
+/>
+
+## 01 | 项目概述 Project Summary
+
+一个轻量级 AI 工作流原型,用来把混乱的项目输入(甲方反馈、会议纪要、碎片化需求)转化为结构化、可追踪、可复用的输出——服务于项目推进与汇报沟通。
+
+A lightweight AI workflow prototype that converts messy project inputs — client feedback, meeting notes, fragmented requests — into structured, traceable outputs for project execution and leadership communication.
+
+**这不是几个互不相关的小助手拼在一起,而是一个以 workflow 为核心的项目系统**:一个主原型 + 多个基于不同输入场景的验证分支。整套作品集要证明的不是"会用 AI",而是**设计结构化 workflow、处理不确定性、并把方法沉淀成可教学可复用的东西**。
+
+**This is not a collection of unrelated AI assistants — it is a single workflow-oriented project system**: one main prototype plus scenario-based validations. What it aims to prove is not "AI usage," but the ability to design structured workflows, surface uncertainty explicitly, and turn methods into something teachable and reusable.
+
+## 02 | 为什么做这个 Why I Built This
+
+在设计与项目场景里,**关键信息经常分散在聊天、反馈和零碎记录中**。这会带来五个反复出现的问题:
+
+In design and project environments, important information is often scattered across conversations, feedback, and informal notes — creating five recurring problems:
+
+- **任务遗漏** —— Key tasks easily missed
+- **风险暴露滞后** —— Risks surface too late
+- **未知信息被掩盖** —— Unknowns hidden instead of made explicit
+- **输出不一致难复用** —— Outputs inconsistent and hard to reuse
+- **汇报内容反复重写** —— Leadership communication rebuilt from scratch every time
+
+这些不是"使用 AI 工具就能解决"的问题,而是**需要设计一套结构化的工作流,才能让 AI 的输出真正落到执行层和汇报层**。
+
+These are not problems that "using an AI tool" can fix. They require **designing a structured workflow** to make AI output actually land at the execution and communication layers.
+
+## 03 | 工作流怎么设计 Workflow Design
+
+整套 workflow 围绕一个**固定输出 schema**展开,每个模块承担明确的功能:
+
+The entire workflow is built around a **fixed output schema**, with each section serving a specific purpose:
+
+### 输出结构 A–E / Output Structure A–E
+
+- **A. Executive Summary** —— 30 秒可读完的汇报摘要,服务领导决策
+- **B. Task Table** —— 可追踪任务表,含 Owner / Due / Priority / Dependency / Source Quote
+- **C. Risks & Mitigations** —— 前置暴露的风险与对策
+- **D. Open Questions** —— 显性化的未确认问题
+- **E. Assumptions & Source** —— 假设与原句引用,用于追溯与边界控制
+
+每个模块的设计目的:Executive Summary 让领导快速读懂、Task Table 落到执行、Risks 提前暴露、Open Questions 显性管理未知、Assumptions & Source 通过原句引用降低幻觉风险。
+
+Each module serves a specific role: Executive Summary for fast leadership readability, Task Table for execution tracking, Risks for early surfacing, Open Questions for explicit unknown management, Assumptions & Source for traceability and hallucination reduction.
+
+### 治理原则 / Governance Principles
+
+为了让 AI 输出**可靠、可追溯、可审阅**,这套 workflow 定了几条硬规则:
+
+To make AI output **reliable, traceable, and reviewable**, the workflow enforces several hard rules:
+
+- **不编造缺失信息** —— No fabrication of missing facts, dates, owners, or decisions
+- **未知信息显性化** —— Unknowns go into Open Questions / Assumptions, never hidden in Notes
+- **原句溯源** —— Important interpretations link back to source quotes
+- **字段规范** —— Due field is date-only or blank; Priority uses only P0–P3; no relative time
+- **已知与未知分离** —— Known execution data and unresolved questions stay separate
+- **对外使用前必须人工审核** —— Human review required before any external-facing communication
+
+### 字段规范细则 / Field Discipline
+
+- **Priority** —— 仅使用 P0 / P1 / P2 / P3
+- **Due** —— 仅使用具体日期或留空,**不使用"下周""明天"等相对时间**
+- **Owner** —— 负责人或 TBD,不留空
+- **Notes** —— 仅放执行备注,不作为未知信息的兜底
+- **任务用动作动词** —— "Define three direction strategies"(优), "Think about options"(劣)
+- **输出语言明确控制** —— 标题双语 / 主体中文 / 数据库字段名英文
+
+## 04 | 场景验证 Scenarios
+
+这套 workflow 在 **4 个真实场景**下做了验证。每个 case 都包含真实的 messy input + 完整的 A-E 结构化输出,用来证明同一套 workflow 在**不同类型的混乱输入下都能成立**。
+
+The workflow was validated across **4 real scenarios**. Each case captures real messy input + the full A-E structured output, demonstrating that the same workflow holds across **different types of messy input**.
+
+<CaseExpandable
+  title="Case 01 | Client Change · 甲方变更"
+  scenario="把一份模糊的甲方设计变更要求,转译为可汇报的执行更新和可追踪任务清单。"
+  whyItMatters="测试这套 workflow 能否把外部、非结构化的甲方反馈,转成有行动、有风险、有原句溯源的结构化输出。"
+  whatItProves={[
+    "可以把 messy 项目输入转译为可执行的 actions / risks / open questions",
+    "Source Quote 机制有效降低 AI 编造风险,提升可追溯性",
+    "Due 字段保持空白(而非编造日期)显著提升输出可信度",
+    "Round 1 / Round 2 prompt 迭代,字段规范性和语言一致性显著提升"
+  ]}
+>
+
+### Input
+
+> 甲方觉得入口不够有仪式感,希望更有到达感,但预算很紧,最好不要增加复杂材料。工期也比较赶,下周要出一版可汇报的方向。还希望夜景有亮点,但不想很商业化。
+
+### Output
+
+**A. Executive Summary**
+
+- **Context**:需要在预算受限、工期紧张的前提下,快速形成一版可汇报的入口优化方向。
+- **What changed / New input**:甲方希望入口更有仪式感和到达感,同时要求夜景有亮点,但不希望整体表达过于商业化,也不希望增加复杂材料。
+- **Key decisions needed**:是否以低成本材料与界面层次优化为主、夜景表达策略、是否需要呈现 2-3 个方向供比较。
+- **This week's focus**:明确汇报时间、形式与受众;输出 2-3 个低成本入口概念方向;同步整理风险点与待确认问题。
+
+**B. Task Table**
+
+- 梳理入口"仪式感 / 到达感"可用设计手段清单(P0,优先不增加复杂材料)
+- 输出入口概念方向 V1 用于汇报(P0)
+- 形成夜景亮点策略稿(P1,强调非商业化表达)
+- 预算约束下的材料与做法建议(P1,避免复杂材料的替代方案)
+- 汇报材料结构与要点(P2,1 页结论 + 2-3 页论证)
+
+**C. Risks & Mitigations**
+
+- **R1 预算约束导致方案表现力不足** → 影响:难以满足"更有仪式感"的预期 → 动作:从界面层次、导视强化、灯光秩序入手,不增加复杂结构
+- **R2 工期紧、深化时间不足** → 影响:方案停留在概念层 → 动作:本轮先聚焦方向性表达,做可读性强的一页式汇报
+- **R3 夜景"有亮点"与"不要太商业化"表达冲突** → 影响:过度亮化风险 → 动作:克制的线性光、重点洗墙、导视照明,强调气质与秩序感
+- **R4 材料策略不清晰影响落地** → 影响:复杂材料隐性引入,造价施工风险 → 动作:汇报时标注"优先常规材料和低复杂度节点"原则
+
+**D. Open Questions**
+
+- 下周汇报的具体时间、形式和受众是谁?(影响输出深度与表达方式)
+- 本轮汇报是否需要提供多个方向,还是只需一个推荐方向?(决定工作量分配)
+- 预算限制的边界是什么?(哪些材料和做法可接受,哪些需避免)
+- 夜景亮点是否允许少量灯光投入?(决定是"纯氛围优化"还是"可识别亮点强化")
+
+**E. Assumptions & Source**
+
+Assumptions: 本轮目标是"可汇报的概念方向",不是工程级深化;甲方更在意整体气质而非昂贵实体构件;允许策略性表达代替具体节点做法。
+
+Quotes:
+- "入口不够有仪式感,希望更有到达感。"
+- "预算很紧,最好不要增加复杂材料。"
+- "工期也比较赶,下周要出一版可汇报的方向。"
+- "希望夜景有亮点,但不想很商业化。"
+
+</CaseExpandable>
+
+<CaseExpandable
+  title="Case 02 | Leadership Request · 领导汇报"
+  scenario="把领导的一句"下周汇报需要 3 个方向"的模糊要求,转译为可对比的方案对比框架和任务拆解。"
+  whyItMatters="测试同一套 workflow 在不同输入类型(领导请求 vs 甲方变更)下的复用性,以及"外企风格"语言约束下的输出表现。"
+  whatItProves={[
+    "同一套 schema 可以稳定承接不同语境的输入类型",
+    "任务措辞更 action-oriented,Owner 分配更精准(默认 Me)",
+    "语言风格可通过 prompt 约束控制(短句、结论先行、可执行)",
+    "缺失评估口径会显性化为 Open Questions,而不是被 AI 编造"
+  ]}
+>
+
+### Input
+
+> 领导要求:下周汇报需要 3 个方向,每个方向要有亮点和风险点。重点关注造价、施工难度、工期。希望文本更像外企风格:短、清晰、可执行。
+
+### Output
+
+**A. Executive Summary**
+
+- **Context**:领导明确下周汇报要求 3 个可对比的方案方向,并按造价、施工难度、工期进行评估。
+- **What changed**:每个方向需同时给出亮点和风险点;文本表达需更外企风格(短、清晰、可执行)。
+- **Key decisions needed**:3 个方向的定位边界与取舍逻辑、每个方向的亮点是否允许带来施工复杂度。
+- **This week's focus**:明确 3 个方向的定义与差异;为每个方向补齐亮点与风险点;形成一页式对比汇报文本结构。
+
+**B. Task Table**
+
+- 定义 3 个方向的命名、核心策略与差异点(P0,Me)
+- 为每个方向输出亮点清单(P0,Me)
+- 为每个方向输出风险点清单,按造价 / 施工难度 / 工期分类(P0,Me)
+- 为每个方向给出风险对策(P1,Me)
+- 形成汇报文本骨架(P1,Me,外企风格)
+- 明确下周汇报具体日期与评审权重(P0,TBD)
+
+**C. Risks & Mitigations**
+
+- **R1 方向定义标准缺失** → 影响:方向不可比、评审难收敛 → 动作:先设统一评估维度,再锁定 3 个方向的差异点
+- **R2 "亮点"导致施工复杂度上升** → 影响:工期不可控、方向被否决 → 动作:每个方向给"亮点 + 可施工实现路径 + 降配选项"
+- **R3 文本风格要求清晰但输入信息不足** → 影响:汇报变空泛 → 动作:不确定信息转为待确认问题,用假设前提明确边界
+
+**D. Open Questions**
+
+- 下周汇报的具体日期是哪一天?(倒排产出节奏,避免使用相对时间)
+- 造价、施工难度、工期三者的优先级 / 权重是什么?(决定 3 个方向的取舍逻辑)
+- 是否有明确的造价红线、关键工期节点、不可接受的施工工艺?(风险点能否量化)
+- 每个方向需要到什么深度(概念策略 / 示意级 / 可落地做法)?(控制工作量)
+
+**E. Assumptions & Source**
+
+Assumptions: "下周"存在一次汇报节点但无具体日期,Due 留空;未提供方案内容细节,本输出聚焦汇报交付物结构与工作拆解。
+
+Quotes:
+- "下周汇报需要 3 个方向"
+- "每个方向要有亮点和风险点"
+- "重点关注造价、施工难度、工期。"
+- "希望文本更像外企风格:短、清晰、可执行。"
+
+</CaseExpandable>
+
+<CaseExpandable
+  title="Mini Case 01 | Internal Notes · 内部备忘录到行动跟踪"
+  scenario="把团队内部一段口语化的会议同步,转译为清晰的行动追踪、阻塞项暴露与待确认问题。"
+  whyItMatters="测试 workflow 在"对话型输入"(而非结构化请求)下的承接能力——很多团队真正的问题不是"有没有开会",而是"会后到底谁做什么"。"
+  whatItProves={[
+    "可以处理 messy 内部协作输入,不只面向外部 / 结构化请求",
+    "可以把对话式记录转成 action-oriented 跟进输出,而不只是 summary",
+    "更清晰地分离 agreed actions / current blockers / unresolved questions",
+    "支持内部团队协调,不只面向外部沟通"
+  ]}
+>
+
+### Input
+
+> 今天内部碰了一下入口方案的推进。A 说下周汇报最好还是保留 3 个方向,但不要做得太满,先拉开差异。B 觉得现在最大问题是造价边界还不清楚,如果不先确认,后面很容易返工。C 提醒夜景部分不要展开太多,先把白天逻辑讲清楚,不然汇报会显得散。还有一个问题是汇报时间好像改到周四了,但还没最终确认。最后大家都同意,先把三版方向的关键词和风险点列出来,再决定是否需要主推一个方向。
+
+### Output
+
+**A. Executive Summary**
+
+- **Context**:内部对入口方案推进进行同步,目标是为汇报准备清晰、可对比的方案表达。
+- **What changed**:共识为保留 3 个方向但先做"差异拉开";最大不确定是造价边界;夜景先收敛、优先讲清白天逻辑;汇报时间疑似调整到周四但未确认。
+- **Key decisions needed**:是否在列出三版关键词与风险点后主推一个方向;未明确造价边界前,三版方向的展开深度。
+- **This week's focus**:确认造价边界;输出三版方向关键词 + 风险点;收敛汇报叙事并确认汇报时间。
+
+**B. Action Tracker**
+
+- 整理三版方向的关键词清单,每版 5-8 个词确保差异清晰(P0,Team)
+- 为三版方向分别列出主要风险点,覆盖造价 / 施工 / 工期(P0,Team)
+- 向相关方确认造价边界 / 红线(P0,Lead)
+- 汇报内容收敛:白天逻辑作为主线,夜景仅保留原则性表述(P1,Me)
+- 确认最终汇报时间是否改到周四并同步给团队(P0,TBD)
+- 在关键词 + 风险点完成后,组织快速决策是否主推一个方向(P1,Lead)
+
+**C. Blockers & Risks**
+
+- **B1 造价边界未确认** → 影响:三版方向容易越界、返工成本高 → 动作:优先确认造价红线与口径
+- **B2 汇报时间未最终确认** → 影响:倒排计划不稳、交付节奏被动 → 动作:当天内锁定最终时间并同步
+- **R1 三版方向"做得太满"导致差异不清** → 影响:评审不聚焦、周期拉长 → 动作:每版先用"关键词 + 1 句话策略 + 3 个亮点 + 3 个风险"轻量化表达
+- **R2 夜景展开过多导致汇报叙事发散** → 影响:主线不清、被质疑重点不聚焦 → 动作:夜景只保留与白天逻辑一致的原则与控制项
+
+**D. Open Questions**
+
+- 汇报是否最终改到周四?具体日期与时间?(锁定倒排计划)
+- 造价边界的数值范围与计价口径是什么?(避免方向越界与返工)
+- 三版方向在本轮需要到什么深度(仅策略对比 vs 示意级内容)?(控制执行尺度)
+- 列出关键词与风险点后,是否必须主推一个方向?(决定后续资源投入)
+
+**E. Assumptions & Source**
+
+Assumptions: 未提供具体日期与责任人,Due 留空,Owner 采用 Me / Team / Lead / TBD 内部常用分配;当前阶段以"可对比的轻量化表达"优先,不进入深化。
+
+Quotes:
+- "下周汇报最好还是保留 3 个方向,但不要做得太满,先拉开差异。"
+- "现在最大问题是造价边界还不清楚,如果不先确认,后面很容易返工。"
+- "夜景部分不要展开太多,先把白天逻辑讲清楚。"
+- "汇报时间好像改到周四了,但还没最终确认。"
+
+</CaseExpandable>
+
+<CaseExpandable
+  title="Mini Case 02 | Requirement Intake · 需求收集到检查清单"
+  scenario="把一份模糊的需求说明 / brief,转译为结构化检查清单、风险摘要、缺失信息与建议下一步。"
+  whyItMatters="测试 workflow 在"文档型输入"(brief / 需求说明 / 半成型文档)下的承接能力——很多流程问题不是从聊天开始的,而是从模糊文档开始的。"
+  whatItProves={[
+    "可以处理文档型需求输入,不只面向对话型输入",
+    "可以把 brief 转成 readiness checklist,而不只是 summary",
+    "有助于在执行开始前显性暴露 gaps 与 missing inputs",
+    "支持 requirement intake 与 readiness check,不只面向汇报追踪"
+  ]}
+>
+
+### Input
+
+> 本轮汇报材料需要在下周评审前完成,输出以一页总结 + 两页支撑说明为主。重点是让领导快速理解三个方向的差异,不需要现在就展开到工程深度。内容必须体现造价、施工难度和工期影响,但目前预算红线还没有完全确认。夜景部分只作为辅助,不作为主线。汇报风格要求简洁,避免大段描述,最好能直接转成行动项和待确认问题。
+
+### Output
+
+**A. Summary**
+
+- **目标**:评审前完成一套"可快速决策"的汇报材料,让领导一眼看懂三个方向的差异与取舍。
+- **交付物形态**:1 页总结 + 2 页支撑说明(总计 3 页)。
+- **内容范围**:不展开到工程深度;必须覆盖造价、施工难度、工期影响;夜景仅作辅助。
+- **关键约束**:预算红线尚未完全确认;表达风格简洁,可直接转成行动项与待确认问题。
+
+**B. Checklist**
+
+- 交付页数与结构明确(1 页总结 + 2 页支撑)— Clear,P0
+- 评审时间的具体日期与截止时间 — Missing,P0
+- 1 页总结页的信息架构(结论先行) — Partial,P0
+- 三个方向的定义与命名(每个方向一句话定位) — Missing,P0
+- 三方向差异的对比维度与口径 — Partial,P0
+- 造价信息输入(预算红线、上限、计价范围 / 假设) — Partial,P0
+- 施工难度的判断依据 — Missing,P1
+- 工期影响的判断依据 — Missing,P1
+- "不展开到工程深度"的边界定义 — Partial,P1
+- 夜景内容范围(放在哪一页、占比、表达程度) — Partial,P2
+- 两页支撑说明的内容清单 — Missing,P1
+- 语言风格检查(短句、要点化) — Clear,P2
+- 行动项与待确认问题的输出区块 — Partial,P1
+
+**C. Risks & Gaps**
+
+- **预算红线未确认 + 仍要求体现造价影响** → 影响:造价口径不一致 → 动作:先锁定暂定造价假设区间(标注为假设),同时推动尽快确认红线
+- **缺少三方向内容输入** → 影响:材料只能写成框架 → 动作:先补齐三方向的一句话定位 + 3-5 条关键词
+- **施工难度、工期影响缺少判断依据** → 影响:变主观描述,难支持决策 → 动作:为每个方向列 1-3 个关键工序 / 关键路径假设
+- **评审时间只有"下周评审前"** → 影响:无法倒排计划 → 动作:立即确认具体日期与提交截止时间
+
+**D. Open Questions**
+
+- 评审的具体日期与材料提交截止时间是哪一天?
+- 三个方向的内容输入在哪里?如果没有,谁来给出第一版方向定义?
+- 造价表达口径是什么(定量区间 / 相对等级 / 上限对比)?
+- 施工难度与工期影响是否需要量化?采用什么统一标准?
+- 领导是否期待本轮给出推荐主推方向,还是仅对比不推荐?
+
+**E. Recommended Next Steps**
+
+- 确认评审具体日期与提交截止时间,据此倒排 3 页材料的内部冻结节点
+- 组织产出三方向"命名 + 一句话定位 + 关键词",作为所有页面填充的唯一输入源
+- 定义统一对比口径:造价 / 施工难度 / 工期各用同一套等级或区间表达
+- 输出 1 页总结页版式 + 2 页支撑页固定模块
+
+</CaseExpandable>
+
+### 4 个 case 共享的底层逻辑 / Unified Logic
+
+虽然 4 个场景输入类型完全不同——客户变更 / 领导请求 / 内部会议 / 需求文档——但底层逻辑是一致的:
+
+Although the 4 scenarios differ entirely in input type — client change / leadership request / internal meeting / requirement document — they share the same underlying logic:
+
+- **把混乱输入转成结构化输出** —— Turn messy input into structured output
+- **区分已知与未知** —— Separate knowns from unknowns
+- **前置暴露风险** —— Surface risks early
+- **支持后续行动** —— Support downstream action
+- **提升可追踪性和复用性** —— Improve traceability and reuse
+
+输入类型决定 schema 走向——**对话型输入更易导向 actions,文档型输入更易导向 checklists 和 gaps**。这就是为什么 schema 在不同场景下有差异化扩展,**而不是强行用一张表打天下**。
+
+Input type drives schema direction — **conversation inputs lean toward actions, document inputs lean toward checklists and gaps**. That's why the schema has scenario-specific extensions rather than forcing one rigid table across all cases.
+
+## 05 | 治理与边界 Governance & Boundary
+
+这套 workflow **能做什么、不能做什么**,作为创作者需要写清楚。
+
+What this workflow can and cannot do — written plainly by its creator.
+
+### 它不是什么 / What It Is Not
+
+- **不是决策替代品** —— 它帮助结构化思考、暴露任务和风险,但**不替代设计判断、领导拍板、甲方确认**
+- **不是工程验证器** —— 可用于概念阶段规划与沟通,**不能用来证明技术可行性、规范符合性、可施工性、造价确定性**
+- **不是 prompt 一次性输出** —— 是一套带有结构、治理、迭代、追溯的系统,不是"扔个 prompt 给 AI"
+
+This workflow is not a decision-maker, not an engineering validator, and not a one-shot prompt. It is a system with structure, governance, iteration, and traceability.
+
+### 5 种常见失败模式 / 5 Common Failure Modes
+
+每一种失败都对应明确的修正方式——这些修正不是"再试试 prompt",而是**在 prompt 和 review 中把规则写死**:
+
+Each failure mode has a defined fix — and the fix is not "try a different prompt," but **encoding the rule into the prompt and review process**:
+
+- **语言混用** —— Mixed languages → 显式定义输出语言规则
+- **字段漂移** —— Schema drift(优先级格式 / 相对时间)→ 锁定允许的 schema 值
+- **任务太空** —— Tasks too abstract(主题而非行动)→ 要求 action-oriented 措辞
+- **未知信息被编造** —— Unknowns fabricated(日期 / 责任人 / 决策)→ 要求 missing info 进 Open Questions / Assumptions
+- **原句引用过度改写** —— Quotes too loose(被改写过度)→ 要求保留原始措辞
+
+### 敏感数据最小化 / Sensitive Data Minimization
+
+在使用 AI 处理项目资料前,**敏感或保密信息应尽量减少或脱敏**:身份信息、保密客户资料、内部预算细节、未公开决策内容。
+
+Before using AI on project materials, sensitive or confidential information should be minimized or redacted: personal identifiers, confidential client information, internal budget details, non-public project decisions.
+
+## 06 | 可教学可复用 Enablement
+
+这套 workflow 的设计目标**不只是让一个人用得起来,还要能教、能复用、能在相似场景中扩展**。
+
+The workflow is designed not only to work for one user, but **to be teachable, reusable, and scalable across similar project scenarios**.
+
+### 谁适合用 / Who This Is For
+
+经常处理碎片化项目信息的人:项目协调 / PMO / 运营、负责汇报的设计人员、处理甲方变更的团队成员、需要把混乱输入转成结构化行动的人。
+
+Project coordinators, PMO / operations roles, designers preparing leadership updates, team members handling client changes — anyone translating messy inputs into structured actions.
+
+### 5 步上手 / Quick Start
+
+1. **Prepare raw input** —— 选一个 messy 输入源(甲方反馈 / 会议纪要 / 领导请求 / 内部聊天)
+2. **Use the standard prompt** —— 把输入粘贴进固定 prompt 模板
+3. **Generate structured output** —— 让 AI 输出 A-E 五大块
+4. **Review before reuse** —— 检查信息完整性、结构合规性、原句引用、任务可执行性、语气适配性
+5. **Add tasks into shared database** —— 把相关任务移入 Notion 任务数据库,含 Priority / Owner / Due / Dependency / Status / Project / Source Quote
+
+### 一句话教学脚本 / One-line Teaching Script
+
+> 我们不是让 AI 替代判断,而是让它先把混乱输入变成一个结构化初稿,帮助我们更快暴露任务、风险和缺失信息;真正用之前仍然要人工审核。
+>
+> We use AI here not to replace judgment, but to turn messy inputs into a structured first draft. The workflow helps surface tasks, risks, and missing information faster. We still review everything before real communication.
+
+### 当前已具备 / Currently in Place
+
+固定输出 schema、可复用 prompt 结构、Notion 任务数据库、4 个场景验证案例、多轮 prompt 迭代记录。
+
+Fixed output schema, reusable prompt structure, Notion task database, 4 scenario validations, multi-round prompt iteration records.
+
+## 07 | 反思与下一步 Reflection & Next
+
+### 当前状态 / Current Status
+
+**原型完成 + 初步验证**。已完成结构设计、模板设计、Notion 数据库、4 个场景案例、两轮 prompt 迭代验证。第一轮暴露语言混用与字段漂移,第二轮通过加强 prompt 约束后,输出在语言一致性、结构稳定性、字段规范性上都有显著提升。
+
+**Prototype complete + early validation.** Structure design, template definition, Notion database, 4 scenario cases, and two rounds of prompt iteration are all done. Round 1 exposed language inconsistency and schema drift; Round 2 significantly improved language consistency, schema compliance, and field discipline after tightening prompt rules.
+
+### 已知 gap / Known Gaps
+
+- 任务粒度仍可更 action-oriented
+- 负责人分配规则仍偏保守(更多 TBD 而非具体角色)
+- AI 输出与 Notion 数据库字段的对齐还不够完整
+- 场景测试覆盖可继续扩展(更多输入类型、更多领域)
+
+### 下一迭代方向 / Next Iteration
+
+- 更清晰地定义"核心 schema + 扩展 schema"模型,让不同场景的字段差异有更明确的标准
+- 进一步对齐 Notion 数据库,实现 AI 输出直接落库
+- 加强任务与原句映射,提升 traceability
+- 建立更明确的 review checklist,降低复用前的人工检查成本
+- 视情况做多模型对比测试
+
+### 一句话定位 / One-line Positioning
+
+**这是一套 workflow 系统在多个场景下的验证,不是多个互不相关的小工具。我擅长把混乱的项目输入,转化为结构化、可追踪、可复用的 AI 工作流输出。**
+
+**This is one workflow system validated across multiple scenarios, not several unrelated tools. I design AI-assisted project workflows that turn messy inputs into structured, traceable, and reusable outputs.**

@@ -3,7 +3,8 @@ import { notFound } from 'next/navigation';
 type WorkModule = { default: React.ComponentType };
 
 const works: Record<string, () => Promise<WorkModule>> = {
-  nanobanana:    () => import('@/content/works/nanobanana.mdx'),
+  'ai-workflow':  () => import('@/content/works/ai-workflow.mdx'),
+  nanobanana:     () => import('@/content/works/nanobanana.mdx'),
   'job-decision': () => import('@/content/works/job-decision.mdx'),
 };
 
