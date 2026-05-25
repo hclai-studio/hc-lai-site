@@ -17,19 +17,19 @@ A lightweight AI workflow prototype that converts messy project inputs — clien
 
 ## 02 | 为什么做这个 Why I Built This
 
-在设计与项目场景里,**关键信息经常分散在聊天、反馈和零碎记录中**。这会带来五个反复出现的问题:
+在设计与项目场景里,关键信息经常分散在聊天、反馈和零碎记录中。这会带来五个反复出现的问题:
 
 In design and project environments, important information is often scattered across conversations, feedback, and informal notes — creating five recurring problems:
 
-- **任务遗漏** —— Key tasks easily missed
-- **风险暴露滞后** —— Risks surface too late
-- **未知信息被掩盖** —— Unknowns hidden instead of made explicit
-- **输出不一致难复用** —— Outputs inconsistent and hard to reuse
-- **汇报内容反复重写** —— Leadership communication rebuilt from scratch every time
+- 任务遗漏 —— Key tasks easily missed
+- 风险暴露滞后 —— Risks surface too late
+- 未知信息被掩盖 —— Unknowns hidden instead of made explicit
+- 输出不一致难复用 —— Outputs inconsistent and hard to reuse
+- 汇报内容反复重写 —— Leadership communication rebuilt from scratch every time
 
-这些不是"使用 AI 工具就能解决"的问题,而是**需要设计一套结构化的工作流,才能让 AI 的输出真正落到执行层和汇报层**。
+这些不是"使用 AI 工具就能解决"的问题,而是需要设计一套结构化的工作流,才能让 AI 的输出真正落到执行层和汇报层。
 
-These are not problems that "using an AI tool" can fix. They require **designing a structured workflow** to make AI output actually land at the execution and communication layers.
+These are not problems that "using an AI tool" can fix. They require designing a structured workflow to make AI output actually land at the execution and communication layers.
 
 ## 03 | 工作流怎么设计 Workflow Design
 
@@ -55,21 +55,21 @@ Each module serves a specific role: Executive Summary for fast leadership readab
 
 To make AI output **reliable, traceable, and reviewable**, the workflow enforces several hard rules:
 
-- **不编造缺失信息** —— No fabrication of missing facts, dates, owners, or decisions
-- **未知信息显性化** —— Unknowns go into Open Questions / Assumptions, never hidden in Notes
-- **原句溯源** —— Important interpretations link back to source quotes
-- **字段规范** —— Due field is date-only or blank; Priority uses only P0–P3; no relative time
-- **已知与未知分离** —— Known execution data and unresolved questions stay separate
-- **对外使用前必须人工审核** —— Human review required before any external-facing communication
+- 不编造缺失信息 —— No fabrication of missing facts, dates, owners, or decisions
+- 未知信息显性化 —— Unknowns go into Open Questions / Assumptions, never hidden in Notes
+- 原句溯源 —— Important interpretations link back to source quotes
+- 字段规范 —— Due field is date-only or blank; Priority uses only P0–P3; no relative time
+- 已知与未知分离 —— Known execution data and unresolved questions stay separate
+- 对外使用前必须人工审核 —— Human review required before any external-facing communication
 
 ### 字段规范细则 / Field Discipline
 
-- **Priority** —— 仅使用 P0 / P1 / P2 / P3
-- **Due** —— 仅使用具体日期或留空,**不使用"下周""明天"等相对时间**
-- **Owner** —— 负责人或 TBD,不留空
-- **Notes** —— 仅放执行备注,不作为未知信息的兜底
-- **任务用动作动词** —— "Define three direction strategies"(优), "Think about options"(劣)
-- **输出语言明确控制** —— 标题双语 / 主体中文 / 数据库字段名英文
+- Priority —— 仅使用 P0 / P1 / P2 / P3
+- Due —— 仅使用具体日期或留空,不使用"下周""明天"等相对时间
+- Owner —— 负责人或 TBD,不留空
+- Notes —— 仅放执行备注,不作为未知信息的兜底
+- 任务用动作动词 —— "Define three direction strategies"(优), "Think about options"(劣)
+- 输出语言明确控制 —— 标题双语 / 主体中文 / 数据库字段名英文
 
 ## 04 | 场景验证 Scenarios
 
@@ -112,10 +112,10 @@ The workflow was validated across **4 real scenarios**. Each case captures real 
 
 **C. Risks & Mitigations**
 
-- **R1 预算约束导致方案表现力不足** → 影响:难以满足"更有仪式感"的预期 → 动作:从界面层次、导视强化、灯光秩序入手,不增加复杂结构
-- **R2 工期紧、深化时间不足** → 影响:方案停留在概念层 → 动作:本轮先聚焦方向性表达,做可读性强的一页式汇报
-- **R3 夜景"有亮点"与"不要太商业化"表达冲突** → 影响:过度亮化风险 → 动作:克制的线性光、重点洗墙、导视照明,强调气质与秩序感
-- **R4 材料策略不清晰影响落地** → 影响:复杂材料隐性引入,造价施工风险 → 动作:汇报时标注"优先常规材料和低复杂度节点"原则
+- **R1** 预算约束导致方案表现力不足 → 影响:难以满足"更有仪式感"的预期 → 动作:从界面层次、导视强化、灯光秩序入手,不增加复杂结构
+- **R2** 工期紧、深化时间不足 → 影响:方案停留在概念层 → 动作:本轮先聚焦方向性表达,做可读性强的一页式汇报
+- **R3** 夜景"有亮点"与"不要太商业化"表达冲突 → 影响:过度亮化风险 → 动作:克制的线性光、重点洗墙、导视照明,强调气质与秩序感
+- **R4** 材料策略不清晰影响落地 → 影响:复杂材料隐性引入,造价施工风险 → 动作:汇报时标注"优先常规材料和低复杂度节点"原则
 
 **D. Open Questions**
 
@@ -172,9 +172,9 @@ Quotes:
 
 **C. Risks & Mitigations**
 
-- **R1 方向定义标准缺失** → 影响:方向不可比、评审难收敛 → 动作:先设统一评估维度,再锁定 3 个方向的差异点
-- **R2 "亮点"导致施工复杂度上升** → 影响:工期不可控、方向被否决 → 动作:每个方向给"亮点 + 可施工实现路径 + 降配选项"
-- **R3 文本风格要求清晰但输入信息不足** → 影响:汇报变空泛 → 动作:不确定信息转为待确认问题,用假设前提明确边界
+- **R1** 方向定义标准缺失 → 影响:方向不可比、评审难收敛 → 动作:先设统一评估维度,再锁定 3 个方向的差异点
+- **R2** "亮点"导致施工复杂度上升 → 影响:工期不可控、方向被否决 → 动作:每个方向给"亮点 + 可施工实现路径 + 降配选项"
+- **R3** 文本风格要求清晰但输入信息不足 → 影响:汇报变空泛 → 动作:不确定信息转为待确认问题,用假设前提明确边界
 
 **D. Open Questions**
 
@@ -231,10 +231,10 @@ Quotes:
 
 **C. Blockers & Risks**
 
-- **B1 造价边界未确认** → 影响:三版方向容易越界、返工成本高 → 动作:优先确认造价红线与口径
-- **B2 汇报时间未最终确认** → 影响:倒排计划不稳、交付节奏被动 → 动作:当天内锁定最终时间并同步
-- **R1 三版方向"做得太满"导致差异不清** → 影响:评审不聚焦、周期拉长 → 动作:每版先用"关键词 + 1 句话策略 + 3 个亮点 + 3 个风险"轻量化表达
-- **R2 夜景展开过多导致汇报叙事发散** → 影响:主线不清、被质疑重点不聚焦 → 动作:夜景只保留与白天逻辑一致的原则与控制项
+- **B1** 造价边界未确认 → 影响:三版方向容易越界、返工成本高 → 动作:优先确认造价红线与口径
+- **B2** 汇报时间未最终确认 → 影响:倒排计划不稳、交付节奏被动 → 动作:当天内锁定最终时间并同步
+- **R1** 三版方向"做得太满"导致差异不清 → 影响:评审不聚焦、周期拉长 → 动作:每版先用"关键词 + 1 句话策略 + 3 个亮点 + 3 个风险"轻量化表达
+- **R2** 夜景展开过多导致汇报叙事发散 → 影响:主线不清、被质疑重点不聚焦 → 动作:夜景只保留与白天逻辑一致的原则与控制项
 
 **D. Open Questions**
 
@@ -298,10 +298,10 @@ Quotes:
 
 **C. Risks & Gaps**
 
-- **预算红线未确认 + 仍要求体现造价影响** → 影响:造价口径不一致 → 动作:先锁定暂定造价假设区间(标注为假设),同时推动尽快确认红线
-- **缺少三方向内容输入** → 影响:材料只能写成框架 → 动作:先补齐三方向的一句话定位 + 3-5 条关键词
-- **施工难度、工期影响缺少判断依据** → 影响:变主观描述,难支持决策 → 动作:为每个方向列 1-3 个关键工序 / 关键路径假设
-- **评审时间只有"下周评审前"** → 影响:无法倒排计划 → 动作:立即确认具体日期与提交截止时间
+- 预算红线未确认 + 仍要求体现造价影响 → 影响:造价口径不一致 → 动作:先锁定暂定造价假设区间(标注为假设),同时推动尽快确认红线
+- 缺少三方向内容输入 → 影响:材料只能写成框架 → 动作:先补齐三方向的一句话定位 + 3-5 条关键词
+- 施工难度、工期影响缺少判断依据 → 影响:变主观描述,难支持决策 → 动作:为每个方向列 1-3 个关键工序 / 关键路径假设
+- 评审时间只有"下周评审前" → 影响:无法倒排计划 → 动作:立即确认具体日期与提交截止时间
 
 **D. Open Questions**
 
@@ -326,11 +326,11 @@ Quotes:
 
 Although the 4 scenarios differ entirely in input type — client change / leadership request / internal meeting / requirement document — they share the same underlying logic:
 
-- **把混乱输入转成结构化输出** —— Turn messy input into structured output
-- **区分已知与未知** —— Separate knowns from unknowns
-- **前置暴露风险** —— Surface risks early
-- **支持后续行动** —— Support downstream action
-- **提升可追踪性和复用性** —— Improve traceability and reuse
+- 把混乱输入转成结构化输出 —— Turn messy input into structured output
+- 区分已知与未知 —— Separate knowns from unknowns
+- 前置暴露风险 —— Surface risks early
+- 支持后续行动 —— Support downstream action
+- 提升可追踪性和复用性 —— Improve traceability and reuse
 
 输入类型决定 schema 走向——**对话型输入更易导向 actions,文档型输入更易导向 checklists 和 gaps**。这就是为什么 schema 在不同场景下有差异化扩展,**而不是强行用一张表打天下**。
 
@@ -344,9 +344,9 @@ What this workflow can and cannot do — written plainly by its creator.
 
 ### 它不是什么 / What It Is Not
 
-- **不是决策替代品** —— 它帮助结构化思考、暴露任务和风险,但**不替代设计判断、领导拍板、甲方确认**
-- **不是工程验证器** —— 可用于概念阶段规划与沟通,**不能用来证明技术可行性、规范符合性、可施工性、造价确定性**
-- **不是 prompt 一次性输出** —— 是一套带有结构、治理、迭代、追溯的系统,不是"扔个 prompt 给 AI"
+- 不是决策替代品 —— 它帮助结构化思考、暴露任务和风险,但不替代设计判断、领导拍板、甲方确认
+- 不是工程验证器 —— 可用于概念阶段规划与沟通,不能用来证明技术可行性、规范符合性、可施工性、造价确定性
+- 不是 prompt 一次性输出 —— 是一套带有结构、治理、迭代、追溯的系统,不是"扔个 prompt 给 AI"
 
 This workflow is not a decision-maker, not an engineering validator, and not a one-shot prompt. It is a system with structure, governance, iteration, and traceability.
 
@@ -356,11 +356,11 @@ This workflow is not a decision-maker, not an engineering validator, and not a o
 
 Each failure mode has a defined fix — and the fix is not "try a different prompt," but **encoding the rule into the prompt and review process**:
 
-- **语言混用** —— Mixed languages → 显式定义输出语言规则
-- **字段漂移** —— Schema drift(优先级格式 / 相对时间)→ 锁定允许的 schema 值
-- **任务太空** —— Tasks too abstract(主题而非行动)→ 要求 action-oriented 措辞
-- **未知信息被编造** —— Unknowns fabricated(日期 / 责任人 / 决策)→ 要求 missing info 进 Open Questions / Assumptions
-- **原句引用过度改写** —— Quotes too loose(被改写过度)→ 要求保留原始措辞
+- 语言混用 —— Mixed languages → 显式定义输出语言规则
+- 字段漂移 —— Schema drift(优先级格式 / 相对时间)→ 锁定允许的 schema 值
+- 任务太空 —— Tasks too abstract(主题而非行动)→ 要求 action-oriented 措辞
+- 未知信息被编造 —— Unknowns fabricated(日期 / 责任人 / 决策)→ 要求 missing info 进 Open Questions / Assumptions
+- 原句引用过度改写 —— Quotes too loose(被改写过度)→ 要求保留原始措辞
 
 ### 敏感数据最小化 / Sensitive Data Minimization
 
@@ -382,11 +382,11 @@ Project coordinators, PMO / operations roles, designers preparing leadership upd
 
 ### 5 步上手 / Quick Start
 
-1. **Prepare raw input** —— 选一个 messy 输入源(甲方反馈 / 会议纪要 / 领导请求 / 内部聊天)
-2. **Use the standard prompt** —— 把输入粘贴进固定 prompt 模板
-3. **Generate structured output** —— 让 AI 输出 A-E 五大块
-4. **Review before reuse** —— 检查信息完整性、结构合规性、原句引用、任务可执行性、语气适配性
-5. **Add tasks into shared database** —— 把相关任务移入 Notion 任务数据库,含 Priority / Owner / Due / Dependency / Status / Project / Source Quote
+1. Prepare raw input —— 选一个 messy 输入源(甲方反馈 / 会议纪要 / 领导请求 / 内部聊天)
+2. Use the standard prompt —— 把输入粘贴进固定 prompt 模板
+3. Generate structured output —— 让 AI 输出 A-E 五大块
+4. Review before reuse —— 检查信息完整性、结构合规性、原句引用、任务可执行性、语气适配性
+5. Add tasks into shared database —— 把相关任务移入 Notion 任务数据库,含 Priority / Owner / Due / Dependency / Status / Project / Source Quote
 
 ### 一句话教学脚本 / One-line Teaching Script
 
