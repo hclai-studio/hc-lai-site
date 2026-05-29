@@ -23,6 +23,11 @@
   --line:        rgba(28, 27, 23, 0.12);
   --ease-out:    cubic-bezier(0.16, 1, 0.3, 1);
   --font-instrument-serif: 'Instrument Serif', 'Times New Roman', serif;
+
+  /* Nav */
+  --nav-size:   15px;
+  --nav-weight: 500;
+  --nav-color:  var(--ink);
 }
 
 @layer base {
