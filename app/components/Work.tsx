@@ -29,6 +29,16 @@ const works = [
     year: "2026",
     href: "/works/job-decision",
   },
+  {
+    number: "04",
+    titleEn: "Cross-Platform RAG — Fire Code QA Assistant",
+    titleCn: "建筑防火规范智能问答助手",
+    description:
+      "在 Coze、Dify、LangChain 三套架构上实现同一个防火规范 RAG 问答助手,量化各自的工程权衡。",
+    tags: ["RAG", "Vector Search", "Prompt Engineering"],
+    year: "2026",
+    href: "/works/fire-code-rag",
+  },
 ];
 
 export default function Work() {
