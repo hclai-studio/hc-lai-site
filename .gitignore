@@ -33,6 +33,9 @@ Thumbs.db
 # vercel
 .vercel
 
+# generated font files (copied from node_modules at build time)
+/public/fonts/chiron-sung-hk/
+
 # typescript
 *.tsbuildinfo
 next-env.d.ts

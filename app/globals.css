@@ -2,6 +2,9 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ── Chiron Sung HK — VF weight 200-900, 109 unicode-range slices, optional load ── */
+@import './fonts/chiron-sung.css';
+
 /* Digits-only face: 0-9 and numeric punctuation → Geist Mono lining figures */
 @font-face {
   font-family: 'NumDigitsOnly';
@@ -169,7 +172,7 @@
   margin: 0 auto;
   padding: 0 24px;
   text-rendering: optimizeLegibility;
-  font-family: 'NumDigitsOnly', Georgia, 'Noto Serif SC', serif;
+  font-family: 'NumDigitsOnly', Georgia, 'Chiron Sung HK', 'Noto Serif SC', serif;
 }
 
 /* H2 — Geist SemiBold (English) + Noto Sans SC Bold (Chinese) */
@@ -195,10 +198,10 @@
   margin-bottom: 12px;
 }
 
-/* Body — Georgia (English serif) + Noto Serif SC (CJK serif), 400, 17px */
+/* Body — Georgia + Chiron Sung HK 500 (VF axis), 17px */
 .prose-works p {
-  font-family: 'NumDigitsOnly', Georgia, 'Noto Serif SC', serif;
-  font-weight: 400;
+  font-family: 'NumDigitsOnly', Georgia, 'Chiron Sung HK', 'Noto Serif SC', serif;
+  font-weight: 500;
   font-size: 17px;
   line-height: 1.85;
   color: var(--ink);
@@ -207,12 +210,18 @@
 
 .prose-works p + p { margin-top: 24px; }
 
+/* Bold — Chiron Sung HK 700 (true VF weight, no faux bold) */
+.prose-works strong {
+  font-weight: 700;
+  font-synthesis-weight: none;
+}
+
 .prose-works ul, .prose-works ol {
   display: flex;
   flex-direction: column;
   gap: 12px;
-  font-family: 'NumDigitsOnly', Georgia, 'Noto Serif SC', serif;
-  font-weight: 400;
+  font-family: 'NumDigitsOnly', Georgia, 'Chiron Sung HK', 'Noto Serif SC', serif;
+  font-weight: 500;
   font-size: 17px;
   color: var(--ink);
   padding-left: 1.5em;
@@ -248,8 +257,9 @@
 }
 
 .prose-works td {
-  font-family: 'NumDigitsOnly', Georgia, 'Noto Serif SC', serif;
+  font-family: 'NumDigitsOnly', Georgia, 'Chiron Sung HK', 'Noto Serif SC', serif;
   font-size: 15px;
+  font-weight: 500;
   color: var(--ink);
   padding: 12px 20px;
   vertical-align: top;
@@ -294,7 +304,7 @@
 
 /* Work list description — same serif stack as detail page body */
 .work-desc {
-  font-family: Georgia, 'Noto Serif SC', serif;
+  font-family: Georgia, 'Chiron Sung HK', 'Noto Serif SC', serif;
   font-weight: 400;
 }
 
