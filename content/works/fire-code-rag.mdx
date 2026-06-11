@@ -48,9 +48,9 @@ This project uses GB 55037-2022 as the knowledge source to build a RAG QA assist
 - **Test layer** — coverage spans both paths: in-scope answering and out-of-scope refusal
 
 <WorkImage
-  src="/works/fire-code-rag/kb-segments.jpg"
+  src="/works/fire-code-rag/kb-segments.png"
   caption="知识库入库:GB 55037-2022 切分为 113 个 segments。 / Knowledge base: GB 55037-2022 split into 113 segments."
-  placeholder
+  placeholder={false}
 />
 
 ## 03 | 效果验证 Validation
@@ -76,21 +76,21 @@ Query: "What is the scope of this code?"
 > Upgrading the LLM from gpt-4o-mini to gpt-4o did not fix the misaligned answers. But switching the index mode alone — from economical (keyword inverted-index) to high-quality (vector semantic) — restored correct recall even on the original gpt-4o-mini. On domain documents with sharp term-vs-semantics mismatch (codes, law, medicine), **retrieval quality sets the ceiling of a RAG system and the model only sets the floor** — throwing a stronger model at a retrieval defect won't fix it.
 
 <WorkImage
-  src="/works/fire-code-rag/coze-correct.jpg"
+  src="/works/fire-code-rag/coze-correct.png"
   caption="Coze 版正确召回第 1.0.2 条原文。 / Coze correctly recalls Clause 1.0.2 verbatim."
-  placeholder
+  placeholder={false}
 />
 
 <WorkImage
-  src="/works/fire-code-rag/dify-hallucination.jpg"
+  src="/works/fire-code-rag/dify-hallucination.png"
   caption="Dify 初版(经济索引)幻觉案例:召回前言混合内容。 / Dify (initial, economical index): a hallucination case recalling mixed preface content."
-  placeholder
+  placeholder={false}
 />
 
 <WorkImage
-  src="/works/fire-code-rag/dify-fixed.jpg"
+  src="/works/fire-code-rag/dify-fixed.png"
   caption="Dify 切换高质量语义索引后,召回结果对齐 Coze。 / After switching to high-quality semantic indexing, Dify's recall aligns with Coze."
-  placeholder
+  placeholder={false}
 />
 
 ### 拒答路径 / Out-of-Scope Refusal
@@ -177,21 +177,21 @@ Where the early Dify build (gpt-4o-mini + economical index) once hallucinated a 
 - 理解 RAG 真实瓶颈不在 LLM,而在检索质量与切块策略 / Understanding that the real RAG bottleneck is retrieval quality and chunking, not the LLM
 
 <WorkImage
-  src="/works/fire-code-rag/langchain-repo.jpg"
+  src="/works/fire-code-rag/langchain-repo.png"
   caption="GitHub 仓库首页。 / The GitHub repository homepage."
-  placeholder
+  placeholder={false}
 />
 
 <WorkImage
-  src="/works/fire-code-rag/langchain-code.jpg"
+  src="/works/fire-code-rag/langchain-code.png"
   caption="step5_rag.py 的核心 LCEL 链路代码。 / The core LCEL pipeline in step5_rag.py."
-  placeholder
+  placeholder={false}
 />
 
 <WorkImage
-  src="/works/fire-code-rag/langchain-test.jpg"
+  src="/works/fire-code-rag/langchain-test.png"
   caption="测试 1 + 测试 2 的命令行原始输出。 / Raw command-line output for Test 1 and Test 2."
-  placeholder
+  placeholder={false}
 />
 
 </CaseExpandable>
