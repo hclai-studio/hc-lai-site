@@ -198,10 +198,10 @@
   margin-bottom: 12px;
 }
 
-/* Body — Georgia + Chiron Sung HK 500 (VF axis), 17px */
+/* Body — Georgia + Chiron Sung HK 400 (VF axis), 17px */
 .prose-works p {
   font-family: 'NumDigitsOnly', Georgia, 'Chiron Sung HK', 'Noto Serif SC', serif;
-  font-weight: 500;
+  font-weight: 400;
   font-size: 17px;
   line-height: 1.85;
   color: var(--ink);
@@ -221,7 +221,7 @@
   flex-direction: column;
   gap: 12px;
   font-family: 'NumDigitsOnly', Georgia, 'Chiron Sung HK', 'Noto Serif SC', serif;
-  font-weight: 500;
+  font-weight: 400;
   font-size: 17px;
   color: var(--ink);
   padding-left: 1.5em;
@@ -259,7 +259,7 @@
 .prose-works td {
   font-family: 'NumDigitsOnly', Georgia, 'Chiron Sung HK', 'Noto Serif SC', serif;
   font-size: 15px;
-  font-weight: 500;
+  font-weight: 400;
   color: var(--ink);
   padding: 12px 20px;
   vertical-align: top;
