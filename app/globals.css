@@ -308,6 +308,23 @@
   font-weight: 400;
 }
 
+/* ── Open Face mark — hover eye blink ──────────────────────────── */
+@keyframes eyeBlink {
+  0%   { transform: scaleY(1); }
+  25%  { transform: scaleY(0.08); }
+  60%  { transform: scaleY(1.12); }
+  100% { transform: scaleY(1); }
+}
+
+.open-face-mark .mark-eye {
+  transform-box: fill-box;
+  transform-origin: center;
+}
+
+.open-face-mark:hover .mark-eye {
+  animation: eyeBlink 300ms ease-out forwards;
+}
+
 /* ── CaseExpandable — hide native details marker ───────────────── */
 .case-summary::-webkit-details-marker { display: none; }
 .case-summary { list-style: none; }

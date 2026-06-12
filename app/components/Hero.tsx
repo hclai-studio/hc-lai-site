@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef } from "react";
+import OpenFaceMark from "./OpenFaceMark";
 
 export default function Hero() {
   const wordmarkWrapRef = useRef<HTMLDivElement>(null);
@@ -82,9 +83,7 @@ export default function Hero() {
         className="anim-footer-mark absolute bottom-8 right-6 md:right-12 flex items-center gap-3 font-mono text-ink-muted text-[10px] tracking-[0.12em]"
       >
         <span>HCL · 2026</span>
-        <span className="flex h-[30px] w-[30px] items-center justify-center rounded-full border border-ink font-mono font-medium text-ink text-[9px] tracking-[0]">
-          HCL
-        </span>
+        <OpenFaceMark size={28} className="text-ink" />
       </div>
     </main>
   );
