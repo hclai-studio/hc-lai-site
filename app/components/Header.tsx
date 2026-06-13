@@ -25,16 +25,22 @@ export default function Header() {
           : "py-4 bg-transparent border-b border-transparent",
       ].join(" ")}
     >
-      {/* Left group: fixed-width slot for BrandMark + annotation */}
+      {/* Left group: logo (home link) + annotation */}
       <div className="anim-annotation flex items-center gap-3 md:gap-4">
         {/*
           Slot width = SVG rendered width at height=34:
           viewBox 840/270 × 34 ≈ 106px.
           Fixed so annotation never shifts when logo morphs wide→narrow.
+          Wrapped in <a> so clicking logo navigates home on any page.
         */}
-        <div style={{ width: "106px", flexShrink: 0, overflow: "hidden" }}>
+        <a
+          href="/"
+          aria-label="Back to home"
+          className="transition-opacity duration-[150ms] hover:opacity-70"
+          style={{ display: "block", width: "106px", flexShrink: 0, overflow: "hidden" }}
+        >
           <BrandMark />
-        </div>
+        </a>
 
         {/* Annotation — hidden on mobile, visible md+ */}
         <p className="hidden md:flex items-center gap-0 leading-[1.5] tracking-[0.005em] text-[13px]">
@@ -45,13 +51,14 @@ export default function Header() {
         </p>
       </div>
 
+      {/* ② nav order: about → work → contact; /#xxx works from any page */}
       <nav
         className="anim-nav flex gap-[18px] md:gap-7 font-sans lowercase"
         style={{ fontSize: "var(--nav-size)", fontWeight: "var(--nav-weight)", color: "var(--nav-color)" }}
       >
-        <a href="#work"    className="nav-link">work</a>
-        <a href="#about"   className="nav-link">about</a>
-        <a href="#contact" className="nav-link">contact</a>
+        <a href="/#about"   className="nav-link">about</a>
+        <a href="/#work"    className="nav-link">work</a>
+        <a href="/#contact" className="nav-link">contact</a>
       </nav>
     </header>
   );
