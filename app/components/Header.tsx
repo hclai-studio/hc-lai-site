@@ -32,7 +32,7 @@ export default function Header() {
           viewBox 840/270 × 34 ≈ 106px.
           Fixed so annotation never shifts when logo morphs wide→narrow.
         */}
-        <div style={{ width: "106px", flexShrink: 0 }}>
+        <div style={{ width: "106px", flexShrink: 0, overflow: "hidden" }}>
           <BrandMark />
         </div>
 

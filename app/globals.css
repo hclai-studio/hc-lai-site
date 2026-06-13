@@ -36,11 +36,17 @@
 @layer base {
   *, *::before, *::after { box-sizing: border-box; }
 
+  /*
+   * html must NOT have overflow:hidden — that turns html into a scroll container,
+   * giving the page two scrollbars (one on html, one on body).
+   * overflow-x:clip clips content without creating a scroll container.
+   */
   html {
-    overflow-x: clip; /* clip ≠ hidden: does NOT create scroll container → no double scrollbar */
+    overflow-x: clip;
+    background-color: var(--cream);
   }
 
-  html, body {
+  body {
     background-color: var(--cream);
     color: var(--ink);
     overflow-x: hidden;

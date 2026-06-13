@@ -155,11 +155,14 @@ export default function BrandMark({ className = "" }: { className?: string }) {
   // JSX initial state = p=1 (open face)
   // ⑥ Text positions at new scale: H x=121, C x=359, Lai x=601, baseline y=394
   //    viewBox expanded to cover both: face (x:343-697) and text (x:121-920)
+  // width explicit (not auto) to prevent browser from defaulting to 300px and overflowing slot
   return (
     <svg
       viewBox="100 150 840 270"
+      width={106}
       height={34}
-      style={{ width: "auto", color: "var(--ink)", display: "block" }}
+      overflow="hidden"
+      style={{ color: "var(--ink)", display: "block" }}
       fill="currentColor"
       className={className}
       aria-label="H.C. Lai"
