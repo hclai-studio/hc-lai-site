@@ -29,21 +29,6 @@ export default function Hero() {
 
   return (
     <main className="relative flex min-h-screen flex-col z-10 px-6 pb-7 pt-[72px] md:pt-[80px] md:px-12 md:pb-8">
-      {/* ── Annotation (nav moved to fixed Header) ────────────────── */}
-      <header>
-        <p
-          className="anim-annotation max-w-[240px] md:max-w-[360px] leading-[1.5] tracking-[0.005em] text-[13px] md:text-[15px]"
-        >
-          <span className="font-serif mr-1">—</span>
-          <span className="font-serif italic text-ink-muted text-[15px] md:text-[17px]">
-            {" "}Designer of
-          </span>{" "}
-          <span className="font-sans font-medium text-ink">
-            spaces and systems.
-          </span>
-        </p>
-      </header>
-
       {/* ── Wordmark ──────────────────────────────────────────────── */}
       <div
         ref={wordmarkWrapRef}

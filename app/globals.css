@@ -36,6 +36,10 @@
 @layer base {
   *, *::before, *::after { box-sizing: border-box; }
 
+  html {
+    overflow-x: clip; /* clip ≠ hidden: does NOT create scroll container → no double scrollbar */
+  }
+
   html, body {
     background-color: var(--cream);
     color: var(--ink);
@@ -169,7 +173,7 @@
 /* ── BrandMark SVG text ─────────────────────────────────────────── */
 .brand-name {
   font-family: Arial, Helvetica, sans-serif;
-  font-size: 72px;
+  font-size: 200px;
   font-weight: 700;
 }
 

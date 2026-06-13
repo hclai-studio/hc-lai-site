@@ -7,9 +7,7 @@ export default function Header() {
   const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
-    function check() {
-      setScrolled(window.scrollY > 60);
-    }
+    function check() { setScrolled(window.scrollY > 60); }
     window.addEventListener("scroll", check, { passive: true });
     check();
     return () => window.removeEventListener("scroll", check);
@@ -27,9 +25,24 @@ export default function Header() {
           : "py-4 bg-transparent border-b border-transparent",
       ].join(" ")}
     >
-      {/* BrandMark entrance: same timing as hero annotation (300ms) */}
-      <div className="anim-annotation">
-        <BrandMark />
+      {/* Left group: fixed-width slot for BrandMark + annotation */}
+      <div className="anim-annotation flex items-center gap-3 md:gap-4">
+        {/*
+          Slot width = SVG rendered width at height=34:
+          viewBox 840/270 × 34 ≈ 106px.
+          Fixed so annotation never shifts when logo morphs wide→narrow.
+        */}
+        <div style={{ width: "106px", flexShrink: 0 }}>
+          <BrandMark />
+        </div>
+
+        {/* Annotation — hidden on mobile, visible md+ */}
+        <p className="hidden md:flex items-center gap-0 leading-[1.5] tracking-[0.005em] text-[13px]">
+          <span className="font-serif mr-1">—</span>
+          <span className="font-serif italic text-ink-muted text-[15px]">{" "}Designer of</span>
+          {" "}
+          <span className="font-sans font-medium text-ink ml-1">spaces and systems.</span>
+        </p>
       </div>
 
       <nav
