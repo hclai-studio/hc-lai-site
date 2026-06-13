@@ -45,11 +45,17 @@ export default function BrandMark({ className = "" }: { className?: string }) {
     const contract = seg(p, 0.35, 0.78, "strong");
     const build    = seg(p, 0.32, 0.92, "strong");
 
+    // Vertical correction: H.C. Lai cap center sits below SVG geometric center.
+    // Shift wordmark up at p=0 so it aligns with annotation baseline.
+    // Tune WORD_Y_SHIFT in DevTools — negative = upward in SVG coords.
+    const WORD_Y_SHIFT = -15; // viewBox units; try -10 to -20 range
+    const yOffset = mix(WORD_Y_SHIFT, 0, p); // full shift at p=0, zero at p=1
+
     // wordLai — slide + fade (⑥ new center x=760, y=394; slide -40 scaled from -14×200/72)
     const wLai = wordLaiRef.current;
     if (wLai) {
       wLai.setAttribute("opacity",   String(clamp(1 - retract)));
-      wLai.setAttribute("transform", `translate(${mix(0, -40, retract)} 0)`);
+      wLai.setAttribute("transform", `translate(${mix(0, -40, retract)} ${yOffset})`);
     }
 
     // wordHC — contract-scale + fade (⑥ new center x=310, y=394)
@@ -58,7 +64,7 @@ export default function BrandMark({ className = "" }: { className?: string }) {
       const s = mix(1, 0.94, contract);
       wHC.setAttribute("opacity",   String(clamp(1 - contract)));
       wHC.setAttribute("transform",
-        `translate(310 394) scale(${s} ${s}) translate(-310 -394)`);
+        `translate(0 ${yOffset}) translate(310 394) scale(${s} ${s}) translate(-310 -394)`);
     }
 
     // dots: punctuation ↔ eyes
@@ -68,7 +74,7 @@ export default function BrandMark({ className = "" }: { className?: string }) {
     const d1 = dotOneRef.current;
     if (d1) {
       const cx = mix(311,    487.45, build);
-      const cy = mix(381,    285,    build);
+      const cy = mix(381,    285,    build) + yOffset;
       const w  = mix(25,     34.1,   build);
       const h  = mix(25,     43.4,   build);
       const rx = mix(8,      0,      build);
@@ -82,7 +88,7 @@ export default function BrandMark({ className = "" }: { className?: string }) {
     const d2 = dotTwoRef.current;
     if (d2) {
       const cx = mix(541,    552.55, build);
-      const cy = mix(381,    285,    build);
+      const cy = mix(381,    285,    build) + yOffset;
       const w  = mix(25,     34.1,   build);
       const h  = mix(25,     43.4,   build);
       const rx = mix(8,      0,      build);
