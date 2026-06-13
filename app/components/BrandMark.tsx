@@ -48,7 +48,7 @@ export default function BrandMark({ className = "" }: { className?: string }) {
     // Vertical correction: H.C. Lai cap center sits below SVG geometric center.
     // Shift wordmark up at p=0 so it aligns with annotation baseline.
     // Tune WORD_Y_SHIFT in DevTools — negative = upward in SVG coords.
-    const WORD_Y_SHIFT = -15; // viewBox units; try -10 to -20 range
+    const WORD_Y_SHIFT = -30; // viewBox units; tune until H.C. Lai aligns with annotation
     const yOffset = mix(WORD_Y_SHIFT, 0, p); // full shift at p=0, zero at p=1
 
     // wordLai — slide + fade (⑥ new center x=760, y=394; slide -40 scaled from -14×200/72)
