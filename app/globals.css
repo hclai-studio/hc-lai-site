@@ -141,14 +141,14 @@
     font-size: 17px;
   }
 
-  /* Contact section — fade-up via Intersection Observer */
-  .contact-section {
+  /* Contact section — section holds natural layout; inner div animates */
+  .contact-inner {
     opacity: 0;
     transform: translateY(24px);
     transition: opacity 1.2s var(--ease-out), transform 1.2s var(--ease-out);
   }
 
-  .contact-section.in-view {
+  .contact-section.in-view .contact-inner {
     opacity: 1;
     transform: translateY(0);
   }
