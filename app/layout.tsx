@@ -17,15 +17,6 @@ const geistMono = localFont({
   display: "swap",
 });
 
-// Local files already in repo — avoids build-time Google Fonts network fetch.
-const instrumentSerif = localFont({
-  src: [
-    { path: "./fonts/InstrumentSerif-Regular.woff2", weight: "400", style: "normal" },
-    { path: "./fonts/InstrumentSerif-Italic.woff2",  weight: "400", style: "italic" },
-  ],
-  variable: "--font-instrument-serif",
-  display: "swap",
-});
 
 export const metadata: Metadata = {
   title: "H.C. Lai",
@@ -50,7 +41,7 @@ export default function RootLayout({
         />
       </head>
       <body
-        className={`${geist.variable} ${geistMono.variable} ${instrumentSerif.variable} font-sans antialiased bg-cream text-ink`}
+        className={`${geist.variable} ${geistMono.variable} font-sans antialiased bg-cream text-ink`}
       >
         <Header />
         {children}
