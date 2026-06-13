@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
-import { Instrument_Serif } from "next/font/google";
 import "./globals.css";
 import Header from "@/app/components/Header";
 
@@ -18,11 +17,12 @@ const geistMono = localFont({
   display: "swap",
 });
 
-// next/font/google inlines the font CSS per-route — guaranteed on all pages.
-// Replaces the manual <link> which was unreliable on dynamic /works/[slug] routes.
-const instrumentSerif = Instrument_Serif({
-  subsets: ["latin"],
-  style: ["normal", "italic"],
+// Local files already in repo — avoids build-time Google Fonts network fetch.
+const instrumentSerif = localFont({
+  src: [
+    { path: "./fonts/InstrumentSerif-Regular.woff2", weight: "400", style: "normal" },
+    { path: "./fonts/InstrumentSerif-Italic.woff2",  weight: "400", style: "italic" },
+  ],
   variable: "--font-instrument-serif",
   display: "swap",
 });
