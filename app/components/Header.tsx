@@ -47,7 +47,7 @@ export default function Header() {
           <span className="font-serif mr-1">—</span>
           <span className="font-serif italic text-ink-muted text-[15px]">{" "}Designer of</span>
           {" "}
-          <span className="font-sans font-medium text-ink">spaces and systems.</span>
+          <span className="font-sans font-medium text-ink ml-1">spaces and systems.</span>
         </p>
       </div>
 
