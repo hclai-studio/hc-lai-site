@@ -45,7 +45,7 @@ export default function Header() {
         {/* Annotation — hidden on mobile, visible md+ */}
         <p className="hidden md:flex items-center gap-0 leading-[1.5] tracking-[0.005em] text-[13px] md:text-[15px]">
           <span className="font-serif mr-1">—</span>
-          <span className="font-serif italic text-ink-muted text-[15px]">{" "}Designer of</span>
+          <span className="font-serif italic text-ink-muted text-[15px] md:text-[17px]">{" "}Designer of</span>
           {" "}
           <span className="font-sans font-medium text-ink ml-1">spaces and systems.</span>
         </p>
