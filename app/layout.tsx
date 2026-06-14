@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
+import Header from "@/app/components/Header";
 
 const geist = localFont({
   src: "./fonts/GeistVF.woff",
@@ -16,6 +17,7 @@ const geistMono = localFont({
   display: "swap",
 });
 
+
 export const metadata: Metadata = {
   title: "H.C. Lai",
   description: "Designer of spaces and systems.",
@@ -27,6 +29,8 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
+        {/* CJK fonts via Google Fonts — kept as <link> since next/font/google
+            handles CJK subset sizes poorly (auto-subset misses many glyphs). */}
         {/* eslint-disable-next-line @next/next/no-page-custom-font */}
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
@@ -39,6 +43,7 @@ export default function RootLayout({
       <body
         className={`${geist.variable} ${geistMono.variable} font-sans antialiased bg-cream text-ink`}
       >
+        <Header />
         {children}
       </body>
     </html>

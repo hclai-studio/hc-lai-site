@@ -28,17 +28,7 @@ export default async function WorkPage({ params }: { params: { slug: string } })
   const otherWork = moreWork.filter((w) => !w.href.includes(params.slug));
 
   return (
-    <div className="min-h-screen bg-cream text-ink">
-      {/* ── Top nav ── */}
-      <nav className="px-6 pt-9 md:px-12">
-        <a
-          href="/#work"
-          className="font-mono text-ink-muted text-[11px] tracking-[0.08em] hover:text-ink transition-colors duration-300"
-        >
-          ← Back to work
-        </a>
-      </nav>
-
+    <div className="min-h-screen bg-cream text-ink pt-[72px] md:pt-[80px]">
       {/* ── MDX content ── */}
       <article className="prose-works">
         <Content />

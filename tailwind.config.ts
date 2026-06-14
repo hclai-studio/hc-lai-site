@@ -17,7 +17,7 @@ const config: Config = {
         line: "rgba(28, 27, 23, 0.12)",
       },
       fontFamily: {
-        serif: ["var(--font-instrument-serif)", "Times New Roman", "serif"],
+        serif: ["'Instrument Serif'", "Times New Roman", "serif"],
         sans: ["var(--font-geist)", "Noto Serif SC", "system-ui", "-apple-system", "sans-serif"],
         mono: ["var(--font-geist-mono)", "Menlo", "monospace"],
         "serif-cn": ["Noto Serif SC", "serif"],

@@ -28,33 +28,7 @@ export default function Hero() {
   }, []);
 
   return (
-    <main className="relative flex min-h-screen flex-col z-10 p-6 pb-7 md:pt-9 md:px-12 md:pb-8">
-      {/* ── Top row: annotation + nav ─────────────────────────────── */}
-      <header className="flex items-start justify-between gap-10">
-        {/* Annotation — serif italic + sans medium mashup */}
-        <p
-          className="anim-annotation max-w-[240px] md:max-w-[360px] leading-[1.5] tracking-[0.005em] text-[13px] md:text-[15px]"
-        >
-          <span className="font-serif mr-1">—</span>
-          <span className="font-serif italic text-ink-muted text-[15px] md:text-[17px]">
-            {" "}Designer of
-          </span>{" "}
-          <span className="font-sans font-medium text-ink">
-            spaces and systems.
-          </span>
-        </p>
-
-        {/* Nav */}
-        <nav
-          className="anim-nav flex gap-[18px] md:gap-7 font-sans lowercase tracking-[0]"
-          style={{ fontSize: 'var(--nav-size)', fontWeight: 'var(--nav-weight)', color: 'var(--nav-color)' }}
-        >
-          <a href="#work" className="nav-link">work</a>
-          <a href="#about" className="nav-link">about</a>
-          <a href="#contact" className="nav-link">contact</a>
-        </nav>
-      </header>
-
+    <main className="relative flex min-h-screen flex-col z-10 px-6 pb-7 pt-[72px] md:pt-[80px] md:px-12 md:pb-8">
       {/* ── Wordmark ──────────────────────────────────────────────── */}
       <div
         ref={wordmarkWrapRef}
@@ -77,14 +51,11 @@ export default function Hero() {
         scroll ↓
       </div>
 
-      {/* ── Footer mark (HCL · 2026 + monogram circle) ───────────── */}
+      {/* ── Footer coordinate (circle removed; BrandMark in header) ── */}
       <div
-        className="anim-footer-mark absolute bottom-8 right-6 md:right-12 flex items-center gap-3 font-mono text-ink-muted text-[10px] tracking-[0.12em]"
+        className="anim-footer-mark absolute bottom-8 right-6 md:right-12 font-mono text-ink-muted text-[10px] tracking-[0.12em]"
       >
-        <span>HCL · 2026</span>
-        <span className="flex h-[30px] w-[30px] items-center justify-center rounded-full border border-ink font-mono font-medium text-ink text-[9px] tracking-[0]">
-          HCL
-        </span>
+        HCL · 2026
       </div>
     </main>
   );

@@ -1,0 +1,199 @@
+"use client";
+
+// Ported from logo-wide-friend-motion-v11.html (mode='full', eased), direction reversed.
+// p=1 = Open Face (top), p=0 = H.C. Lai. (scrolled past hero).
+//
+// ⑥ Enlarged terminal state: font-size 72→200, baseline y 310→394 (aligns cap-top with bracket top).
+//    Text re-centered at x=520, dot targets re-derived at the same scale ratio.
+// ④ "字虚点实" fix: contract segment widened to (0.35, 0.78) so letters appear while dots still large.
+// ⑤ Dead zone: logo holds face until scrollY > START (≈45%vh), then morphs over D (≈40%vh).
+
+import { useEffect, useRef, useCallback } from "react";
+
+function clamp(v: number, lo = 0, hi = 1) { return Math.max(lo, Math.min(hi, v)); }
+function easeInOutCubic(t: number) { return t < 0.5 ? 4*t*t*t : 1 - Math.pow(-2*t+2, 3)/2; }
+function easeInOutQuint(t: number) { return t < 0.5 ? 16*Math.pow(t,5) : 1 - Math.pow(-2*t+2, 5)/2; }
+function easeOutQuint(t: number)   { return 1 - Math.pow(1-t, 5); }
+function curve(v: number, type: string) {
+  const t = clamp(v);
+  if (type === "out")    return easeOutQuint(t);
+  if (type === "strong") return easeInOutQuint(t);
+  return easeInOutCubic(t);
+}
+function seg(p: number, s: number, e: number, type = "standard") {
+  return curve((p - s) / (e - s), type);
+}
+function mix(a: number, b: number, t: number) { return a + (b - a) * t; }
+
+export default function BrandMark({ className = "" }: { className?: string }) {
+  const wordHCRef     = useRef<SVGGElement>(null);
+  const wordLaiRef    = useRef<SVGGElement>(null);
+  const dotOneRef     = useRef<SVGRectElement>(null);
+  const dotTwoRef     = useRef<SVGRectElement>(null);
+  const openFriendRef = useRef<SVGGElement>(null);
+  const leftBkRef     = useRef<SVGPolygonElement>(null);
+  const rightBkRef    = useRef<SVGPolygonElement>(null);
+  const pRef          = useRef(1);
+
+  const render = useCallback((rawP: number) => {
+    const p      = clamp(rawP);
+    pRef.current = p;
+
+    // ── core math verbatim from source (mode='full') ─────────────────────
+    // ④ contract widened: (0.22,0.6) → (0.35,0.78) — letters appear while dots still large
+    const retract  = seg(p, 0,    0.22, "out");
+    const contract = seg(p, 0.35, 0.78, "strong");
+    const build    = seg(p, 0.32, 0.92, "strong");
+
+    // Vertical correction: H.C. Lai cap center sits below SVG geometric center.
+    // Applied as a fixed constant (not interpolated) so letters appear at the
+    // correct position without drifting upward while fading in.
+    // Tune WORD_Y_SHIFT — negative = upward in SVG coords.
+    const WORD_Y_SHIFT = -35; // viewBox units
+
+    // wordLai — slide + fade (⑥ new center x=760, y=394; slide -40 scaled from -14×200/72)
+    const wLai = wordLaiRef.current;
+    if (wLai) {
+      wLai.setAttribute("opacity",   String(clamp(1 - retract)));
+      wLai.setAttribute("transform", `translate(${mix(0, -40, retract)} ${WORD_Y_SHIFT})`);
+    }
+
+    // wordHC — contract-scale + fade (⑥ new center x=310, y=394)
+    const wHC = wordHCRef.current;
+    if (wHC) {
+      const s = mix(1, 0.94, contract);
+      wHC.setAttribute("opacity",   String(clamp(1 - contract)));
+      wHC.setAttribute("transform",
+        `translate(0 ${WORD_Y_SHIFT}) translate(310 394) scale(${s} ${s}) translate(-310 -394)`);
+    }
+
+    // dots: punctuation ↔ eyes
+    // ⑥ p=0 targets re-derived (scale 200/72=2.778): size 9→25, rx 3→8
+    //    dot1 cx: 431.5→311  (H-right + scaled gap), cy: 303.5→381  (baseline-period_r)
+    //    dot2 cx: 514.5→541  (C-right + scaled gap), cy: 303.5→381
+    const d1 = dotOneRef.current;
+    if (d1) {
+      const cx = mix(311,    487.45, build);
+      const cy = mix(381 + WORD_Y_SHIFT, 285, build);
+      const w  = mix(25,     34.1,   build);
+      const h  = mix(25,     43.4,   build);
+      const rx = mix(8,      0,      build);
+      d1.setAttribute("x",      String(cx - w / 2));
+      d1.setAttribute("y",      String(cy - h / 2));
+      d1.setAttribute("width",  String(w));
+      d1.setAttribute("height", String(h));
+      d1.setAttribute("rx",     String(rx));
+    }
+
+    const d2 = dotTwoRef.current;
+    if (d2) {
+      const cx = mix(541,    552.55, build);
+      const cy = mix(381 + WORD_Y_SHIFT, 285, build);
+      const w  = mix(25,     34.1,   build);
+      const h  = mix(25,     43.4,   build);
+      const rx = mix(8,      0,      build);
+      d2.setAttribute("x",      String(cx - w / 2));
+      d2.setAttribute("y",      String(cy - h / 2));
+      d2.setAttribute("width",  String(w));
+      d2.setAttribute("height", String(h));
+      d2.setAttribute("rx",     String(rx));
+    }
+
+    // open face brackets (unchanged — face size not modified per brief)
+    const of_ = openFriendRef.current;
+    if (of_) {
+      of_.setAttribute("opacity",   String(clamp(build)));
+      of_.setAttribute("transform",
+        `translate(${mix(454, 343.3, build)} ${mix(230, 176.5, build)}) scale(${mix(0.58, 1.55, build)})`);
+    }
+    if (leftBkRef.current)  leftBkRef.current.setAttribute("opacity",  String(clamp(build)));
+    if (rightBkRef.current) rightBkRef.current.setAttribute("opacity", String(clamp(build)));
+  }, []);
+
+  useEffect(() => {
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      render(0);
+      return;
+    }
+
+    let raf: number | null = null;
+
+    function computeP() {
+      // ⑤ dead zone: hold face until scrollY > START, then morph over D
+      const START = window.innerHeight * 0.45;  // tweak in DevTools
+      const D     = window.innerHeight * 0.40;  // tweak in DevTools
+      const raw   = clamp((window.scrollY - START) / D);
+      let p = 1 - raw;
+      if (p > 0.97) p = 1;
+      if (p < 0.03) p = 0;
+      return p;
+    }
+
+    function update() { render(computeP()); }
+
+    function onScroll() {
+      if (raf !== null) return;
+      raf = requestAnimationFrame(() => { raf = null; update(); });
+    }
+
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", update);
+    update();
+
+    // eye blink: every 5s, only while face is showing
+    const blink = setInterval(() => {
+      if (pRef.current <= 0.9) return;
+      [dotOneRef.current, dotTwoRef.current].forEach(el => {
+        if (!el) return;
+        el.classList.add("brand-blinking");
+        el.addEventListener("animationend", () => el.classList.remove("brand-blinking"), { once: true });
+      });
+    }, 5000);
+
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", update);
+      if (raf !== null) cancelAnimationFrame(raf);
+      clearInterval(blink);
+    };
+  }, [render]);
+
+  // JSX initial state = p=1 (open face)
+  // ⑥ Text positions at new scale: H x=121, C x=359, Lai x=601, baseline y=394
+  //    viewBox expanded to cover both: face (x:343-697) and text (x:121-920)
+  // width explicit (not auto) to prevent browser from defaulting to 300px and overflowing slot
+  return (
+    <svg
+      viewBox="100 150 840 270"
+      width={106}
+      height={34}
+      overflow="hidden"
+      style={{ color: "var(--ink)", display: "block" }}
+      fill="currentColor"
+      className={className}
+      aria-label="H.C. Lai"
+    >
+      {/* HC — hidden at p=1; new x positions for font-size 200 */}
+      <g ref={wordHCRef} opacity="0">
+        <text className="brand-name" x="121" y="394">H</text>
+        <text className="brand-name" x="359" y="394">C</text>
+      </g>
+      {/* Lai — hidden at p=1 */}
+      <g ref={wordLaiRef} opacity="0">
+        <text className="brand-name" x="601" y="394">Lai</text>
+      </g>
+      {/* dots: start at eye positions (p=1), morph to larger punctuation (p=0) */}
+      <rect ref={dotOneRef} className="brand-eye"
+        x="470.4" y="263.3" width="34.1" height="43.4" rx="0" />
+      <rect ref={dotTwoRef} className="brand-eye"
+        x="535.5" y="263.3" width="34.1" height="43.4" rx="0" />
+      {/* open face — original polygon, single shape */}
+      <g ref={openFriendRef} transform="translate(343.3 176.5) scale(1.55)" opacity="1">
+        <polygon ref={leftBkRef}
+          points="0,0 54,0 54,32 28,32 28,108 54,108 54,140 0,140" />
+        <polygon ref={rightBkRef}
+          points="228,0 174,0 174,32 200,32 200,108 174,108 174,140 228,140" />
+      </g>
+    </svg>
+  );
+}
