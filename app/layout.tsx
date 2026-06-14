@@ -31,30 +31,12 @@ export default function RootLayout({
       <head>
         {/* CJK fonts via Google Fonts — kept as <link> since next/font/google
             handles CJK subset sizes poorly (auto-subset misses many glyphs). */}
-        {/* Instrument Serif — inline @font-face bypasses CSS compilation pipeline */}
-        <style dangerouslySetInnerHTML={{ __html: `
-          @font-face {
-            font-family: 'Instrument Serif';
-            src: url('/fonts/InstrumentSerif-Regular.woff2') format('woff2');
-            font-weight: 400;
-            font-style: normal;
-            font-display: swap;
-          }
-          @font-face {
-            font-family: 'Instrument Serif';
-            src: url('/fonts/InstrumentSerif-Italic.woff2') format('woff2');
-            font-weight: 400;
-            font-style: italic;
-            font-display: swap;
-          }
-        `}} />
-        {/* CJK + Instrument Serif fallback via Google Fonts */}
         {/* eslint-disable-next-line @next/next/no-page-custom-font */}
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         {/* eslint-disable-next-line @next/next/no-page-custom-font */}
         <link
-          href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;700&family=Noto+Sans+SC:wght@400;700&display=swap"
+          href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Noto+Serif+SC:wght@400;700&family=Noto+Sans+SC:wght@400;700&display=swap"
           rel="stylesheet"
         />
       </head>
