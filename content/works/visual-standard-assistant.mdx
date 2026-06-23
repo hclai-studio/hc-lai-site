@@ -91,31 +91,105 @@ From v1.0 to v1.1, the system surfaced two judgment errors. Both were fixed thro
 
 **Error 2: a brand-driven image judged too leniently.** v1.0 rated a high-end skincare brand's brand-driven main-image as "broadly aligned," even crediting its "premium feel." Diagnosis: the system was counting surface elements (headline / product / endorsement) instead of judging **what it persuades with**. Fix: structure the visual analysis and add the persuasion-paradigm axis. Result: the same image dropped from "broadly aligned" to "partially aligned"; the paradigm was correctly distinguished.
 
+<p className="font-mono text-ink-muted text-[10px] tracking-[0.08em] text-center mt-10 mb-8 px-6 md:px-0 leading-[1.8]">
+  以下案例图为原创 mock 图，品牌与商品均为虚构，仅用于展示系统的判断逻辑。<br />
+  Mock images below are original; brands and products are fictional, shown only to illustrate the system's judgment logic.
+</p>
+
 <WorkImage
-  src="/works/visual-standard-assistant/output-pink.jpg"
-  caption="修复后:婴童护理品类主图(粉白调)被判为「高度接近」。 / After the fix: the baby-care main-image (pink-white) is judged “highly aligned”."
+  src="/works/visual-standard-assistant/mock-a-baby.jpg"
+  caption="案例 A · 婴童护理 mock 主图（虚构品牌 NUBLOOM）"
   placeholder
 />
 
+<JudgmentCard
+  title="案例 A · 品类适配正例：婴童护理主图"
+  verdict="high"
+  coreReason="该图整体符合功效驱动型主图语法。虽然使用了粉色与婴童元素，但它们与婴童护理品类高度适配，并没有削弱功效表达。画面仍然保持了功效前置、产品突出、信任背书和底部转化信息的完整结构。"
+  pros={[
+    "功效大标题明确，能够快速传达产品定位与核心作用。",
+    "问题 / 利益点以勾选形式呈现，直接对应用户可能遇到的护理场景。",
+    "产品主体清晰，包装与产品组合占据主要视觉区域，识别度高。",
+    "信任背书明确，如温和配方、敏感肌适用、渠道背书等信息增强可信度。",
+    "底部转化 / 利益补充模块完整，能够进一步强化购买理由。"
+  ]}
+  consNote="基本没有明显跑偏，以下为可优化点："
+  cons={[
+    "可进一步增强标题与勾选列表之间的层级区分，让用户浏览时更快抓住重点。",
+    "底部模块可适当减少信息密度，避免在小尺寸展示时可读性下降。"
+  ]}
+  reference="品类适配正例；婴童护理类功效型主图；「语法稳定，皮肤随品类变化」的标准样本。"
+/>
+
 <WorkImage
-  src="/works/visual-standard-assistant/output-paradigm.jpg"
-  caption="加入范式轴后:品牌驱动型主图由「基本接近」降为「部分接近」。 / With the paradigm axis: a brand-driven image is corrected from “broadly” to “partially aligned”."
+  src="/works/visual-standard-assistant/mock-b-serum.jpg"
+  caption="案例 B · 抗老精华 mock 主图（虚构品牌 VELSAINE）"
   placeholder
 />
+
+<JudgmentCard
+  title="案例 B · 功效型正例：抗老精华主图"
+  verdict="high"
+  coreReason="该图符合功效驱动型主图的核心结构：功效标题清晰、产品主体突出、问题 / 利益点明确、信任背书可见，并且具备底部利益总结。整体说服逻辑以「问题—功效—产品—背书—转化」为主，而不是单纯依赖品牌氛围。"
+  pros={[
+    "主标题直接表达「紧致抗皱」等核心功效，信息进入速度快。",
+    "勾选式利益点清晰列出用户关心的问题，如细纹、松弛、轮廓、肤感等。",
+    "产品主体占据主要视觉区域，包装清晰，主次关系明确。",
+    "信任背书围绕功效建立，例如成分复配、实验验证等，能够增强可信度。",
+    "底部利益条对核心卖点进行总结，强化转化导向。"
+  ]}
+  consNote="基本没有明显跑偏，以下为可优化点："
+  cons={[
+    "可进一步增强信任背书与产品之间的关联，让用户更快理解「为什么可信」。",
+    "背景质感偏高级，可注意避免过度品牌化，保持功效信息优先。"
+  ]}
+  reference="功效型护肤主图正例；抗老精华类主图；医研感 / 成分功效型视觉表达。"
+/>
+
+<WorkImage
+  src="/works/visual-standard-assistant/mock-c-poster.jpg"
+  caption="案例 C · 高端海报型 mock 主图（虚构品牌 VELSAINE）"
+  placeholder
+/>
+
+<JudgmentCard
+  title="案例 C · 品牌驱动反例：高端护肤海报型主图"
+  verdict="partial"
+  coreReason="该图产品清晰、画面高级、背景克制，但整体更偏品牌驱动型视觉。它主要依靠品牌氛围、产品质感和高端审美说服用户，缺少明确的问题 / 利益点勾选、功效型信任背书和强转化模块，因此不完全符合功效驱动型主图标准。"
+  pros={[
+    "产品主体清晰，包装识别度较高。",
+    "背景克制，没有明显干扰产品展示。",
+    "标题可读，能够传达一定的产品方向。"
+  ]}
+  cons={[
+    "缺少明确的问题 / 利益点勾选，用户无法快速理解产品解决什么具体问题。",
+    "信任背书偏品牌氛围，缺少认证、成分、实验验证、渠道背书等功效型信任信息。",
+    "底部模块较弱，未形成明确的购买引导或利益补充。",
+    "整体更像品牌海报 / 形象图，而不是以功效转化为核心的信息型主图。"
+  ]}
+  reference="品牌驱动型反例；高端护肤海报型主图；范式不匹配样本。"
+/>
+
+**迭代验证 · 从「要素识别」升级为「范式判断」**
+
+**测试现象**
+初版系统在判断高端护肤图时，容易把「产品清晰、标题存在、品牌感强」误认为符合功效驱动型标准，因此对品牌驱动型主图判得偏松。
+
+**A/B 测试结果**
+在相同任务下，将基础模型替换为更强模型后，判断结论并没有明显改善。说明问题的主要瓶颈不在模型能力，而在任务定义：系统只是在数「有没有标题、有没有产品、有没有背书」，没有判断这张图到底靠什么说服用户。
+
+**修正方式**
+v1.1 中新增「视觉说服范式」判别轴，将图像先区分为：功效驱动型 / 品牌驱动型 / 混合型 / 其他。同时加入两层判断模型：① **稳定语法**——功效标题、问题 / 利益点、产品主角、信任背书、底部转化模块；② **品类皮肤**——颜色、人物、气质、场景随品类变化。
+
+**迭代结果**
+系统不再单纯判断「要素齐不齐」，而是进一步判断「这张图的核心说服逻辑是什么」。因此，粉色婴童护理图可以被判为高度接近，而高端品牌海报型护肤图会被识别为部分接近。
+
+**项目价值**
+这次迭代证明：AI 判断类工具的关键不只是换更强模型，而是把任务定义设计得更准确。通过结构化观察、知识库检索和范式判断，系统才能更接近真实设计主管的判断逻辑。
 
 > 同一任务换更大的模型,结果几乎不变——瓶颈不在模型能力,在任务定义。
 >
 > Swap in a bigger model on the same task and the result barely moves — the bottleneck isn't model capability, it's task definition.
-
-<WorkImage
-  src="/works/visual-standard-assistant/output-ab-model.jpg"
-  caption="A/B:同一任务下小模型与更大模型的判定输出几乎一致。 / A/B: on the same task, the small model and a larger model produce near-identical verdicts."
-  placeholder
-/>
-
-两处的解法都是系统设计(两层模型 + 范式轴),不是更贵的模型。结论很朴素:先把任务定义对,再谈模型。
-
-Both fixes were system design (the two-layer model + the paradigm axis), not a pricier model. The takeaway is plain: define the task correctly first, then talk about the model.
 
 ## 05 | 诚实的价值与局限 Honest Value & Limits
 
