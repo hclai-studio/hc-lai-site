@@ -1,12 +1,14 @@
 "use client";
 
-// Ported from logo-wide-friend-motion-v11.html (mode='full', eased), direction reversed.
-// p=1 = Open Face (top), p=0 = H.C. Lai. (scrolled past hero).
+// BrandMark — threshold-triggered tween animation (not scroll-position-driven).
+// Phase 0 (p=1): open face  →  Phase 1 (p=0.25): H.C.  →  Phase 2 (p=0): H.C. Lai
 //
-// ⑥ Enlarged terminal state: font-size 72→200, baseline y 310→394 (aligns cap-top with bracket top).
-//    Text re-centered at x=520, dot targets re-derived at the same scale ratio.
-// ④ "字虚点实" fix: contract segment widened to (0.35, 0.78) so letters appear while dots still large.
-// ⑤ Dead zone: logo holds face until scrollY > START (≈45%vh), then morphs over D (≈40%vh).
+// Crossing T1 (40%vh) triggers a 380ms tween to p=0.25.
+// Crossing T2 (T1 + 20%vh) triggers a 380ms tween to p=0.
+// Render function is unchanged; p=0.25 is a mathematically clean H.C. state:
+//   build(0.25)=0 → face gone, dots at period
+//   contract(0.25)=0 → HC fully visible
+//   retract(0.25)=1 → Lai invisible
 
 import { useEffect, useRef, useCallback } from "react";
 
@@ -25,6 +27,9 @@ function seg(p: number, s: number, e: number, type = "standard") {
 }
 function mix(a: number, b: number, t: number) { return a + (b - a) * t; }
 
+const P_STOPS = [1, 0.25, 0] as const;
+const TWEEN_MS = 380;
+
 export default function BrandMark({ className = "" }: { className?: string }) {
   const wordHCRef     = useRef<SVGGElement>(null);
   const wordLaiRef    = useRef<SVGGElement>(null);
@@ -39,29 +44,22 @@ export default function BrandMark({ className = "" }: { className?: string }) {
     const p      = clamp(rawP);
     pRef.current = p;
 
-    // ── core math verbatim from source (mode='full') ─────────────────────
-    // ⑦ Sequenced segments: face first, then letters — no overlap → no ugly intermediate state.
-    //    build:    face+dots fade, p:0.92→0.32   (face disappears, dots land at period)
-    //    contract: HC materialises, p:0.32→0.12  (AFTER face is gone → clean H.C. state)
-    //    retract:  Lai appears,     p:0.22→0     (overlaps last bit of HC, both fading in)
-    const retract  = seg(p, 0,    0.22, "out");
-    const contract = seg(p, 0.12, 0.32, "strong");
-    const build    = seg(p, 0.32, 0.92, "strong");
+    // All three segments anchored at p=0.25 so render(0.25) = clean H.C.:
+    //   retract  p:0.25→0   Lai slides in   (phase 2 only)
+    //   contract p:0.38→0.25 HC materialises  (end of phase 1)
+    //   build    p:0.92→0.25 face+dots morph  (all of phase 1)
+    const retract  = seg(p, 0,    0.25);
+    const contract = seg(p, 0.25, 0.38);
+    const build    = seg(p, 0.25, 0.92, "strong");
 
-    // Vertical correction: H.C. Lai cap center sits below SVG geometric center.
-    // Applied as a fixed constant (not interpolated) so letters appear at the
-    // correct position without drifting upward while fading in.
-    // Tune WORD_Y_SHIFT — negative = upward in SVG coords.
-    const WORD_Y_SHIFT = -35; // viewBox units
+    const WORD_Y_SHIFT = -35;
 
-    // wordLai — slide + fade (⑥ new center x=760, y=394; slide -40 scaled from -14×200/72)
     const wLai = wordLaiRef.current;
     if (wLai) {
       wLai.setAttribute("opacity",   String(clamp(1 - retract)));
       wLai.setAttribute("transform", `translate(${mix(0, -40, retract)} ${WORD_Y_SHIFT})`);
     }
 
-    // wordHC — contract-scale + fade (⑥ new center x=310, y=394)
     const wHC = wordHCRef.current;
     if (wHC) {
       const s = mix(1, 0.94, contract);
@@ -70,10 +68,6 @@ export default function BrandMark({ className = "" }: { className?: string }) {
         `translate(0 ${WORD_Y_SHIFT}) translate(310 394) scale(${s} ${s}) translate(-310 -394)`);
     }
 
-    // dots: punctuation ↔ eyes
-    // ⑥ p=0 targets re-derived (scale 200/72=2.778): size 9→25, rx 3→8
-    //    dot1 cx: 431.5→311  (H-right + scaled gap), cy: 303.5→381  (baseline-period_r)
-    //    dot2 cx: 514.5→541  (C-right + scaled gap), cy: 303.5→381
     const d1 = dotOneRef.current;
     if (d1) {
       const cx = mix(311,    487.45, build);
@@ -102,7 +96,6 @@ export default function BrandMark({ className = "" }: { className?: string }) {
       d2.setAttribute("rx",     String(rx));
     }
 
-    // open face brackets (unchanged — face size not modified per brief)
     const of_ = openFriendRef.current;
     if (of_) {
       of_.setAttribute("opacity",   String(clamp(build)));
@@ -119,31 +112,55 @@ export default function BrandMark({ className = "" }: { className?: string }) {
       return;
     }
 
+    let phase = 0;
+    let currentP = 1;
+    let tweenFrom = 1;
+    let tweenStart = -1;
     let raf: number | null = null;
 
-    function computeP() {
-      // ⑤ dead zone: hold face until scrollY > START, then morph over D
-      const START = window.innerHeight * 0.45;  // tweak in DevTools
-      const D     = window.innerHeight * 0.40;  // tweak in DevTools
-      const raw   = clamp((window.scrollY - START) / D);
-      let p = 1 - raw;
-      if (p > 0.97) p = 1;
-      if (p < 0.03) p = 0;
-      return p;
+    function getPhase() {
+      const T1 = window.innerHeight * 0.40;
+      const T2 = T1 + window.innerHeight * 0.20;
+      const y = window.scrollY;
+      if (y >= T2) return 2;
+      if (y >= T1) return 1;
+      return 0;
     }
 
-    function update() { render(computeP()); }
+    function tick(now: number) {
+      if (tweenStart < 0) tweenStart = now;
+      const t = Math.min((now - tweenStart) / TWEEN_MS, 1);
+      currentP = tweenFrom + (P_STOPS[phase] - tweenFrom) * easeInOutCubic(t);
+      render(currentP);
+      if (t < 1) {
+        raf = requestAnimationFrame(tick);
+      } else {
+        raf = null;
+      }
+    }
+
+    function startTween() {
+      tweenFrom = currentP;
+      tweenStart = -1;
+      if (raf !== null) cancelAnimationFrame(raf);
+      raf = requestAnimationFrame(tick);
+    }
 
     function onScroll() {
-      if (raf !== null) return;
-      raf = requestAnimationFrame(() => { raf = null; update(); });
+      const newPhase = getPhase();
+      if (newPhase !== phase) {
+        phase = newPhase;
+        startTween();
+      }
     }
 
     window.addEventListener("scroll", onScroll, { passive: true });
-    window.addEventListener("resize", update);
-    update();
+    window.addEventListener("resize", onScroll);
 
-    // eye blink: every 5s, only while face is showing
+    phase = getPhase();
+    currentP = P_STOPS[phase];
+    render(currentP);
+
     const blink = setInterval(() => {
       if (pRef.current <= 0.9) return;
       [dotOneRef.current, dotTwoRef.current].forEach(el => {
@@ -155,16 +172,12 @@ export default function BrandMark({ className = "" }: { className?: string }) {
 
     return () => {
       window.removeEventListener("scroll", onScroll);
-      window.removeEventListener("resize", update);
+      window.removeEventListener("resize", onScroll);
       if (raf !== null) cancelAnimationFrame(raf);
       clearInterval(blink);
     };
   }, [render]);
 
-  // JSX initial state = p=1 (open face)
-  // ⑥ Text positions at new scale: H x=121, C x=359, Lai x=601, baseline y=394
-  //    viewBox expanded to cover both: face (x:343-697) and text (x:121-920)
-  // width explicit (not auto) to prevent browser from defaulting to 300px and overflowing slot
   return (
     <svg
       viewBox="100 150 840 270"
@@ -176,7 +189,7 @@ export default function BrandMark({ className = "" }: { className?: string }) {
       className={className}
       aria-label="H.C. Lai"
     >
-      {/* HC — hidden at p=1; new x positions for font-size 200 */}
+      {/* HC — hidden at p=1 */}
       <g ref={wordHCRef} opacity="0">
         <text className="brand-name" x="121" y="394">H</text>
         <text className="brand-name" x="359" y="394">C</text>
@@ -185,12 +198,12 @@ export default function BrandMark({ className = "" }: { className?: string }) {
       <g ref={wordLaiRef} opacity="0">
         <text className="brand-name" x="601" y="394">Lai</text>
       </g>
-      {/* dots: start at eye positions (p=1), morph to larger punctuation (p=0) */}
+      {/* dots: start at eye positions (p=1), morph to period positions (p≤0.25) */}
       <rect ref={dotOneRef} className="brand-eye"
         x="470.4" y="263.3" width="34.1" height="43.4" rx="0" />
       <rect ref={dotTwoRef} className="brand-eye"
         x="535.5" y="263.3" width="34.1" height="43.4" rx="0" />
-      {/* open face — original polygon, single shape */}
+      {/* open face */}
       <g ref={openFriendRef} transform="translate(343.3 176.5) scale(1.55)" opacity="1">
         <polygon ref={leftBkRef}
           points="0,0 54,0 54,32 28,32 28,108 54,108 54,140 0,140" />
