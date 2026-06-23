@@ -6,7 +6,7 @@
 // ⑥ Enlarged terminal state: font-size 72→200, baseline y 310→394 (aligns cap-top with bracket top).
 //    Text re-centered at x=520, dot targets re-derived at the same scale ratio.
 // ④ "字虚点实" fix: contract segment widened to (0.35, 0.78) so letters appear while dots still large.
-// ⑤ Dead zone: logo holds face until scrollY > START (≈45%vh), then morphs over D (≈25%vh).
+// ⑤ Dead zone: logo holds face until scrollY > START (≈45%vh), then morphs over D (≈40%vh).
 
 import { useEffect, useRef, useCallback } from "react";
 
@@ -40,9 +40,12 @@ export default function BrandMark({ className = "" }: { className?: string }) {
     pRef.current = p;
 
     // ── core math verbatim from source (mode='full') ─────────────────────
-    // ④ contract widened: (0.22,0.6) → (0.35,0.78) — letters appear while dots still large
+    // ⑦ Sequenced segments: face first, then letters — no overlap → no ugly intermediate state.
+    //    build:    face+dots fade, p:0.92→0.32   (face disappears, dots land at period)
+    //    contract: HC materialises, p:0.32→0.12  (AFTER face is gone → clean H.C. state)
+    //    retract:  Lai appears,     p:0.22→0     (overlaps last bit of HC, both fading in)
     const retract  = seg(p, 0,    0.22, "out");
-    const contract = seg(p, 0.35, 0.78, "strong");
+    const contract = seg(p, 0.12, 0.32, "strong");
     const build    = seg(p, 0.32, 0.92, "strong");
 
     // Vertical correction: H.C. Lai cap center sits below SVG geometric center.
@@ -121,7 +124,7 @@ export default function BrandMark({ className = "" }: { className?: string }) {
     function computeP() {
       // ⑤ dead zone: hold face until scrollY > START, then morph over D
       const START = window.innerHeight * 0.45;  // tweak in DevTools
-      const D     = window.innerHeight * 0.25;  // tweak in DevTools
+      const D     = window.innerHeight * 0.40;  // tweak in DevTools
       const raw   = clamp((window.scrollY - START) / D);
       let p = 1 - raw;
       if (p > 0.97) p = 1;
