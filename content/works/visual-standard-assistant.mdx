@@ -43,7 +43,7 @@ The two-layer standard is the strategic core:
 
 So the standard locks the *conversion grammar* and frees the *visual skin*. That lets it handle a multi-brand reality correctly: baby-care pink-white, different moods per category — none flagged as off-standard. The real failure is when the grammar collapses (it turns into lifestyle mood, efficacy isn't foregrounded, the product gets weakened).
 
-我还引入了一条**「视觉说服范式」判别轴(功效驱动 / 品牌驱动 / 混合)**,让系统判的是「这张图**靠什么**说服用户」,而不只是数「有没有标题、有没有产品」——避免把高端品牌感误当成功效型主图的加分项。
+我还引入了一条<strong>「视觉说服范式」判别轴(功效驱动 / 品牌驱动 / 混合)</strong>,让系统判的是「这张图<strong>靠什么</strong>说服用户」,而不只是数「有没有标题、有没有产品」——避免把高端品牌感误当成功效型主图的加分项。
 
 I also added a **visual-persuasion paradigm axis** (efficacy-driven / brand-driven / hybrid), so the system judges **what** an image persuades with, not just whether it has a headline and a product — preventing it from mistaking high-end brand polish for an efficacy-image merit.
 
@@ -173,18 +173,23 @@ From v1.0 to v1.1, the system surfaced two judgment errors. Both were fixed thro
 **迭代验证 · 从「要素识别」升级为「范式判断」**
 
 **测试现象**
+
 初版系统在判断高端护肤图时，容易把「产品清晰、标题存在、品牌感强」误认为符合功效驱动型标准，因此对品牌驱动型主图判得偏松。
 
 **A/B 测试结果**
+
 在相同任务下，将基础模型替换为更强模型后，判断结论并没有明显改善。说明问题的主要瓶颈不在模型能力，而在任务定义：系统只是在数「有没有标题、有没有产品、有没有背书」，没有判断这张图到底靠什么说服用户。
 
 **修正方式**
-v1.1 中新增「视觉说服范式」判别轴，将图像先区分为：功效驱动型 / 品牌驱动型 / 混合型 / 其他。同时加入两层判断模型：① **稳定语法**——功效标题、问题 / 利益点、产品主角、信任背书、底部转化模块；② **品类皮肤**——颜色、人物、气质、场景随品类变化。
+
+v1.1 中新增「视觉说服范式」判别轴，将图像先区分为：功效驱动型 / 品牌驱动型 / 混合型 / 其他。同时加入两层判断模型：① <strong>稳定语法</strong>——功效标题、问题 / 利益点、产品主角、信任背书、底部转化模块；② <strong>品类皮肤</strong>——颜色、人物、气质、场景随品类变化。
 
 **迭代结果**
+
 系统不再单纯判断「要素齐不齐」，而是进一步判断「这张图的核心说服逻辑是什么」。因此，粉色婴童护理图可以被判为高度接近，而高端品牌海报型护肤图会被识别为部分接近。
 
 **项目价值**
+
 这次迭代证明：AI 判断类工具的关键不只是换更强模型，而是把任务定义设计得更准确。通过结构化观察、知识库检索和范式判断，系统才能更接近真实设计主管的判断逻辑。
 
 > 同一任务换更大的模型,结果几乎不变——瓶颈不在模型能力,在任务定义。

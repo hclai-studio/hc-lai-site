@@ -31,7 +31,7 @@ export default function JudgmentCard({
         <div className="flex items-center gap-2 mb-6">
           <span
             className="inline-block w-[5px] h-[5px] rounded-full shrink-0"
-            style={{ backgroundColor: isHigh ? "var(--ink)" : "var(--terracotta)" }}
+            style={{ backgroundColor: isHigh ? "#3d7a52" : "var(--terracotta)" }}
           />
           <span className="font-sans font-medium text-ink text-[13px] tracking-[0.02em]">
             {isHigh ? "✅ 高度接近" : "⚠️ 部分接近"}
@@ -50,7 +50,7 @@ export default function JudgmentCard({
           <ol className="flex flex-col gap-2">
             {pros.map((item, i) => (
               <li key={i} className="flex gap-3">
-                <span className="font-mono text-ink-muted text-[11px] shrink-0 leading-[1.85] min-w-[16px]">
+                <span className="font-mono text-ink-muted text-[15px] shrink-0 leading-[1.85] min-w-[18px]">
                   {i + 1}.
                 </span>
                 <span className="font-serif-cn text-ink text-[15px] leading-[1.85]">{item}</span>
@@ -70,7 +70,7 @@ export default function JudgmentCard({
           <ol className="flex flex-col gap-2">
             {cons.map((item, i) => (
               <li key={i} className="flex gap-3">
-                <span className="font-mono text-ink-muted text-[11px] shrink-0 leading-[1.85] min-w-[16px]">
+                <span className="font-mono text-ink-muted text-[15px] shrink-0 leading-[1.85] min-w-[18px]">
                   {i + 1}.
                 </span>
                 <span className="font-serif-cn text-ink text-[15px] leading-[1.85]">{item}</span>
