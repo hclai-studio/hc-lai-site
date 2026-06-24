@@ -1,9 +1,10 @@
 "use client";
 
-// Smooth input (Mac trackpad / touch, deltaMode=0): original scroll-driven animation.
-// Discrete input (Windows mouse wheel, deltaMode=1): 3-state threshold system.
-//   T2−T1 = 72px < 80px (minimum common notch) → any notch that crosses T1 will
-//   cross T2 on its very next scroll → guaranteed clean face→H.C.→H.C.Lai in 2 steps.
+// Smooth input (Mac trackpad / touch): original scroll-driven animation, unchanged.
+// Discrete input (Windows mouse wheel, |deltaY|≥50 or deltaMode=1):
+//   threshold-based 3-state system — on each threshold crossing, tween from
+//   current p to target p over 500ms using the same render() function.
+//   T2−T1 = 72px < 80px (min notch) → next notch always clears T2 → exactly 2 steps.
 
 import { useEffect, useRef, useCallback } from "react";
 
@@ -100,10 +101,28 @@ export default function BrandMark({ className = "" }: { className?: string }) {
       return;
     }
 
-    let raf: number | null = null;
-    let isDiscrete = false;
+    let scrollRaf: number | null = null;
+    let tweenRaf:  number | null = null;
+    let isDiscrete     = false;
+    let discreteTarget = 1;   // p value we're tweening toward
+    const TWEEN_MS     = 500;
 
-    // Mac/touch: original scroll-driven (START/D/snap unchanged)
+    function startTween(to: number) {
+      if (to === discreteTarget) return; // already targeting this state
+      discreteTarget = to;
+      const fromP      = pRef.current;
+      const startTime  = performance.now();
+      if (tweenRaf !== null) cancelAnimationFrame(tweenRaf);
+
+      function tick(now: number) {
+        const t = clamp((now - startTime) / TWEEN_MS);
+        render(fromP + (discreteTarget - fromP) * easeInOutCubic(t));
+        tweenRaf = t < 1 ? requestAnimationFrame(tick) : null;
+      }
+      tweenRaf = requestAnimationFrame(tick);
+    }
+
+    // Mac / touch: original scroll-driven (START / D / snap unchanged)
     function computePSmooth() {
       const START = window.innerHeight * 0.45;
       const D     = window.innerHeight * 0.40;
@@ -114,33 +133,34 @@ export default function BrandMark({ className = "" }: { className?: string }) {
       return p;
     }
 
-    // Windows mouse wheel: 3-state threshold — T2−T1=72px ensures any notch ≥80px
-    // that crosses T1 will always cross T2 on the very next scroll event.
-    function computePDiscrete() {
+    // Windows wheel: which of 3 clean states should we tween to?
+    function computeDiscreteTarget() {
       const T1 = window.innerHeight * 0.45;
-      const T2 = T1 + 72;
+      const T2 = T1 + 72; // 72 < 80px min-notch → guaranteed 1-step jump T1→T2
       const y  = window.scrollY;
       if (y >= T2) return 0;    // H.C. Lai
-      if (y >= T1) return 0.27; // H.C. (build=0, contract=0, retract=1 — clean state)
+      if (y >= T1) return 0.27; // H.C.  (build=0, contract=0, retract=1 — all clean)
       return 1;                  // face
     }
 
     function update() {
-      render(isDiscrete ? computePDiscrete() : computePSmooth());
+      if (isDiscrete) {
+        startTween(computeDiscreteTarget());
+      } else {
+        if (tweenRaf !== null) { cancelAnimationFrame(tweenRaf); tweenRaf = null; }
+        render(computePSmooth());
+      }
     }
 
     function onWheel(e: WheelEvent) {
       const was = isDiscrete;
-      // deltaMode=1  → definitive Windows line-scroll
-      // deltaMode=0 + |deltaY|≥50 → Chrome on Windows (normalises to pixels but sends large steps)
-      // Mac trackpad sends many events with |deltaY|<10; Windows mouse sends 1 event with |deltaY|≥100
       isDiscrete = e.deltaMode === 1 || (e.deltaMode === 0 && Math.abs(e.deltaY) >= 50);
       if (was !== isDiscrete) update();
     }
 
     function onScroll() {
-      if (raf !== null) return;
-      raf = requestAnimationFrame(() => { raf = null; update(); });
+      if (scrollRaf !== null) return;
+      scrollRaf = requestAnimationFrame(() => { scrollRaf = null; update(); });
     }
 
     window.addEventListener("wheel",  onWheel,  { passive: true });
@@ -161,7 +181,8 @@ export default function BrandMark({ className = "" }: { className?: string }) {
       window.removeEventListener("wheel",  onWheel);
       window.removeEventListener("scroll", onScroll);
       window.removeEventListener("resize", update);
-      if (raf !== null) cancelAnimationFrame(raf);
+      if (scrollRaf !== null) cancelAnimationFrame(scrollRaf);
+      if (tweenRaf  !== null) cancelAnimationFrame(tweenRaf);
       clearInterval(blink);
     };
   }, [render]);
