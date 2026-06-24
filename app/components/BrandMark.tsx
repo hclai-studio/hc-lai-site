@@ -1,14 +1,14 @@
 "use client";
 
-// BrandMark — threshold-triggered tween animation (not scroll-position-driven).
-// Phase 0 (p=1): open face  →  Phase 1 (p=0.25): H.C.  →  Phase 2 (p=0): H.C. Lai
+// Ported from logo-wide-friend-motion-v11.html (mode='full', eased), direction reversed.
+// p=1 = Open Face (top), p=0 = H.C. Lai. (scrolled past hero).
 //
-// Crossing T1 (40%vh) triggers a 380ms tween to p=0.25.
-// Crossing T2 (T1 + 20%vh) triggers a 380ms tween to p=0.
-// Render function is unchanged; p=0.25 is a mathematically clean H.C. state:
-//   build(0.25)=0 → face gone, dots at period
-//   contract(0.25)=0 → HC fully visible
-//   retract(0.25)=1 → Lai invisible
+// ⑥ Enlarged terminal state: font-size 72→200, baseline y 310→394 (aligns cap-top with bracket top).
+//    Text re-centered at x=520, dot targets re-derived at the same scale ratio.
+// ④ "字虚点实" fix: contract segment widened to (0.35, 0.78) so letters appear while dots still large.
+// ⑤ Dead zone: logo holds face until scrollY > START (≈45%vh), then morphs over D (≈40%vh).
+// ⑦ Windows notch fix: contract compressed to (0.30, 0.36) so HC appears only AFTER face is gone.
+//    At any Windows notch stop, the state is either "face dissolving" or "clean H.C." — no gray letters.
 
 import { useEffect, useRef, useCallback } from "react";
 
@@ -27,9 +27,6 @@ function seg(p: number, s: number, e: number, type = "standard") {
 }
 function mix(a: number, b: number, t: number) { return a + (b - a) * t; }
 
-const P_STOPS = [1, 0.25, 0] as const;
-const TWEEN_MS = 380;
-
 export default function BrandMark({ className = "" }: { className?: string }) {
   const wordHCRef     = useRef<SVGGElement>(null);
   const wordLaiRef    = useRef<SVGGElement>(null);
@@ -44,13 +41,13 @@ export default function BrandMark({ className = "" }: { className?: string }) {
     const p      = clamp(rawP);
     pRef.current = p;
 
-    // All three segments anchored at p=0.25 so render(0.25) = clean H.C.:
-    //   retract  p:0.25→0   Lai slides in   (phase 2 only)
-    //   contract p:0.38→0.25 HC materialises  (end of phase 1)
-    //   build    p:0.92→0.25 face+dots morph  (all of phase 1)
-    const retract  = seg(p, 0,    0.25);
-    const contract = seg(p, 0.25, 0.38);
-    const build    = seg(p, 0.25, 0.92, "strong");
+    // ⑦ contract compressed: (0.35,0.78) → (0.30,0.36)
+    //    HC now materialises only after face has disappeared (build ends at 0.32).
+    //    Windows notch at p≈0.625 sees "face dissolving" (HC invisible). Clean.
+    //    Windows notch at p≈0.25 sees HC fully visible, face gone. Clean H.C.
+    const retract  = seg(p, 0,    0.22, "out");
+    const contract = seg(p, 0.30, 0.36, "strong");
+    const build    = seg(p, 0.32, 0.92, "strong");
 
     const WORD_Y_SHIFT = -35;
 
@@ -112,54 +109,28 @@ export default function BrandMark({ className = "" }: { className?: string }) {
       return;
     }
 
-    let phase = 0;
-    let currentP = 1;
-    let tweenFrom = 1;
-    let tweenStart = -1;
     let raf: number | null = null;
 
-    function getPhase() {
-      const T1 = window.innerHeight * 0.80;  // hero is min-h-screen; trigger at 80%
-      const T2 = T1 + window.innerHeight * 0.20; // = 1.0×vh: hero fully scrolled out
-      const y = window.scrollY;
-      if (y >= T2) return 2;
-      if (y >= T1) return 1;
-      return 0;
+    function computeP() {
+      const START = window.innerHeight * 0.45;
+      const D     = window.innerHeight * 0.40;
+      const raw   = clamp((window.scrollY - START) / D);
+      let p = 1 - raw;
+      if (p > 0.97) p = 1;
+      if (p < 0.03) p = 0;
+      return p;
     }
 
-    function tick(now: number) {
-      if (tweenStart < 0) tweenStart = now;
-      const t = Math.min((now - tweenStart) / TWEEN_MS, 1);
-      currentP = tweenFrom + (P_STOPS[phase] - tweenFrom) * easeInOutCubic(t);
-      render(currentP);
-      if (t < 1) {
-        raf = requestAnimationFrame(tick);
-      } else {
-        raf = null;
-      }
-    }
-
-    function startTween() {
-      tweenFrom = currentP;
-      tweenStart = -1;
-      if (raf !== null) cancelAnimationFrame(raf);
-      raf = requestAnimationFrame(tick);
-    }
+    function update() { render(computeP()); }
 
     function onScroll() {
-      const newPhase = getPhase();
-      if (newPhase !== phase) {
-        phase = newPhase;
-        startTween();
-      }
+      if (raf !== null) return;
+      raf = requestAnimationFrame(() => { raf = null; update(); });
     }
 
     window.addEventListener("scroll", onScroll, { passive: true });
-    window.addEventListener("resize", onScroll);
-
-    phase = getPhase();
-    currentP = P_STOPS[phase];
-    render(currentP);
+    window.addEventListener("resize", update);
+    update();
 
     const blink = setInterval(() => {
       if (pRef.current <= 0.9) return;
@@ -172,7 +143,7 @@ export default function BrandMark({ className = "" }: { className?: string }) {
 
     return () => {
       window.removeEventListener("scroll", onScroll);
-      window.removeEventListener("resize", onScroll);
+      window.removeEventListener("resize", update);
       if (raf !== null) cancelAnimationFrame(raf);
       clearInterval(blink);
     };
@@ -189,7 +160,7 @@ export default function BrandMark({ className = "" }: { className?: string }) {
       className={className}
       aria-label="H.C. Lai"
     >
-      {/* HC — hidden at p=1 */}
+      {/* HC — hidden at p=1; new x positions for font-size 200 */}
       <g ref={wordHCRef} opacity="0">
         <text className="brand-name" x="121" y="394">H</text>
         <text className="brand-name" x="359" y="394">C</text>
@@ -198,12 +169,12 @@ export default function BrandMark({ className = "" }: { className?: string }) {
       <g ref={wordLaiRef} opacity="0">
         <text className="brand-name" x="601" y="394">Lai</text>
       </g>
-      {/* dots: start at eye positions (p=1), morph to period positions (p≤0.25) */}
+      {/* dots: start at eye positions (p=1), morph to larger punctuation (p=0) */}
       <rect ref={dotOneRef} className="brand-eye"
         x="470.4" y="263.3" width="34.1" height="43.4" rx="0" />
       <rect ref={dotTwoRef} className="brand-eye"
         x="535.5" y="263.3" width="34.1" height="43.4" rx="0" />
-      {/* open face */}
+      {/* open face — original polygon, single shape */}
       <g ref={openFriendRef} transform="translate(343.3 176.5) scale(1.55)" opacity="1">
         <polygon ref={leftBkRef}
           points="0,0 54,0 54,32 28,32 28,108 54,108 54,140 0,140" />
