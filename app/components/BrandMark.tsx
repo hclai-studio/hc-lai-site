@@ -7,8 +7,8 @@
 //    Text re-centered at x=520, dot targets re-derived at the same scale ratio.
 // ④ "字虚点实" fix: contract segment widened to (0.35, 0.78) so letters appear while dots still large.
 // ⑤ Dead zone: logo holds face until scrollY > START (≈45%vh), then morphs over D (≈40%vh).
-// ⑦ Windows notch fix: contract compressed to (0.30, 0.36) so HC appears only AFTER face is gone.
-//    At any Windows notch stop, the state is either "face dissolving" or "clean H.C." — no gray letters.
+// ⑦ Windows notch fix: contract shifted to (0.45, 0.65) — HC starts appearing while face is still
+//    dissolving so there's no "dots-only" gap. Windows stop at p≈0.458: face 1%, HC 100% = clean H.C.
 
 import { useEffect, useRef, useCallback } from "react";
 
@@ -41,12 +41,12 @@ export default function BrandMark({ className = "" }: { className?: string }) {
     const p      = clamp(rawP);
     pRef.current = p;
 
-    // ⑦ contract compressed: (0.35,0.78) → (0.30,0.36)
-    //    HC now materialises only after face has disappeared (build ends at 0.32).
-    //    Windows notch at p≈0.625 sees "face dissolving" (HC invisible). Clean.
-    //    Windows notch at p≈0.25 sees HC fully visible, face gone. Clean H.C.
+    // ⑦ contract shifted: (0.35,0.78) → (0.45,0.65)
+    //    HC now starts appearing while face is still dissolving (no "dots-only" gap).
+    //    At the typical Windows stop p≈0.458: face=1%, HC=99.998% → clean H.C.
+    //    At p≈0.625 (earlier stop): face=51%, HC≈0% → clean "face dissolving".
     const retract  = seg(p, 0,    0.22, "out");
-    const contract = seg(p, 0.30, 0.36, "strong");
+    const contract = seg(p, 0.45, 0.65, "strong");
     const build    = seg(p, 0.32, 0.92, "strong");
 
     const WORD_Y_SHIFT = -35;
