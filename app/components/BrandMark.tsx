@@ -103,22 +103,25 @@ export default function BrandMark({ className = "" }: { className?: string }) {
 
     let scrollRaf: number | null = null;
     let tweenRaf:  number | null = null;
-    let isDiscrete     = false;
-    let discreteTarget = 1;   // p value we're tweening toward
-    function startTween(to: number) {
-      if (to === discreteTarget) return; // already targeting this state
-      discreteTarget = to;
-      const fromP  = pRef.current;
-      const pDist  = Math.abs(to - fromP);
-      // face↔H.C. spans ~0.73 of p-range (many elements changing) → feels faster visually;
-      // give it more time. H.C.↔H.C.Lai is a smaller change (only Lai sliding) → 380ms.
-      const ms     = pDist > 0.50 ? 520 : 380;
-      const t0     = performance.now();
-      if (tweenRaf !== null) cancelAnimationFrame(tweenRaf);
+    let isDiscrete    = false;
+    let discreteState = 0;   // 0=face  1=H.C.  2=H.C.Lai
+    let discreteTarget = 1;
 
+    const P_FACE = 1;
+    const P_HC   = 0.27; // build=0, contract=0, retract=1 → clean H.C.
+    const P_LAI  = 0;
+
+    function startTween(to: number) {
+      if (to === discreteTarget) return;
+      discreteTarget = to;
+      const fromP = pRef.current;
+      const pDist = Math.abs(to - fromP);
+      // face↔H.C. spans ~0.73 of p and changes many elements → give it more time
+      const ms    = pDist > 0.50 ? 520 : 380;
+      const t0    = performance.now();
+      if (tweenRaf !== null) cancelAnimationFrame(tweenRaf);
       function tick(now: number) {
         const t = clamp((now - t0) / ms);
-        // easeOutQuint: jumps to ~40% in first 10% of time → feels instant response
         render(fromP + (discreteTarget - fromP) * easeOutQuint(t));
         tweenRaf = t < 1 ? requestAnimationFrame(tick) : null;
       }
@@ -136,45 +139,59 @@ export default function BrandMark({ className = "" }: { className?: string }) {
       return p;
     }
 
-    // Windows wheel: which of 3 clean states should we tween to?
-    function computeDiscreteTarget() {
-      const T1 = window.innerHeight * 0.75; // ~7 notches; hero big text gone by this point
-      const T2 = T1 + 72; // 72 < 80px min-notch → guaranteed 1-step jump T1→T2
+    // Windows: sync state 0↔1 from scrollY position (called on every scroll event)
+    function syncDiscreteFromScroll() {
+      const T1 = window.innerHeight * 0.75;
       const y  = window.scrollY;
-      if (y >= T2) return 0;    // H.C. Lai
-      if (y >= T1) return 0.27; // H.C.  (build=0, contract=0, retract=1 — all clean)
-      return 1;                  // face
+      if (discreteState === 0 && y >= T1) {
+        discreteState = 1;
+        startTween(P_HC);
+      } else if (discreteState === 1 && y < T1) {
+        // Scrolled back above T1 — return to face
+        discreteState = 0;
+        startTween(P_FACE);
+      }
     }
 
-    function update() {
-      if (isDiscrete) {
-        startTween(computeDiscreteTarget());
-      } else {
-        if (tweenRaf !== null) { cancelAnimationFrame(tweenRaf); tweenRaf = null; }
-        render(computePSmooth());
+    // Windows: ONE wheel event while in H.C. (state 1) → H.C. Lai, and reverse
+    // This is independent of scrollY so notch size doesn't matter.
+    function handleDiscreteWheel(deltaY: number) {
+      if (deltaY > 0 && discreteState === 1) {
+        discreteState = 2;
+        startTween(P_LAI);
+      } else if (deltaY < 0 && discreteState === 2) {
+        discreteState = 1;
+        startTween(P_HC);
       }
     }
 
     function onWheel(e: WheelEvent) {
       const was = isDiscrete;
       isDiscrete = e.deltaMode === 1 || (e.deltaMode === 0 && Math.abs(e.deltaY) >= 50);
-      if (was !== isDiscrete) update();
+      if (isDiscrete) {
+        handleDiscreteWheel(e.deltaY);
+      } else if (was) {
+        // Switched back to smooth — cancel tween and sync
+        if (tweenRaf !== null) { cancelAnimationFrame(tweenRaf); tweenRaf = null; }
+        render(computePSmooth());
+      }
     }
 
     function onScroll() {
       if (isDiscrete) {
-        // Discrete mode: skip RAF debounce — trigger tween immediately on scroll event
-        startTween(computeDiscreteTarget());
+        syncDiscreteFromScroll();
       } else {
         if (scrollRaf !== null) return;
         scrollRaf = requestAnimationFrame(() => { scrollRaf = null; render(computePSmooth()); });
       }
     }
 
+    function onResize() { if (!isDiscrete) render(computePSmooth()); }
+
     window.addEventListener("wheel",  onWheel,  { passive: true });
     window.addEventListener("scroll", onScroll, { passive: true });
-    window.addEventListener("resize", update);
-    update();
+    window.addEventListener("resize", onResize);
+    render(computePSmooth());
 
     const blink = setInterval(() => {
       if (pRef.current <= 0.9) return;
@@ -188,7 +205,7 @@ export default function BrandMark({ className = "" }: { className?: string }) {
     return () => {
       window.removeEventListener("wheel",  onWheel);
       window.removeEventListener("scroll", onScroll);
-      window.removeEventListener("resize", update);
+      window.removeEventListener("resize", onResize);
       if (scrollRaf !== null) cancelAnimationFrame(scrollRaf);
       if (tweenRaf  !== null) cancelAnimationFrame(tweenRaf);
       clearInterval(blink);
