@@ -7,8 +7,8 @@
 //    Text re-centered at x=520, dot targets re-derived at the same scale ratio.
 // ④ "字虚点实" fix: contract segment widened to (0.35, 0.78) so letters appear while dots still large.
 // ⑤ Dead zone: logo holds face until scrollY > START (≈45%vh), then morphs over D (≈40%vh).
-// ⑦ Windows notch fix: contract shifted to (0.45, 0.65) — HC starts appearing while face is still
-//    dissolving so there's no "dots-only" gap. Windows stop at p≈0.458: face 1%, HC 100% = clean H.C.
+// ⑦ Windows notch fix: contract (0.55, 0.70) — s=0.55 > p where dots reach period (≈0.35),
+//    so "faint HC + dots-at-period" is mathematically impossible at any scroll stop.
 
 import { useEffect, useRef, useCallback } from "react";
 
@@ -41,12 +41,13 @@ export default function BrandMark({ className = "" }: { className?: string }) {
     const p      = clamp(rawP);
     pRef.current = p;
 
-    // ⑦ contract shifted: (0.35,0.78) → (0.45,0.65)
-    //    HC now starts appearing while face is still dissolving (no "dots-only" gap).
-    //    At the typical Windows stop p≈0.458: face=1%, HC=99.998% → clean H.C.
-    //    At p≈0.625 (earlier stop): face=51%, HC≈0% → clean "face dissolving".
+    // ⑦ contract shifted: (0.35,0.78) → (0.55,0.70)
+    //    Key constraint: dots reach period at p≈0.35 (build→0); s=0.55 > 0.35 means
+    //    whenever dots are at period, contract is clamped to 0 → HC always 100%.
+    //    "faint HC + dots-at-period" is mathematically impossible with these values.
+    //    Windows stop at p≈0.55: HC=100%, face=13% → clean H.C. appearance.
     const retract  = seg(p, 0,    0.22, "out");
-    const contract = seg(p, 0.45, 0.65, "strong");
+    const contract = seg(p, 0.55, 0.70, "strong");
     const build    = seg(p, 0.32, 0.92, "strong");
 
     const WORD_Y_SHIFT = -35;
