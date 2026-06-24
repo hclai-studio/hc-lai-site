@@ -105,18 +105,19 @@ export default function BrandMark({ className = "" }: { className?: string }) {
     let tweenRaf:  number | null = null;
     let isDiscrete     = false;
     let discreteTarget = 1;   // p value we're tweening toward
-    const TWEEN_MS     = 500;
+    const TWEEN_MS     = 380; // shorter + easeOut → responds immediately
 
     function startTween(to: number) {
       if (to === discreteTarget) return; // already targeting this state
       discreteTarget = to;
-      const fromP      = pRef.current;
-      const startTime  = performance.now();
+      const fromP     = pRef.current;
+      const startTime = performance.now();
       if (tweenRaf !== null) cancelAnimationFrame(tweenRaf);
 
       function tick(now: number) {
         const t = clamp((now - startTime) / TWEEN_MS);
-        render(fromP + (discreteTarget - fromP) * easeInOutCubic(t));
+        // easeOutQuint: jumps to ~40% in first 10% of time → feels instant response
+        render(fromP + (discreteTarget - fromP) * easeOutQuint(t));
         tweenRaf = t < 1 ? requestAnimationFrame(tick) : null;
       }
       tweenRaf = requestAnimationFrame(tick);
@@ -159,8 +160,13 @@ export default function BrandMark({ className = "" }: { className?: string }) {
     }
 
     function onScroll() {
-      if (scrollRaf !== null) return;
-      scrollRaf = requestAnimationFrame(() => { scrollRaf = null; update(); });
+      if (isDiscrete) {
+        // Discrete mode: skip RAF debounce — trigger tween immediately on scroll event
+        startTween(computeDiscreteTarget());
+      } else {
+        if (scrollRaf !== null) return;
+        scrollRaf = requestAnimationFrame(() => { scrollRaf = null; render(computePSmooth()); });
+      }
     }
 
     window.addEventListener("wheel",  onWheel,  { passive: true });
