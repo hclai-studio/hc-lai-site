@@ -16,6 +16,7 @@ function curve(v: number, type: string) {
   const t = clamp(v);
   if (type === "out")    return easeOutQuint(t);
   if (type === "strong") return easeInOutQuint(t);
+  if (type === "linear") return t;
   return easeInOutCubic(t);
 }
 function seg(p: number, s: number, e: number, type = "standard") {
@@ -33,13 +34,16 @@ export default function BrandMark({ className = "" }: { className?: string }) {
   const rightBkRef    = useRef<SVGPolygonElement>(null);
   const pRef          = useRef(1);
 
-  const render = useCallback((rawP: number) => {
+  // discrete=true: skip the seg-level easing (p already eased by tween) so the
+  // first rendered frame shows immediate visible progress instead of a flat start.
+  const render = useCallback((rawP: number, discrete = false) => {
     const p      = clamp(rawP);
     pRef.current = p;
 
     const retract  = seg(p, 0,    0.22, "out");
-    const contract = seg(p, 0.55, 0.70, "strong");
-    const build    = seg(p, 0.32, 0.92, "strong");
+    // Wider range + linear for discrete → H.C. text appears by frame 3 (~50ms).
+    const contract = discrete ? seg(p, 0.55, 0.90, "linear") : seg(p, 0.55, 0.70, "strong");
+    const build    = seg(p, 0.32, 0.92, discrete ? "linear" : "strong");
 
     const WORD_Y_SHIFT = -35;
 
@@ -122,7 +126,7 @@ export default function BrandMark({ className = "" }: { className?: string }) {
       if (tweenRaf !== null) cancelAnimationFrame(tweenRaf);
       function tick(now: number) {
         const t = clamp((now - t0) / ms);
-        render(fromP + (discreteTarget - fromP) * easeOutQuint(t));
+        render(fromP + (discreteTarget - fromP) * easeOutQuint(t), true);
         tweenRaf = t < 1 ? requestAnimationFrame(tick) : null;
       }
       tweenRaf = requestAnimationFrame(tick);
