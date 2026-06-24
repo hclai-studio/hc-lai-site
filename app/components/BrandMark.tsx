@@ -105,17 +105,19 @@ export default function BrandMark({ className = "" }: { className?: string }) {
     let tweenRaf:  number | null = null;
     let isDiscrete     = false;
     let discreteTarget = 1;   // p value we're tweening toward
-    const TWEEN_MS     = 380; // shorter + easeOut → responds immediately
-
     function startTween(to: number) {
       if (to === discreteTarget) return; // already targeting this state
       discreteTarget = to;
-      const fromP     = pRef.current;
-      const startTime = performance.now();
+      const fromP  = pRef.current;
+      const pDist  = Math.abs(to - fromP);
+      // face↔H.C. spans ~0.73 of p-range (many elements changing) → feels faster visually;
+      // give it more time. H.C.↔H.C.Lai is a smaller change (only Lai sliding) → 380ms.
+      const ms     = pDist > 0.50 ? 520 : 380;
+      const t0     = performance.now();
       if (tweenRaf !== null) cancelAnimationFrame(tweenRaf);
 
       function tick(now: number) {
-        const t = clamp((now - startTime) / TWEEN_MS);
+        const t = clamp((now - t0) / ms);
         // easeOutQuint: jumps to ~40% in first 10% of time → feels instant response
         render(fromP + (discreteTarget - fromP) * easeOutQuint(t));
         tweenRaf = t < 1 ? requestAnimationFrame(tick) : null;
@@ -136,7 +138,7 @@ export default function BrandMark({ className = "" }: { className?: string }) {
 
     // Windows wheel: which of 3 clean states should we tween to?
     function computeDiscreteTarget() {
-      const T1 = window.innerHeight * 0.45;
+      const T1 = window.innerHeight * 0.75; // ~7 notches; hero big text gone by this point
       const T2 = T1 + 72; // 72 < 80px min-notch → guaranteed 1-step jump T1→T2
       const y  = window.scrollY;
       if (y >= T2) return 0;    // H.C. Lai
