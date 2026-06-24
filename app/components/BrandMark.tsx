@@ -119,8 +119,8 @@ export default function BrandMark({ className = "" }: { className?: string }) {
     let raf: number | null = null;
 
     function getPhase() {
-      const T1 = window.innerHeight * 0.40;
-      const T2 = T1 + window.innerHeight * 0.20;
+      const T1 = window.innerHeight * 0.80;  // hero is min-h-screen; trigger at 80%
+      const T2 = T1 + window.innerHeight * 0.20; // = 1.0×vh: hero fully scrolled out
       const y = window.scrollY;
       if (y >= T2) return 2;
       if (y >= T1) return 1;
