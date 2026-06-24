@@ -2,9 +2,9 @@
 
 // Smooth input (Mac trackpad / touch): original scroll-driven animation, unchanged.
 // Discrete input (Windows mouse wheel, |deltaY|≥50 or deltaMode=1):
-//   threshold-based 3-state system — on each threshold crossing, tween from
-//   current p to target p over 500ms using the same render() function.
-//   T2−T1 = 72px < 80px (min notch) → next notch always clears T2 → exactly 2 steps.
+//   3-state machine (0=face, 1=H.C., 2=H.C.Lai). Both transitions driven from the
+//   wheel event (not scroll) so latency is symmetric. T1 crossing uses estimated
+//   future scrollY (current + notch pixels) to avoid waiting for Chrome scroll anim.
 
 import { useEffect, useRef, useCallback } from "react";
 
@@ -139,29 +139,46 @@ export default function BrandMark({ className = "" }: { className?: string }) {
       return p;
     }
 
-    // Windows: sync state 0↔1 from scrollY position (called on every scroll event)
+    // Windows: all state transitions handled in the wheel event so latency is symmetric.
+    // Estimate final scrollY as current + this notch's pixel distance (normalise line→px).
+    function handleDiscreteWheel(e: WheelEvent) {
+      const px = e.deltaMode === 0 ? e.deltaY : e.deltaY * 40; // normalise lines→px
+      const T1 = window.innerHeight * 0.65; // ≈ 7 notches; hero text gone by here
+
+      if (px > 0) {
+        if (discreteState === 0) {
+          // Predict scrollY after this notch; trigger face→H.C. if it crosses T1
+          if (window.scrollY + Math.abs(px) >= T1) {
+            discreteState = 1;
+            startTween(P_HC);
+          }
+        } else if (discreteState === 1) {
+          discreteState = 2;
+          startTween(P_LAI);
+        }
+      } else if (px < 0) {
+        if (discreteState === 2) {
+          discreteState = 1;
+          startTween(P_HC);
+        } else if (discreteState === 1) {
+          if (window.scrollY - Math.abs(px) < T1) {
+            discreteState = 0;
+            startTween(P_FACE);
+          }
+        }
+      }
+    }
+
+    // Fallback: sync state 0↔1 from actual scrollY (keyboard / scrollbar / resize)
     function syncDiscreteFromScroll() {
-      const T1 = window.innerHeight * 0.75;
+      const T1 = window.innerHeight * 0.65;
       const y  = window.scrollY;
       if (discreteState === 0 && y >= T1) {
         discreteState = 1;
         startTween(P_HC);
       } else if (discreteState === 1 && y < T1) {
-        // Scrolled back above T1 — return to face
         discreteState = 0;
         startTween(P_FACE);
-      }
-    }
-
-    // Windows: ONE wheel event while in H.C. (state 1) → H.C. Lai, and reverse
-    // This is independent of scrollY so notch size doesn't matter.
-    function handleDiscreteWheel(deltaY: number) {
-      if (deltaY > 0 && discreteState === 1) {
-        discreteState = 2;
-        startTween(P_LAI);
-      } else if (deltaY < 0 && discreteState === 2) {
-        discreteState = 1;
-        startTween(P_HC);
       }
     }
 
@@ -169,7 +186,7 @@ export default function BrandMark({ className = "" }: { className?: string }) {
       const was = isDiscrete;
       isDiscrete = e.deltaMode === 1 || (e.deltaMode === 0 && Math.abs(e.deltaY) >= 50);
       if (isDiscrete) {
-        handleDiscreteWheel(e.deltaY);
+        handleDiscreteWheel(e);
       } else if (was) {
         // Switched back to smooth — cancel tween and sync
         if (tweenRaf !== null) { cancelAnimationFrame(tweenRaf); tweenRaf = null; }
@@ -179,7 +196,7 @@ export default function BrandMark({ className = "" }: { className?: string }) {
 
     function onScroll() {
       if (isDiscrete) {
-        syncDiscreteFromScroll();
+        syncDiscreteFromScroll(); // fallback only; primary transitions in onWheel
       } else {
         if (scrollRaf !== null) return;
         scrollRaf = requestAnimationFrame(() => { scrollRaf = null; render(computePSmooth()); });
