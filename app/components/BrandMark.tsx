@@ -1,14 +1,9 @@
 "use client";
 
-// Ported from logo-wide-friend-motion-v11.html (mode='full', eased), direction reversed.
-// p=1 = Open Face (top), p=0 = H.C. Lai. (scrolled past hero).
-//
-// ⑥ Enlarged terminal state: font-size 72→200, baseline y 310→394 (aligns cap-top with bracket top).
-//    Text re-centered at x=520, dot targets re-derived at the same scale ratio.
-// ④ "字虚点实" fix: contract segment widened to (0.35, 0.78) so letters appear while dots still large.
-// ⑤ Dead zone: logo holds face until scrollY > START (≈45%vh), then morphs over D (≈40%vh).
-// ⑦ Windows notch fix: contract (0.55, 0.70) — s=0.55 > p where dots reach period (≈0.35),
-//    so "faint HC + dots-at-period" is mathematically impossible at any scroll stop.
+// Smooth input (Mac trackpad / touch, deltaMode=0): original scroll-driven animation.
+// Discrete input (Windows mouse wheel, deltaMode=1): 3-state threshold system.
+//   T2−T1 = 72px < 80px (minimum common notch) → any notch that crosses T1 will
+//   cross T2 on its very next scroll → guaranteed clean face→H.C.→H.C.Lai in 2 steps.
 
 import { useEffect, useRef, useCallback } from "react";
 
@@ -41,11 +36,6 @@ export default function BrandMark({ className = "" }: { className?: string }) {
     const p      = clamp(rawP);
     pRef.current = p;
 
-    // ⑦ contract shifted: (0.35,0.78) → (0.55,0.70)
-    //    Key constraint: dots reach period at p≈0.35 (build→0); s=0.55 > 0.35 means
-    //    whenever dots are at period, contract is clamped to 0 → HC always 100%.
-    //    "faint HC + dots-at-period" is mathematically impossible with these values.
-    //    Windows stop at p≈0.55: HC=100%, face=13% → clean H.C. appearance.
     const retract  = seg(p, 0,    0.22, "out");
     const contract = seg(p, 0.55, 0.70, "strong");
     const build    = seg(p, 0.32, 0.92, "strong");
@@ -111,8 +101,10 @@ export default function BrandMark({ className = "" }: { className?: string }) {
     }
 
     let raf: number | null = null;
+    let isDiscrete = false;
 
-    function computeP() {
+    // Mac/touch: original scroll-driven (START/D/snap unchanged)
+    function computePSmooth() {
       const START = window.innerHeight * 0.45;
       const D     = window.innerHeight * 0.40;
       const raw   = clamp((window.scrollY - START) / D);
@@ -122,13 +114,36 @@ export default function BrandMark({ className = "" }: { className?: string }) {
       return p;
     }
 
-    function update() { render(computeP()); }
+    // Windows mouse wheel: 3-state threshold — T2−T1=72px ensures any notch ≥80px
+    // that crosses T1 will always cross T2 on the very next scroll event.
+    function computePDiscrete() {
+      const T1 = window.innerHeight * 0.45;
+      const T2 = T1 + 72;
+      const y  = window.scrollY;
+      if (y >= T2) return 0;    // H.C. Lai
+      if (y >= T1) return 0.27; // H.C. (build=0, contract=0, retract=1 — clean state)
+      return 1;                  // face
+    }
+
+    function update() {
+      render(isDiscrete ? computePDiscrete() : computePSmooth());
+    }
+
+    function onWheel(e: WheelEvent) {
+      const was = isDiscrete;
+      // deltaMode=1  → definitive Windows line-scroll
+      // deltaMode=0 + |deltaY|≥50 → Chrome on Windows (normalises to pixels but sends large steps)
+      // Mac trackpad sends many events with |deltaY|<10; Windows mouse sends 1 event with |deltaY|≥100
+      isDiscrete = e.deltaMode === 1 || (e.deltaMode === 0 && Math.abs(e.deltaY) >= 50);
+      if (was !== isDiscrete) update();
+    }
 
     function onScroll() {
       if (raf !== null) return;
       raf = requestAnimationFrame(() => { raf = null; update(); });
     }
 
+    window.addEventListener("wheel",  onWheel,  { passive: true });
     window.addEventListener("scroll", onScroll, { passive: true });
     window.addEventListener("resize", update);
     update();
@@ -143,6 +158,7 @@ export default function BrandMark({ className = "" }: { className?: string }) {
     }, 5000);
 
     return () => {
+      window.removeEventListener("wheel",  onWheel);
       window.removeEventListener("scroll", onScroll);
       window.removeEventListener("resize", update);
       if (raf !== null) cancelAnimationFrame(raf);
@@ -161,21 +177,17 @@ export default function BrandMark({ className = "" }: { className?: string }) {
       className={className}
       aria-label="H.C. Lai"
     >
-      {/* HC — hidden at p=1; new x positions for font-size 200 */}
       <g ref={wordHCRef} opacity="0">
         <text className="brand-name" x="121" y="394">H</text>
         <text className="brand-name" x="359" y="394">C</text>
       </g>
-      {/* Lai — hidden at p=1 */}
       <g ref={wordLaiRef} opacity="0">
         <text className="brand-name" x="601" y="394">Lai</text>
       </g>
-      {/* dots: start at eye positions (p=1), morph to larger punctuation (p=0) */}
       <rect ref={dotOneRef} className="brand-eye"
         x="470.4" y="263.3" width="34.1" height="43.4" rx="0" />
       <rect ref={dotTwoRef} className="brand-eye"
         x="535.5" y="263.3" width="34.1" height="43.4" rx="0" />
-      {/* open face — original polygon, single shape */}
       <g ref={openFriendRef} transform="translate(343.3 176.5) scale(1.55)" opacity="1">
         <polygon ref={leftBkRef}
           points="0,0 54,0 54,32 28,32 28,108 54,108 54,140 0,140" />
