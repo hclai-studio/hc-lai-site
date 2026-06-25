@@ -107,9 +107,11 @@ export default function BrandMark({ className = "" }: { className?: string }) {
 
     let scrollRaf: number | null = null;
     let tweenRaf:  number | null = null;
-    let isDiscrete    = false;
-    let discreteState = 0;   // 0=face  1=H.C.  2=H.C.Lai
-    let discreteTarget = 1;
+    let isDiscrete      = false;
+    let discreteState   = 0;   // 0=face  1=H.C.  2=H.C.Lai
+    let discreteTarget  = 1;
+    let downCount       = 0;   // cumulative downward notch count while in state 0
+    const HC_NOTCH      = 7;   // 7th downward notch triggers face→H.C.
 
     const P_FACE = 1;
     const P_HC   = 0.27; // build=0, contract=0, retract=1 → clean H.C.
@@ -143,16 +145,16 @@ export default function BrandMark({ className = "" }: { className?: string }) {
       return p;
     }
 
-    // Windows: all state transitions handled in the wheel event so latency is symmetric.
-    // Estimate final scrollY as current + this notch's pixel distance (normalise line→px).
+    // Windows: both transitions fire on the wheel event itself — zero scroll-event lag.
+    // State 0→1 uses a notch counter (not scrollY) so Chrome smooth-scroll delay
+    // never affects timing. State 1→2 fires unconditionally on the next notch.
     function handleDiscreteWheel(e: WheelEvent) {
-      const px = e.deltaMode === 0 ? e.deltaY : e.deltaY * 40; // normalise lines→px
-      const T1 = window.innerHeight * 0.65; // ≈ 7 notches; hero text gone by here
+      const down = e.deltaY > 0;
 
-      if (px > 0) {
+      if (down) {
         if (discreteState === 0) {
-          // Predict scrollY after this notch; trigger face→H.C. if it crosses T1
-          if (window.scrollY + Math.abs(px) >= T1) {
+          downCount++;
+          if (downCount >= HC_NOTCH) {
             discreteState = 1;
             startTween(P_HC);
           }
@@ -160,28 +162,26 @@ export default function BrandMark({ className = "" }: { className?: string }) {
           discreteState = 2;
           startTween(P_LAI);
         }
-      } else if (px < 0) {
+      } else {
         if (discreteState === 2) {
           discreteState = 1;
           startTween(P_HC);
         } else if (discreteState === 1) {
-          if (window.scrollY - Math.abs(px) < T1) {
-            discreteState = 0;
-            startTween(P_FACE);
-          }
+          // One upward notch from H.C. → back to face
+          discreteState = 0;
+          downCount = HC_NOTCH - 1; // next down immediately re-triggers
+          startTween(P_FACE);
+        } else {
+          downCount = Math.max(0, downCount - 1);
         }
       }
     }
 
-    // Fallback: sync state 0↔1 from actual scrollY (keyboard / scrollbar / resize)
+    // Fallback: reset to face if user scrolls back to very top via keyboard/scrollbar
     function syncDiscreteFromScroll() {
-      const T1 = window.innerHeight * 0.65;
-      const y  = window.scrollY;
-      if (discreteState === 0 && y >= T1) {
-        discreteState = 1;
-        startTween(P_HC);
-      } else if (discreteState === 1 && y < T1) {
+      if (window.scrollY < 80 && discreteState !== 0) {
         discreteState = 0;
+        downCount = 0;
         startTween(P_FACE);
       }
     }
