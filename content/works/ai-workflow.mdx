@@ -11,9 +11,9 @@
 
 A lightweight AI workflow prototype that converts messy project inputs — client feedback, meeting notes, fragmented requests — into structured, traceable outputs for project execution and leadership communication.
 
-**这不是几个互不相关的小助手拼在一起,而是一个以 workflow 为核心的项目系统**:一个主原型 + 多个基于不同输入场景的验证分支。整套作品集要证明的不是"会用 AI",而是**设计结构化 workflow、处理不确定性、并把方法沉淀成可教学可复用的东西**。
+一个以 workflow 为核心的项目系统：一个主原型，加上若干基于不同输入场景的验证分支，共用同一套输出 schema 与治理规则。它要解决的核心问题是：结构怎么设计、不确定性怎么显性管理、方法怎么沉淀成可复用、可教学的资产。
 
-**This is not a collection of unrelated AI assistants — it is a single workflow-oriented project system**: one main prototype plus scenario-based validations. What it aims to prove is not "AI usage," but the ability to design structured workflows, surface uncertainty explicitly, and turn methods into something teachable and reusable.
+A workflow-oriented project system: one core prototype plus several validation branches grounded in different input scenarios, all sharing one output schema and one governance ruleset. The core problem it addresses is how the structure is designed, how uncertainty is made explicit, and how the method becomes a reusable, teachable asset.
 
 ## 02 | 为什么做这个 Why I Built This
 
@@ -73,16 +73,16 @@ To make AI output **reliable, traceable, and reviewable**, the workflow enforces
 
 ## 04 | 场景验证 Scenarios
 
-这套 workflow 在 **4 个真实场景**下做了验证。每个 case 都包含真实的 messy input + 完整的 A-E 结构化输出,用来证明同一套 workflow 在**不同类型的混乱输入下都能成立**。
+这套 workflow 在 **4 个真实场景**下做了验证。每个 case 都包含真实的 messy input + 完整的 A-E 结构化输出,呈现同一套 workflow 如何承接**不同类型的混乱输入**。
 
-The workflow was validated across **4 real scenarios**. Each case captures real messy input + the full A-E structured output, demonstrating that the same workflow holds across **different types of messy input**.
+The workflow was validated across **4 real scenarios**. Each case captures real messy input + the full A-E structured output, showing how the same workflow handles **different types of messy input**.
 
 <CaseExpandable
   title="Case 01 | Client Change · 甲方变更"
   scenario="把一份模糊的甲方设计变更要求,转译为可汇报的执行更新和可追踪任务清单。"
-  whyItMatters="测试这套 workflow 能否把外部、非结构化的甲方反馈,转成有行动、有风险、有原句溯源的结构化输出。"
+  whyItMatters="外部、非结构化的甲方反馈最容易丢掉行动项和风险——这一例把它转成有行动、有风险、可原句溯源的结构化输出。"
   whatItProves={[
-    "可以把 messy 项目输入转译为可执行的 actions / risks / open questions",
+    "messy 项目输入被转译为可执行的 actions / risks / open questions",
     "Source Quote 机制有效降低 AI 编造风险,提升可追溯性",
     "Due 字段保持空白(而非编造日期)显著提升输出可信度",
     "Round 1 / Round 2 prompt 迭代,字段规范性和语言一致性显著提升"
@@ -139,9 +139,9 @@ Quotes:
 <CaseExpandable
   title="Case 02 | Leadership Request · 领导汇报"
   scenario={'把领导的一句"下周汇报需要 3 个方向"的模糊要求,转译为可对比的方案对比框架和任务拆解。'}
-  whyItMatters={'测试同一套 workflow 在不同输入类型(领导请求 vs 甲方变更)下的复用性,以及"外企风格"语言约束下的输出表现。'}
+  whyItMatters={'同一套 workflow 换一种输入类型（领导请求，而非甲方变更），并叠加"外企风格"的语言约束。'}
   whatItProves={[
-    "同一套 schema 可以稳定承接不同语境的输入类型",
+    "同一套 schema 稳定承接了不同语境的输入类型",
     "任务措辞更 action-oriented,Owner 分配更精准(默认 Me)",
     "语言风格可通过 prompt 约束控制(短句、结论先行、可执行)",
     "缺失评估口径会显性化为 Open Questions,而不是被 AI 编造"
@@ -198,12 +198,11 @@ Quotes:
 <CaseExpandable
   title="Mini Case 01 | Internal Notes · 内部备忘录到行动跟踪"
   scenario="把团队内部一段口语化的会议同步,转译为清晰的行动追踪、阻塞项暴露与待确认问题。"
-  whyItMatters={'测试 workflow 在"对话型输入"(而非结构化请求)下的承接能力——很多团队真正的问题不是"有没有开会",而是"会后到底谁做什么"。'}
+  whyItMatters={'很多团队真正的问题不是"有没有开会"，而是"会后到底谁做什么"——这一例处理的是口语化的对话型输入，而非结构化请求。'}
   whatItProves={[
-    "可以处理 messy 内部协作输入,不只面向外部 / 结构化请求",
-    "可以把对话式记录转成 action-oriented 跟进输出,而不只是 summary",
-    "更清晰地分离 agreed actions / current blockers / unresolved questions",
-    "支持内部团队协调,不只面向外部沟通"
+    "口语化的内部协作记录，同样能被收敛成结构化输出",
+    "对话式记录被转成 action-oriented 的跟进项，落到「谁做什么」",
+    "更清晰地分离 agreed actions / current blockers / unresolved questions"
   ]}
 >
 
@@ -258,12 +257,11 @@ Quotes:
 <CaseExpandable
   title="Mini Case 02 | Requirement Intake · 需求收集到检查清单"
   scenario="把一份模糊的需求说明 / brief,转译为结构化检查清单、风险摘要、缺失信息与建议下一步。"
-  whyItMatters={'测试 workflow 在"文档型输入"(brief / 需求说明 / 半成型文档)下的承接能力——很多流程问题不是从聊天开始的,而是从模糊文档开始的。'}
+  whyItMatters={'很多流程问题不是从聊天、而是从一份模糊文档开始的——这一例处理的是文档型输入：brief、需求说明、半成型文档。'}
   whatItProves={[
-    "可以处理文档型需求输入,不只面向对话型输入",
-    "可以把 brief 转成 readiness checklist,而不只是 summary",
-    "有助于在执行开始前显性暴露 gaps 与 missing inputs",
-    "支持 requirement intake 与 readiness check,不只面向汇报追踪"
+    "模糊的文档型需求（brief / 半成型文档）同样能被结构化",
+    "brief 被转成 readiness checklist，逐项标 Clear / Partial / Missing",
+    "在执行开始前显性暴露 gaps 与 missing inputs"
   ]}
 >
 
@@ -338,9 +336,9 @@ Input type drives schema direction — **conversation inputs lean toward actions
 
 ## 05 | 治理与边界 Governance & Boundary
 
-这套 workflow **能做什么、不能做什么**,作为创作者需要写清楚。
+边界和失败模式，和它能产出什么同样重要。
 
-What this workflow can and cannot do — written plainly by its creator.
+The boundaries and failure modes matter as much as what it produces.
 
 ### 它不是什么 / What It Is Not
 
@@ -370,9 +368,9 @@ Before using AI on project materials, sensitive or confidential information shou
 
 ## 06 | 可教学可复用 Enablement
 
-这套 workflow 的设计目标**不只是让一个人用得起来,还要能教、能复用、能在相似场景中扩展**。
+这套 workflow 从设计之初就考虑了可教学、可复用、可在相似场景中扩展。
 
-The workflow is designed not only to work for one user, but **to be teachable, reusable, and scalable across similar project scenarios**.
+The workflow was designed from the start to be teachable, reusable, and extensible across similar project scenarios.
 
 ### 谁适合用 / Who This Is For
 
@@ -425,6 +423,6 @@ Fixed output schema, reusable prompt structure, Notion task database, 4 scenario
 
 ### 一句话定位 / One-line Positioning
 
-**这是一套 workflow 系统在多个场景下的验证,不是多个互不相关的小工具。我擅长把混乱的项目输入,转化为结构化、可追踪、可复用的 AI 工作流输出。**
+**把散落在甲方反馈、会议纪要、碎片需求里的信息,收敛成结构化、可追踪、可复用的输出——同一套 schema 与治理规则,在四类不同的混乱输入下都成立。**
 
-**This is one workflow system validated across multiple scenarios, not several unrelated tools. I design AI-assisted project workflows that turn messy inputs into structured, traceable, and reusable outputs.**
+**It pulls information scattered across client feedback, meeting notes, and fragmented requests into structured, traceable, reusable output — one schema and one governance ruleset, holding across four different kinds of messy input.**

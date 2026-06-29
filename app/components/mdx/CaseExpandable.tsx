@@ -23,12 +23,15 @@ export default function CaseExpandable({
       </div>
 
       {/* Scenario — italic, prose-works p styles apply */}
+      <p className="font-mono text-[10px] tracking-[0.12em] uppercase text-ink-muted mb-1">Scenario</p>
       <p style={{ fontStyle: 'italic' }}>{scenario}</p>
 
       {/* Why it matters — prose-works p styles apply */}
+      <p className="font-mono text-[10px] tracking-[0.12em] uppercase text-ink-muted mb-1 mt-4">Why it matters</p>
       <p>{whyItMatters}</p>
 
-      {/* What it proves — prose-works ul styles apply */}
+      {/* Findings — prose-works ul styles apply */}
+      <p className="font-mono text-[10px] tracking-[0.12em] uppercase text-ink-muted mb-1 mt-4">Findings</p>
       <ul>
         {whatItProves.map((item, i) => (
           <li key={i}>{item}</li>
