@@ -7,9 +7,9 @@
 
 ## 01 | 项目概述 Project Summary
 
-一个围绕「建筑设计师转 AI 行业求职」真实痛点搭建的半自动化决策工作流。通过 Claude API 实时解析岗位 JD，匹配三版差异化简历与招呼语版本，输出结构化「投递决策卡」。
+一个围绕**高频岗位投递决策**这一真实痛点搭建的半自动化工作流。通过 Claude API 实时解析岗位 JD，匹配三版差异化简历与招呼语版本，输出结构化「投递决策卡」。
 
-A semi-automated decision workflow built around a real pain point — transitioning from architectural design into the AI industry. It uses the Claude API to parse job descriptions in real time, match against three differentiated resume and outreach versions, and output a structured "application decision card."
+A semi-automated workflow built around a real pain point — the repetitive, high-volume judgment of triaging job postings. It uses the Claude API to parse job descriptions in real time, match against three differentiated resume and outreach versions, and output a structured "application decision card."
 
 工作流核心定位：不替代人做判断，而是把"识别同名异向、版本匹配、风险归类"这类结构化但重复的判断成本降到趋近于零，让使用者把精力留在真正需要权衡的取舍上。
 
@@ -21,9 +21,9 @@ Across two days, **108 positions** were processed; per-decision time dropped fro
 
 ## 02 | 为什么做这个 Why I Built This
 
-转行求职过程中遇到三个交叠的真问题。
+处理大量岗位投递时，反复撞到三个交叠的真问题。
 
-Three overlapping pain points encountered during this career-transition job search.
+Three overlapping problems that surface when triaging job postings at volume.
 
 ### 同名异向 / Same Title, Different Reality
 
@@ -37,15 +37,15 @@ Jobs called "AI Product Operations" can mean ad performance, content ops, or pro
 
 Each posting required reading JD → deciding direction → picking resume version → writing greeting → final go/no-go. Throughput was capped at the decision step, not the application step.
 
-### 转行简历容易被秒拒 / Transition Resumes Get Filtered Fast
+### 反馈周期长、信号稀疏 / Long Feedback Loop, Sparse Signal
 
-建筑专业 + AI 方向求职，HR 看到第一眼时往往直接划走。投出去无回复是常态。
+投递的反馈周期长，回应往往滞后、数量也少——这一点不是工具能改变的。
 
-Coming from architecture into AI, recruiters often dismiss the resume at first glance. Silent rejections are the norm.
+Feedback on applications is slow and sparse — and that is not something tooling can change.
 
-第三点工具解决不了。所以这个工具的目标不是"提高回复率"，是在"看不到回报的求职阶段，依然能按结构化节奏继续投递，不被疲惫吞没"。
+所以这套工作流不以"提高回复率"为目标，而是在反馈稀疏的阶段维持一个结构化、可重复的判断节奏，让瓶颈停在"判断质量"，而不是"体力"。
 
-The third pain point is not solvable by tooling. So the goal of this workflow is not to "increase reply rate" — it is to keep moving at a structured pace during a phase where feedback is delayed, so that fatigue does not become the bottleneck.
+So this workflow does not aim to "increase reply rate." It keeps the judgment running at a structured, repeatable pace while feedback is sparse — so the bottleneck stays on the quality of the decision, not on stamina.
 
 ## 03 | 工作流怎么设计 Workflow Design
 
@@ -161,7 +161,7 @@ Effectiveness validation is incomplete by design — postings were sent during t
 
 ### 初步观察 / Initial Observations
 
-决策卡的"方向判断"在多次实测中有效识别了 title 与实际方向的偏差（例：title 标注"AI 产品经理（建筑专业）"，决策卡识别为"偏技术实验向，含 ComfyUI / 模型训练要求"）。
+决策卡的"方向判断"在多次实测中有效识别了 title 与实际方向的偏差（例：title 标注"AI 产品经理"，决策卡识别为"偏技术实验向，含 ComfyUI / 模型训练要求"）。
 
 The "direction" field reliably caught title-vs-reality gaps in repeated tests.
 
@@ -175,23 +175,23 @@ Edge cases (5+ years required / Tier-1 universities only / pure algorithm backgr
 
 ## 07 | 反思与边界 Reflection & Boundary
 
-这个工具能做什么、不能做什么，作为创作者需要写清楚。
+一个工具的边界和取舍，和它解决的事一样重要。
 
-What this tool can and cannot do — written plainly by its user.
+A tool's boundaries and trade-offs matter as much as what it solves.
 
 ### 它解决的事 / What It Does
 
-把"识别同名异向、匹配简历版本、归类风险信号"这类结构化但重复的决策成本降到趋近于零；把使用者的精力从"读 100 份 JD"释放出来，转向"沉淀作品集 / 准备面试 / 学习行业知识"。
+把"识别同名异向、匹配简历版本、归类风险信号"这类结构化但重复的决策成本降到趋近于零；把使用者的精力从"读 100 份 JD"里释放出来，转向更值得投入的事——研究方向、打磨作品、补行业知识。
 
-Drives the cost of structured-yet-repetitive decisions (catching title mismatches, matching resume versions, classifying risk signals) toward zero — and frees the user's energy from "read 100 JDs" to "build portfolio / prepare interviews / study the industry."
+Drives the cost of structured-yet-repetitive decisions (catching title mismatches, matching resume versions, classifying risk signals) toward zero — and frees the user's energy from "read 100 JDs" toward work that deserves it: studying directions, refining the portfolio, building domain knowledge.
 
 ### 它没有解决的事 / What It Does Not Solve
 
-- 转行简历被 HR 第一眼劝退的根本困境（这是平台展示机制 + 招聘市场结构问题，不是工具能解决的）
+- 投递反馈稀疏、周期长这一结构性现实（属于平台展示机制 + 招聘市场结构问题，不是工具能解决的）
 - 回复率本身（截至作品集发布日，108 个岗位的反馈仍在累积中）
 - 面试转化率与 offer 质量（更长的反馈周期）
 
-The structural reality that transition resumes get filtered fast (this is a platform display + hiring market issue, not a tooling issue), reply rate itself (data still accumulating), interview conversion and offer quality (longer feedback loop).
+The structural reality that application feedback is slow and sparse (a platform-display + hiring-market issue, not a tooling one), reply rate itself (data still accumulating), interview conversion and offer quality (longer feedback loop).
 
 ### 关于"半自动"的取舍 / On the "Semi-automated" Trade-off
 
@@ -207,6 +207,6 @@ The tool deliberately keeps "click to chat / submit application" as a manual ste
 
 Not because automation is technically impossible, but because: auto-apply triggers platform risk-control (verified in Path 1); auto-apply removes the user's last review checkpoint per posting; job hunting is a high-stakes decision — preserving the human's final say matters more than chasing "fully automated."
 
-这是工具的边界，也是它在 ops / 平台支持 / 客户成功这类岗位场景下应有的姿态——半自动不是"功能不完整"，是对人类判断权的有意保留。
+这是工具的边界，也是它在 ops / 平台支持 / 客户成功这类工作里应有的姿态——半自动不是"功能不完整"，是对人类判断权的有意保留。
 
 This is the tool's boundary — and the posture it should maintain in ops / platform support / customer success contexts: "Semi-automated" is not "incomplete automation" — it is a deliberate preservation of human judgment.
