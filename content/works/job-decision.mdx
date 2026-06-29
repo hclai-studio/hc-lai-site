@@ -1,7 +1,7 @@
 <ProjectHeader
   category="AI Workflow · Ops Tooling · Human-in-the-loop · Workflow Design"
   titleEn="Semi-automated Job Decision Workflow"
-  titleCn="AI 求职决策助手 · 半自动化 JD 匹配工作流"
+  titleCn="半自动化 JD 决策工作流"
   year="2026"
 />
 
@@ -126,9 +126,9 @@ Conclusion: the overlay idea is right; the battlefield was wrong. The overlay co
 
 Returned to the simplest design: paste JD into terminal → call Claude → render decision card → human decides whether to apply.
 
-**结果**：**30 秒 / 岗位**，零风控风险，可叠加台账留存与跨日复盘。这是目前在用的版本，承担了 108 个岗位的真实判断。
+**结果**：**30 秒 / 岗位**，零风控风险，可叠加台账留存与跨日复盘。这是当前主流程，已处理 108 个岗位。
 
-Outcome: **30 seconds per posting**, zero risk-control exposure, with persistent logs for cross-day review. This is the version in production, having processed 108 actual postings so far.
+Outcome: **30 seconds per posting**, zero risk-control exposure, with persistent logs for cross-day review. This is the current main pipeline, with 108 postings processed.
 
 **心得**：方案选型不是"哪个最先进"，是"哪个跟现实约束最匹配"。BOSS 平台高强度反爬就是约束，与其硬刚不如用最轻量的人机分工绕开它。
 
@@ -155,9 +155,9 @@ Takeaway: path selection is not about "which is most advanced" — it is about "
 - 累计判断岗位数：**108**
 - 实际投递数：约 30–50 个（按"主投"和"可冲"档投递）
 - 平均决策耗时：**30 秒 / 岗位**（手动判断对照组：约 5 分钟）
-- 回复率：统计中（投递时间集中在五一假期，等待工作日反馈）
+- 回复率：单独追踪——取决于市场反馈，不计入本工具的判断效率验证
 
-Effectiveness validation is incomplete by design — postings were sent during the May holiday and recruiter responses are expected after the holiday. The data section will be updated with reply rates and interview conversion in subsequent revisions.
+What this section validates is decision efficiency, not market response — reply rate and interview conversion depend on the market rather than the tool, and are tracked separately.
 
 ### 初步观察 / Initial Observations
 
@@ -188,10 +188,10 @@ Drives the cost of structured-yet-repetitive decisions (catching title mismatche
 ### 它没有解决的事 / What It Does Not Solve
 
 - 投递反馈稀疏、周期长这一结构性现实（属于平台展示机制 + 招聘市场结构问题，不是工具能解决的）
-- 回复率本身（截至作品集发布日，108 个岗位的反馈仍在累积中）
+- 回复率本身（取决于市场反馈，不是工具能左右的）
 - 面试转化率与 offer 质量（更长的反馈周期）
 
-The structural reality that application feedback is slow and sparse (a platform-display + hiring-market issue, not a tooling one), reply rate itself (data still accumulating), interview conversion and offer quality (longer feedback loop).
+The structural reality that application feedback is slow and sparse (a platform-display + hiring-market issue, not a tooling one), reply rate itself (market-dependent, not the tool's output), interview conversion and offer quality (longer feedback loop).
 
 ### 关于"半自动"的取舍 / On the "Semi-automated" Trade-off
 
@@ -199,13 +199,13 @@ The structural reality that application feedback is slow and sparse (a platform-
 
 The tool deliberately keeps "click to chat / submit application" as a manual step performed by the user.
 
-不是技术做不到自动投递，是：
+原因有三：
 
 - 自动投递触发平台风控（路径 1 已验证）
 - 自动投递让使用者失去对每个岗位的最后一次审视机会
 - 求职是高风险决策，保留人类最终决策权比追求"全自动"更重要
 
-Not because automation is technically impossible, but because: auto-apply triggers platform risk-control (verified in Path 1); auto-apply removes the user's last review checkpoint per posting; job hunting is a high-stakes decision — preserving the human's final say matters more than chasing "fully automated."
+The reasons are threefold: auto-apply triggers platform risk-control (verified in Path 1); auto-apply removes the user's last review checkpoint per posting; job hunting is a high-stakes decision — preserving the human's final say matters more than chasing "fully automated."
 
 这是工具的边界，也是它在 ops / 平台支持 / 客户成功这类工作里应有的姿态——半自动不是"功能不完整"，是对人类判断权的有意保留。
 
