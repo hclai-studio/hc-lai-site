@@ -120,10 +120,10 @@ Coze and Dify taught me the "product shape" of RAG, but the platform made every 
 <CaseExpandable
   title="LangChain 实现细节 · From Scratch"
   scenario="第三个版本:用 LangChain (LCEL) 从零写出完整 RAG 管线,把平台替我做的每个决策收回自己手里。"
-  whyItMatters="验证我不只是『会配置 RAG 平台』,而是理解 RAG 每个组件的工程取舍、能自己写出来。"
+  whyItMatters="对照低代码平台的配置路径，把 RAG 每个组件的工程取舍在代码层面走一遍——切块、嵌入、检索、Prompt 编排，每步都有显式决策，不依赖平台默认值。"
   whatItProves={[
-    "从『会用 AI 工具』上升到『会写 AI 应用代码』",
-    "完整掌握 LangChain LCEL、向量库、嵌入模型、prompt engineering 的工程组合",
+    "手写管线与低代码路径行为对齐：同一知识源，两条路径，召回结果可比对",
+    "LangChain LCEL、向量库、嵌入模型、prompt engineering 作为工程组合的联动方式与决策依据",
     "再次验证:RAG 的真实瓶颈在检索质量与切块策略,不在 LLM 推理能力"
   ]}
 >
@@ -170,9 +170,9 @@ Where the early Dify build (gpt-4o-mini + economical index) once hallucinated a 
 
 ### 这一版的收获 / Takeaways
 
-- 从「会用 AI 工具」上升到「会写 AI 应用代码」 / From "using AI tools" to "writing AI application code"
-- 完整掌握 LCEL、向量数据库、嵌入模型、prompt engineering 的工程组合 / A full working grasp of LCEL, vector databases, embedding models, and prompt engineering as one stack
-- 理解 RAG 真实瓶颈不在 LLM,而在检索质量与切块策略 / Understanding that the real RAG bottleneck is retrieval quality and chunking, not the LLM
+- 手写管线与低代码路径行为对齐——同一知识源，两条路径，召回结果可比对 / Hand-written and low-code RAG pipelines produce aligned behavior — same source, two paths, comparable recall
+- LangChain LCEL、向量库、嵌入模型、prompt engineering 作为工程组合的联动方式 / LangChain LCEL, vector store, embedding model, and prompt engineering as an integrated engineering stack
+- 检索质量与切块策略是 RAG 可靠性的根本，不是 LLM 推理能力 / Retrieval quality and chunking strategy are the foundation of RAG reliability, not LLM reasoning
 
 <WorkImage
   src="/works/fire-code-rag/langchain-repo.png"
