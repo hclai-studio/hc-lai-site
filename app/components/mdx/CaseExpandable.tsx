@@ -1,9 +1,14 @@
+"use client";
+
+import { useState } from "react";
+
 interface CaseExpandableProps {
   title: string;
   scenario: string;
   whyItMatters: string;
   whatItProves: string[];
   defaultOpen?: boolean;
+  expandHint?: string;
   children: React.ReactNode;
 }
 
@@ -13,24 +18,41 @@ export default function CaseExpandable({
   whyItMatters,
   whatItProves,
   defaultOpen = false,
+  expandHint,
   children,
 }: CaseExpandableProps) {
+  const [isOpen, setIsOpen] = useState(defaultOpen);
+
   return (
     <div className="my-8 border-t border-line pt-6 pb-2">
-      {/* Mono uppercase case label */}
-      <div className="font-mono text-[11px] tracking-[0.18em] uppercase text-ink-muted mb-3">
-        {title}
-      </div>
+      {/* Title row — click to toggle */}
+      <button
+        onClick={() => setIsOpen(!isOpen)}
+        aria-expanded={isOpen}
+        className="w-full flex items-baseline justify-between text-left group/title outline-none"
+      >
+        <span className="font-mono text-[11px] tracking-[0.18em] uppercase text-ink-muted">
+          {title}
+        </span>
+        <span className="flex flex-col items-end gap-0.5 ml-4 shrink-0">
+          <span className="font-mono text-[11px] tracking-[0.08em] uppercase text-ink-muted group-hover/title:text-terracotta transition-colors duration-300 select-none whitespace-nowrap">
+            {isOpen ? "↑ COLLAPSE" : "↓ READ FULL CASE"}
+          </span>
+          {!isOpen && expandHint && (
+            <span className="font-mono text-[9px] tracking-[0.06em] uppercase text-ink-muted select-none">
+              {expandHint}
+            </span>
+          )}
+        </span>
+      </button>
 
-      {/* Scenario */}
-      <p className="font-mono text-[10px] tracking-[0.12em] uppercase text-ink-muted mb-1">Scenario</p>
+      {/* Always visible: Scenario / Why it matters / Findings */}
+      <p className="font-mono text-[10px] tracking-[0.12em] uppercase text-ink-muted mb-1 mt-4">Scenario</p>
       <p>{scenario}</p>
 
-      {/* Why it matters — prose-works p styles apply */}
       <p className="font-mono text-[10px] tracking-[0.12em] uppercase text-ink-muted mb-1 mt-4">Why it matters</p>
       <p>{whyItMatters}</p>
 
-      {/* Findings — prose-works ul styles apply */}
       <p className="font-mono text-[10px] tracking-[0.12em] uppercase text-ink-muted mb-1 mt-4">Findings</p>
       <ul>
         {whatItProves.map((item, i) => (
@@ -38,18 +60,12 @@ export default function CaseExpandable({
         ))}
       </ul>
 
-      {/* Native details/summary — SSR-safe, keyboard accessible */}
-      <details {...(defaultOpen ? { open: true } : {})} className="group">
-        <summary className="case-summary list-none cursor-pointer outline-none mt-4">
-          <span className="font-mono text-[11px] tracking-[0.08em] uppercase text-ink-muted hover:text-terracotta transition-colors duration-300 select-none">
-            <span className="group-open:hidden">↓ READ FULL CASE</span>
-            <span className="hidden group-open:inline">↑ COLLAPSE</span>
-          </span>
-        </summary>
+      {/* Collapsible deep content */}
+      {isOpen && (
         <div className="mt-6 border-l border-line pl-6">
           {children}
         </div>
-      </details>
+      )}
     </div>
   );
 }

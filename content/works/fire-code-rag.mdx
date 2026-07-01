@@ -121,12 +121,9 @@ Coze and Dify give the product shape of RAG: chunking, embeddings, retrieval, an
 | Dify | 可视化 workflow / visual workflow | 中 / Medium |
 | **LangChain** | **每一行代码自己写 / hand-written code** | **完全 / Full** |
 
-展开下方查看这一版的完整记录：GitHub 仓库、逐条关键工程决策，以及正向 / 超纲两组测试的原始输出。
-
-Expand the case below for the full build — the GitHub repo, each key engineering decision, and the raw output of both tests.
-
 <CaseExpandable
   title="LangChain 实现细节 · From Scratch"
+  expandHint="内含 GitHub · 代码 · 测试"
   scenario="第三个版本:用 LangChain (LCEL) 从零写出完整 RAG 管线,把平台替我做的每个决策收回自己手里。"
   whyItMatters="对照低代码平台的配置路径，把 RAG 每个组件的工程取舍在代码层面走一遍——切块、嵌入、检索、Prompt 编排，每步都有显式决策，不依赖平台默认值。"
   whatItProves={[
