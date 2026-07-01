@@ -153,7 +153,9 @@ export default function BrandMark({ className = "" }: { className?: string }) {
 
       if (down) {
         if (discreteState === 0) {
-          downCount++;
+          // Count by deltaY magnitude so fast/coalesced events aren't under-counted
+          const notches = e.deltaMode === 1 ? 1 : Math.max(1, Math.round(Math.abs(e.deltaY) / 100));
+          downCount += notches;
           if (downCount >= HC_NOTCH) {
             discreteState = 1;
             startTween(P_HC);
@@ -163,21 +165,15 @@ export default function BrandMark({ className = "" }: { className?: string }) {
           startTween(P_LAI);
         }
       } else {
-        if (discreteState === 2) {
-          discreteState = 1;
-          startTween(P_HC);
-        } else if (discreteState === 1) {
-          // One upward notch from H.C. → back to face
-          discreteState = 0;
-          downCount = HC_NOTCH - 1; // next down immediately re-triggers
-          startTween(P_FACE);
-        } else {
+        // Upward wheel never reverts state — only reaching scrollY≈0 does (syncDiscreteFromScroll).
+        // Decrement counter only while still in face state so threshold stays predictable.
+        if (discreteState === 0) {
           downCount = Math.max(0, downCount - 1);
         }
       }
     }
 
-    // Fallback: reset to face if user scrolls back to very top via keyboard/scrollbar
+    // Primary revert path: logo returns to face only when page actually scrolls back to top.
     function syncDiscreteFromScroll() {
       if (window.scrollY < 80 && discreteState !== 0) {
         discreteState = 0;

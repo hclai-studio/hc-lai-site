@@ -73,7 +73,7 @@ export default function CaseExpandable({
         <span className="font-mono text-[15px] text-ink-muted group-hover/btn:text-terracotta transition-colors duration-300 select-none leading-none">
           {isOpen ? "▾" : "▸"}
         </span>
-        <span className="font-mono text-[13px] tracking-[0.08em] uppercase text-ink group-hover/btn:text-terracotta transition-colors duration-300 select-none">
+        <span className="font-mono text-[13px] tracking-[0.08em] uppercase text-ink-muted group-hover/btn:text-terracotta transition-colors duration-300 select-none">
           {isOpen ? "COLLAPSE" : "READ FULL CASE"}
         </span>
       </button>
