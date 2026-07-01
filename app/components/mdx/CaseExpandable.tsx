@@ -8,7 +8,7 @@ interface CaseExpandableProps {
   whyItMatters: string;
   whatItProves: string[];
   defaultOpen?: boolean;
-  expandHint?: string;
+  alwaysOpen?: boolean;
   children: React.ReactNode;
 }
 
@@ -18,35 +18,13 @@ export default function CaseExpandable({
   whyItMatters,
   whatItProves,
   defaultOpen = false,
-  expandHint,
+  alwaysOpen = false,
   children,
 }: CaseExpandableProps) {
   const [isOpen, setIsOpen] = useState(defaultOpen);
 
-  return (
-    <div className="my-8 border-t border-line pt-6 pb-2">
-      {/* Title row — click to toggle */}
-      <button
-        onClick={() => setIsOpen(!isOpen)}
-        aria-expanded={isOpen}
-        className="w-full flex items-baseline justify-between text-left group/title outline-none"
-      >
-        <span className="font-mono text-[11px] tracking-[0.18em] uppercase text-ink-muted">
-          {title}
-        </span>
-        <span className="flex flex-col items-end gap-0.5 ml-4 shrink-0">
-          <span className="font-mono text-[11px] tracking-[0.08em] uppercase text-ink-muted group-hover/title:text-terracotta transition-colors duration-300 select-none whitespace-nowrap">
-            {isOpen ? "↑ COLLAPSE" : "↓ READ FULL CASE"}
-          </span>
-          {!isOpen && expandHint && (
-            <span className="font-mono text-[9px] tracking-[0.06em] uppercase text-ink-muted select-none">
-              {expandHint}
-            </span>
-          )}
-        </span>
-      </button>
-
-      {/* Always visible: Scenario / Why it matters / Findings */}
+  const preview = (
+    <>
       <p className="font-mono text-[10px] tracking-[0.12em] uppercase text-ink-muted mb-1 mt-4">Scenario</p>
       <p>{scenario}</p>
 
@@ -59,10 +37,50 @@ export default function CaseExpandable({
           <li key={i}>{item}</li>
         ))}
       </ul>
+    </>
+  );
 
-      {/* Collapsible deep content */}
-      {isOpen && (
+  // Always-open: no toggle, all content inline
+  if (alwaysOpen) {
+    return (
+      <div className="my-8 border-t border-line pt-6 pb-2">
+        <div className="font-mono text-[11px] tracking-[0.18em] uppercase text-ink-muted mb-3">
+          {title}
+        </div>
+        {preview}
         <div className="mt-6 border-l border-line pl-6">
+          {children}
+        </div>
+      </div>
+    );
+  }
+
+  // Default: plain title + bottom button toggle + inline expansion
+  return (
+    <div className="my-8 border-t border-line pt-6 pb-2">
+      <div className="font-mono text-[11px] tracking-[0.18em] uppercase text-ink-muted mb-3">
+        {title}
+      </div>
+
+      {preview}
+
+      {/* Bottom toggle button */}
+      <button
+        onClick={() => setIsOpen(!isOpen)}
+        aria-expanded={isOpen}
+        className="mt-6 w-full flex items-center gap-3 border border-line px-4 py-3 text-left group/btn outline-none"
+      >
+        <span className="font-mono text-[12px] text-ink-muted group-hover/btn:text-terracotta transition-colors duration-300 select-none leading-none">
+          {isOpen ? "▾" : "▸"}
+        </span>
+        <span className="font-mono text-[11px] tracking-[0.10em] uppercase text-ink-muted group-hover/btn:text-terracotta transition-colors duration-300 select-none">
+          {isOpen ? "COLLAPSE" : "READ FULL CASE"}
+        </span>
+      </button>
+
+      {/* Expands right below the button */}
+      {isOpen && (
+        <div className="mt-0 pt-6 border-l border-line pl-6">
           {children}
         </div>
       )}
