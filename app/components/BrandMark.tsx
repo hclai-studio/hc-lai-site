@@ -7,6 +7,7 @@
 //   future scrollY (current + notch pixels) to avoid waiting for Chrome scroll anim.
 
 import { useEffect, useRef, useCallback } from "react";
+import { usePathname } from "next/navigation";
 
 function clamp(v: number, lo = 0, hi = 1) { return Math.max(lo, Math.min(hi, v)); }
 function easeInOutCubic(t: number) { return t < 0.5 ? 4*t*t*t : 1 - Math.pow(-2*t+2, 3)/2; }
@@ -25,6 +26,8 @@ function seg(p: number, s: number, e: number, type = "standard") {
 function mix(a: number, b: number, t: number) { return a + (b - a) * t; }
 
 export default function BrandMark({ className = "" }: { className?: string }) {
+  const pathname = usePathname();
+  const isWorkPage = pathname?.startsWith("/works/") ?? false;
   const wordHCRef     = useRef<SVGGElement>(null);
   const wordLaiRef    = useRef<SVGGElement>(null);
   const dotOneRef     = useRef<SVGRectElement>(null);
@@ -97,7 +100,7 @@ export default function BrandMark({ className = "" }: { className?: string }) {
     }
     if (leftBkRef.current)  leftBkRef.current.setAttribute("opacity",  String(clamp(build)));
     if (rightBkRef.current) rightBkRef.current.setAttribute("opacity", String(clamp(build)));
-  }, []);
+  }, [isWorkPage]);
 
   useEffect(() => {
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
@@ -111,9 +114,9 @@ export default function BrandMark({ className = "" }: { className?: string }) {
     let discreteState = 0;   // 0=face  1=H.C.  2=H.C.Lai
     let discreteTarget = 1;  // tracks current tween p-target to skip redundant tweens
 
-    // Position-based thresholds — same point triggers in both scroll directions.
-    const THRESHOLD_FACE = 700;   // face ↔ H.C.  (~7 Windows notches × 100 px)
-    const THRESHOLD_LAI  = 800;   // H.C. ↔ H.C.Lai (~8th notch)
+    // Work pages scroll deeper before reaching content, so thresholds are shifted earlier.
+    const THRESHOLD_FACE = isWorkPage ? 600 : 700;
+    const THRESHOLD_LAI  = isWorkPage ? 700 : 800;
 
     const P_FACE = 1;
     const P_HC   = 0.27; // build=0, contract=0, retract=1 → clean H.C.
