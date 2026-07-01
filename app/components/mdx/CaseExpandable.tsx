@@ -22,9 +22,9 @@ export default function CaseExpandable({
         {title}
       </div>
 
-      {/* Scenario — italic, prose-works p styles apply */}
+      {/* Scenario */}
       <p className="font-mono text-[10px] tracking-[0.12em] uppercase text-ink-muted mb-1">Scenario</p>
-      <p style={{ fontStyle: 'italic' }}>{scenario}</p>
+      <p>{scenario}</p>
 
       {/* Why it matters — prose-works p styles apply */}
       <p className="font-mono text-[10px] tracking-[0.12em] uppercase text-ink-muted mb-1 mt-4">Why it matters</p>
