@@ -159,15 +159,11 @@ Coze and Dify give the product shape of RAG: chunking, embeddings, retrieval, an
 
 **Test 1(正常问题 / In-scope)**
 
-> Q:民用建筑的耐火等级是怎么规定的? / How are fire-resistance ratings for civil buildings defined?
->
-> A:按耐火等级一 / 二 / 三级分类,引用 5.3.1 / 5.3.2 / 5.3.3 条款 + 5.1.2 / 5.1.3 特殊要求,每条都标注页码。 / A graded answer across Grade I / II / III, citing Clauses 5.3.1 / 5.3.2 / 5.3.3 plus special requirements 5.1.2 / 5.1.3 — each with page numbers.
+Q:民用建筑的耐火等级是怎么规定的? / How are fire-resistance ratings for civil buildings defined?<br/>A:按耐火等级一 / 二 / 三级分类,引用 5.3.1 / 5.3.2 / 5.3.3 条款 + 5.1.2 / 5.1.3 特殊要求,每条都标注页码。 / A graded answer across Grade I / II / III, citing Clauses 5.3.1 / 5.3.2 / 5.3.3 plus special requirements 5.1.2 / 5.1.3 — each with page numbers.
 
 **Test 2(超纲拒答 / Out-of-scope)**
 
-> Q:民用建筑的容积率上限是多少? / What is the maximum plot ratio for civil buildings?
->
-> A:「检索到的条文未提及民用建筑容积率上限的相关规定。该问题超出本规范范围,无法回答。」 / "The retrieved clauses do not mention any limit on plot ratio for civil buildings. This question is outside the scope of this code and cannot be answered."
+Q:民用建筑的容积率上限是多少? / What is the maximum plot ratio for civil buildings?<br/>A:「检索到的条文未提及民用建筑容积率上限的相关规定。该问题超出本规范范围,无法回答。」 / "The retrieved clauses do not mention any limit on plot ratio for civil buildings. This question is outside the scope of this code and cannot be answered."
 
 对比 Dify 早期版本(gpt-4o-mini + 经济索引)曾幻觉编造 1.0.1 条款——LangChain 版本完全消除幻觉,再次印证检索质量是 RAG 可靠性的根本,而非 LLM 推理能力。
 
