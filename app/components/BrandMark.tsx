@@ -109,11 +109,11 @@ export default function BrandMark({ className = "" }: { className?: string }) {
     let tweenRaf:  number | null = null;
     let isDiscrete    = false;
     let discreteState = 0;   // 0=face  1=H.C.  2=H.C.Lai
-    let discreteTarget = 1;
+    let discreteTarget = 1;  // tracks current tween p-target to skip redundant tweens
 
-    // Threshold: scrollY at which face↔H.C. fires.
-    // ~7 Windows mouse-wheel notches × Chrome default ~100 px/notch.
-    const THRESHOLD_PX = 700;
+    // Position-based thresholds — same point triggers in both scroll directions.
+    const THRESHOLD_FACE = 700;   // face ↔ H.C.  (~7 Windows notches × 100 px)
+    const THRESHOLD_LAI  = 800;   // H.C. ↔ H.C.Lai (~8th notch)
 
     const P_FACE = 1;
     const P_HC   = 0.27; // build=0, contract=0, retract=1 → clean H.C.
@@ -147,28 +147,13 @@ export default function BrandMark({ className = "" }: { className?: string }) {
       return p;
     }
 
-    // Face ↔ H.C.: position-based, symmetrical.
-    // Fires on scroll so fast scrolls (any speed) hit the same trigger point as slow ones.
+    // All three states are position-based — same threshold triggers in both directions.
     function syncDiscreteState() {
-      const over = window.scrollY >= THRESHOLD_PX;
-      if (over && discreteState === 0) {
-        discreteState = 1;
-        startTween(P_HC);
-      } else if (!over && discreteState > 0) {
-        // Scrolled back above threshold — revert to face from any state.
-        discreteState = 0;
-        startTween(P_FACE);
-      }
-    }
-
-    // H.C. ↔ H.C.Lai: wheel-driven, one notch per direction.
-    function handleDiscreteWheel(e: WheelEvent) {
-      if (e.deltaY > 0 && discreteState === 1) {
-        discreteState = 2;
-        startTween(P_LAI);
-      } else if (e.deltaY < 0 && discreteState === 2) {
-        discreteState = 1;
-        startTween(P_HC);
+      const y = window.scrollY;
+      const next = y >= THRESHOLD_LAI ? 2 : y >= THRESHOLD_FACE ? 1 : 0;
+      if (next !== discreteState) {
+        discreteState = next;
+        startTween(next === 2 ? P_LAI : next === 1 ? P_HC : P_FACE);
       }
     }
 
@@ -176,10 +161,8 @@ export default function BrandMark({ className = "" }: { className?: string }) {
       const was = isDiscrete;
       isDiscrete = e.deltaMode === 1 || (e.deltaMode === 0 && Math.abs(e.deltaY) >= 50);
       if (isDiscrete) {
-        if (!was) syncDiscreteState(); // sync position state on first discrete event
-        handleDiscreteWheel(e);
+        if (!was) syncDiscreteState(); // snap to correct state on first discrete event
       } else if (was) {
-        // Switched back to smooth — cancel tween and sync
         if (tweenRaf !== null) { cancelAnimationFrame(tweenRaf); tweenRaf = null; }
         render(computePSmooth());
       }
