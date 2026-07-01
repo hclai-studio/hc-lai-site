@@ -48,7 +48,7 @@ export default function CaseExpandable({
           {title}
         </div>
         {preview}
-        <div className="mt-6 border-l border-line pl-6">
+        <div className="mt-6">
           {children}
         </div>
       </div>
@@ -64,16 +64,16 @@ export default function CaseExpandable({
 
       {preview}
 
-      {/* Bottom toggle button */}
+      {/* Bottom toggle button — no border, larger */}
       <button
         onClick={() => setIsOpen(!isOpen)}
         aria-expanded={isOpen}
-        className="mt-6 w-full flex items-center gap-3 border border-line px-4 py-3 text-left group/btn outline-none"
+        className="mt-6 w-full flex items-center gap-2 py-3 text-left group/btn outline-none"
       >
-        <span className="font-mono text-[12px] text-ink-muted group-hover/btn:text-terracotta transition-colors duration-300 select-none leading-none">
+        <span className="font-mono text-[15px] text-ink-muted group-hover/btn:text-terracotta transition-colors duration-300 select-none leading-none">
           {isOpen ? "▾" : "▸"}
         </span>
-        <span className="font-mono text-[11px] tracking-[0.10em] uppercase text-ink-muted group-hover/btn:text-terracotta transition-colors duration-300 select-none">
+        <span className="font-mono text-[13px] tracking-[0.08em] uppercase text-ink group-hover/btn:text-terracotta transition-colors duration-300 select-none">
           {isOpen ? "COLLAPSE" : "READ FULL CASE"}
         </span>
       </button>
