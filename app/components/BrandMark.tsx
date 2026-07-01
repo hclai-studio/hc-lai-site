@@ -107,11 +107,13 @@ export default function BrandMark({ className = "" }: { className?: string }) {
 
     let scrollRaf: number | null = null;
     let tweenRaf:  number | null = null;
-    let isDiscrete      = false;
-    let discreteState   = 0;   // 0=face  1=H.C.  2=H.C.Lai
-    let discreteTarget  = 1;
-    let downCount       = 0;   // cumulative downward notch count while in state 0
-    const HC_NOTCH      = 7;   // 7th downward notch triggers face→H.C.
+    let isDiscrete    = false;
+    let discreteState = 0;   // 0=face  1=H.C.  2=H.C.Lai
+    let discreteTarget = 1;
+
+    // Threshold: scrollY at which face↔H.C. fires.
+    // ~7 Windows mouse-wheel notches × Chrome default ~100 px/notch.
+    const THRESHOLD_PX = 700;
 
     const P_FACE = 1;
     const P_HC   = 0.27; // build=0, contract=0, retract=1 → clean H.C.
@@ -145,40 +147,28 @@ export default function BrandMark({ className = "" }: { className?: string }) {
       return p;
     }
 
-    // Windows: both transitions fire on the wheel event itself — zero scroll-event lag.
-    // State 0→1 uses a notch counter (not scrollY) so Chrome smooth-scroll delay
-    // never affects timing. State 1→2 fires unconditionally on the next notch.
-    function handleDiscreteWheel(e: WheelEvent) {
-      const down = e.deltaY > 0;
-
-      if (down) {
-        if (discreteState === 0) {
-          // Count by deltaY magnitude so fast/coalesced events aren't under-counted
-          const notches = e.deltaMode === 1 ? 1 : Math.max(1, Math.round(Math.abs(e.deltaY) / 100));
-          downCount += notches;
-          if (downCount >= HC_NOTCH) {
-            discreteState = 1;
-            startTween(P_HC);
-          }
-        } else if (discreteState === 1) {
-          discreteState = 2;
-          startTween(P_LAI);
-        }
-      } else {
-        // Upward wheel never reverts state — only reaching scrollY≈0 does (syncDiscreteFromScroll).
-        // Decrement counter only while still in face state so threshold stays predictable.
-        if (discreteState === 0) {
-          downCount = Math.max(0, downCount - 1);
-        }
+    // Face ↔ H.C.: position-based, symmetrical.
+    // Fires on scroll so fast scrolls (any speed) hit the same trigger point as slow ones.
+    function syncDiscreteState() {
+      const over = window.scrollY >= THRESHOLD_PX;
+      if (over && discreteState === 0) {
+        discreteState = 1;
+        startTween(P_HC);
+      } else if (!over && discreteState > 0) {
+        // Scrolled back above threshold — revert to face from any state.
+        discreteState = 0;
+        startTween(P_FACE);
       }
     }
 
-    // Primary revert path: logo returns to face only when page actually scrolls back to top.
-    function syncDiscreteFromScroll() {
-      if (window.scrollY < 80 && discreteState !== 0) {
-        discreteState = 0;
-        downCount = 0;
-        startTween(P_FACE);
+    // H.C. ↔ H.C.Lai: wheel-driven, one notch per direction.
+    function handleDiscreteWheel(e: WheelEvent) {
+      if (e.deltaY > 0 && discreteState === 1) {
+        discreteState = 2;
+        startTween(P_LAI);
+      } else if (e.deltaY < 0 && discreteState === 2) {
+        discreteState = 1;
+        startTween(P_HC);
       }
     }
 
@@ -186,6 +176,7 @@ export default function BrandMark({ className = "" }: { className?: string }) {
       const was = isDiscrete;
       isDiscrete = e.deltaMode === 1 || (e.deltaMode === 0 && Math.abs(e.deltaY) >= 50);
       if (isDiscrete) {
+        if (!was) syncDiscreteState(); // sync position state on first discrete event
         handleDiscreteWheel(e);
       } else if (was) {
         // Switched back to smooth — cancel tween and sync
@@ -196,7 +187,7 @@ export default function BrandMark({ className = "" }: { className?: string }) {
 
     function onScroll() {
       if (isDiscrete) {
-        syncDiscreteFromScroll(); // fallback only; primary transitions in onWheel
+        syncDiscreteState(); // position-based: fires for fast, slow, keyboard, scrollbar
       } else {
         if (scrollRaf !== null) return;
         scrollRaf = requestAnimationFrame(() => { scrollRaf = null; render(computePSmooth()); });
