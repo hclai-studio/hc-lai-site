@@ -1,23 +1,23 @@
 const works = [
   {
     number: "01",
-    titleEn: "AI Workflow & Enablement Portfolio",
-    titleCn: "AI 工作流与运营支持原型",
+    titleEn: "Encoding Design Judgment — A Visual Standard Assistant",
+    titleCn: "电商主图视觉标准对齐助手",
     description:
-      "一个工作流组合，展示如何将零散的项目输入转化为结构化、可追溯且可重复使用的输出。",
-    tags: ["AI Workflow", "Structured"],
+      "为一家多品牌大健康电商,把资深设计师没写下来的主图判断标准,做成新人即查即用的对齐助手。",
+    tags: ["AI Product", "Multimodal Judgment", "System Design"],
     year: "2026",
-    href: "/works/ai-workflow",
+    href: "/works/visual-standard-assistant",
   },
   {
     number: "02",
-    titleEn: "Semi-agentic Architectural Image Iteration",
-    titleCn: "Nanobanana 半自动建筑工作流",
+    titleEn: "Cross-Platform RAG — Fire Code QA Assistant",
+    titleCn: "建筑防火规范智能问答助手",
     description:
-      "围绕建筑效果图多轮生成场景搭建的半自动工作流原型，用于串联白模输入、prompt 装配、图像生成与 round/state 状态管理。",
-    tags: ["AIGC", "Architecture"],
+      "在 Coze、Dify、LangChain 三套架构上实现同一个防火规范 RAG 问答助手,量化各自的工程权衡。",
+    tags: ["RAG", "Vector Search", "Prompt Engineering"],
     year: "2026",
-    href: "/works/nanobanana",
+    href: "/works/fire-code-rag",
   },
   {
     number: "03",
@@ -31,13 +31,23 @@ const works = [
   },
   {
     number: "04",
-    titleEn: "Cross-Platform RAG — Fire Code QA Assistant",
-    titleCn: "建筑防火规范智能问答助手",
+    titleEn: "Semi-agentic Architectural Image Iteration",
+    titleCn: "Nanobanana 半自动建筑工作流",
     description:
-      "在 Coze、Dify、LangChain 三套架构上实现同一个防火规范 RAG 问答助手,量化各自的工程权衡。",
-    tags: ["RAG", "Vector Search", "Prompt Engineering"],
+      "围绕建筑效果图多轮生成场景搭建的半自动工作流原型，用于串联白模输入、prompt 装配、图像生成与 round/state 状态管理。",
+    tags: ["AIGC", "Architecture"],
     year: "2026",
-    href: "/works/fire-code-rag",
+    href: "/works/nanobanana",
+  },
+  {
+    number: "05",
+    titleEn: "AI Workflow & Enablement Portfolio",
+    titleCn: "AI 工作流与运营支持原型",
+    description:
+      "一个工作流组合，展示如何将零散的项目输入转化为结构化、可追溯且可重复使用的输出。",
+    tags: ["AI Workflow", "Structured"],
+    year: "2026",
+    href: "/works/ai-workflow",
   },
 ];
 

@@ -8,7 +8,7 @@ interface WorkImageProps {
   placeholder?: boolean;
 }
 
-export default function WorkImage({ src, caption, placeholder = true }: WorkImageProps) {
+export default function WorkImage({ src, caption, placeholder = false }: WorkImageProps) {
   const [open, setOpen] = useState(false);
   const [visible, setVisible] = useState(false);
 

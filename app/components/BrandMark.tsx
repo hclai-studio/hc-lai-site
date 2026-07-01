@@ -1,14 +1,13 @@
 "use client";
 
-// Ported from logo-wide-friend-motion-v11.html (mode='full', eased), direction reversed.
-// p=1 = Open Face (top), p=0 = H.C. Lai. (scrolled past hero).
-//
-// ⑥ Enlarged terminal state: font-size 72→200, baseline y 310→394 (aligns cap-top with bracket top).
-//    Text re-centered at x=520, dot targets re-derived at the same scale ratio.
-// ④ "字虚点实" fix: contract segment widened to (0.35, 0.78) so letters appear while dots still large.
-// ⑤ Dead zone: logo holds face until scrollY > START (≈45%vh), then morphs over D (≈40%vh).
+// Smooth input (Mac trackpad / touch): original scroll-driven animation, unchanged.
+// Discrete input (Windows mouse wheel, |deltaY|≥50 or deltaMode=1):
+//   3-state machine (0=face, 1=H.C., 2=H.C.Lai). Both transitions driven from the
+//   wheel event (not scroll) so latency is symmetric. T1 crossing uses estimated
+//   future scrollY (current + notch pixels) to avoid waiting for Chrome scroll anim.
 
 import { useEffect, useRef, useCallback } from "react";
+import { usePathname } from "next/navigation";
 
 function clamp(v: number, lo = 0, hi = 1) { return Math.max(lo, Math.min(hi, v)); }
 function easeInOutCubic(t: number) { return t < 0.5 ? 4*t*t*t : 1 - Math.pow(-2*t+2, 3)/2; }
@@ -18,6 +17,7 @@ function curve(v: number, type: string) {
   const t = clamp(v);
   if (type === "out")    return easeOutQuint(t);
   if (type === "strong") return easeInOutQuint(t);
+  if (type === "linear") return t;
   return easeInOutCubic(t);
 }
 function seg(p: number, s: number, e: number, type = "standard") {
@@ -26,6 +26,8 @@ function seg(p: number, s: number, e: number, type = "standard") {
 function mix(a: number, b: number, t: number) { return a + (b - a) * t; }
 
 export default function BrandMark({ className = "" }: { className?: string }) {
+  const pathname = usePathname();
+  const isWorkPage = pathname?.startsWith("/works/") ?? false;
   const wordHCRef     = useRef<SVGGElement>(null);
   const wordLaiRef    = useRef<SVGGElement>(null);
   const dotOneRef     = useRef<SVGRectElement>(null);
@@ -35,30 +37,25 @@ export default function BrandMark({ className = "" }: { className?: string }) {
   const rightBkRef    = useRef<SVGPolygonElement>(null);
   const pRef          = useRef(1);
 
-  const render = useCallback((rawP: number) => {
+  // discrete=true: skip the seg-level easing (p already eased by tween) so the
+  // first rendered frame shows immediate visible progress instead of a flat start.
+  const render = useCallback((rawP: number, discrete = false) => {
     const p      = clamp(rawP);
     pRef.current = p;
 
-    // ── core math verbatim from source (mode='full') ─────────────────────
-    // ④ contract widened: (0.22,0.6) → (0.35,0.78) — letters appear while dots still large
     const retract  = seg(p, 0,    0.22, "out");
-    const contract = seg(p, 0.35, 0.78, "strong");
-    const build    = seg(p, 0.32, 0.92, "strong");
+    // Wider range + linear for discrete → H.C. text appears by frame 3 (~50ms).
+    const contract = discrete ? seg(p, 0.55, 0.90, "linear") : seg(p, 0.55, 0.70, "strong");
+    const build    = seg(p, 0.32, 0.92, discrete ? "linear" : "strong");
 
-    // Vertical correction: H.C. Lai cap center sits below SVG geometric center.
-    // Applied as a fixed constant (not interpolated) so letters appear at the
-    // correct position without drifting upward while fading in.
-    // Tune WORD_Y_SHIFT — negative = upward in SVG coords.
-    const WORD_Y_SHIFT = -35; // viewBox units
+    const WORD_Y_SHIFT = -35;
 
-    // wordLai — slide + fade (⑥ new center x=760, y=394; slide -40 scaled from -14×200/72)
     const wLai = wordLaiRef.current;
     if (wLai) {
       wLai.setAttribute("opacity",   String(clamp(1 - retract)));
       wLai.setAttribute("transform", `translate(${mix(0, -40, retract)} ${WORD_Y_SHIFT})`);
     }
 
-    // wordHC — contract-scale + fade (⑥ new center x=310, y=394)
     const wHC = wordHCRef.current;
     if (wHC) {
       const s = mix(1, 0.94, contract);
@@ -67,10 +64,6 @@ export default function BrandMark({ className = "" }: { className?: string }) {
         `translate(0 ${WORD_Y_SHIFT}) translate(310 394) scale(${s} ${s}) translate(-310 -394)`);
     }
 
-    // dots: punctuation ↔ eyes
-    // ⑥ p=0 targets re-derived (scale 200/72=2.778): size 9→25, rx 3→8
-    //    dot1 cx: 431.5→311  (H-right + scaled gap), cy: 303.5→381  (baseline-period_r)
-    //    dot2 cx: 514.5→541  (C-right + scaled gap), cy: 303.5→381
     const d1 = dotOneRef.current;
     if (d1) {
       const cx = mix(311,    487.45, build);
@@ -99,7 +92,6 @@ export default function BrandMark({ className = "" }: { className?: string }) {
       d2.setAttribute("rx",     String(rx));
     }
 
-    // open face brackets (unchanged — face size not modified per brief)
     const of_ = openFriendRef.current;
     if (of_) {
       of_.setAttribute("opacity",   String(clamp(build)));
@@ -108,7 +100,7 @@ export default function BrandMark({ className = "" }: { className?: string }) {
     }
     if (leftBkRef.current)  leftBkRef.current.setAttribute("opacity",  String(clamp(build)));
     if (rightBkRef.current) rightBkRef.current.setAttribute("opacity", String(clamp(build)));
-  }, []);
+  }, [isWorkPage]);
 
   useEffect(() => {
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
@@ -116,12 +108,41 @@ export default function BrandMark({ className = "" }: { className?: string }) {
       return;
     }
 
-    let raf: number | null = null;
+    let scrollRaf: number | null = null;
+    let tweenRaf:  number | null = null;
+    let isDiscrete    = false;
+    let discreteState = 0;   // 0=face  1=H.C.  2=H.C.Lai
+    let discreteTarget = 1;  // tracks current tween p-target to skip redundant tweens
 
-    function computeP() {
-      // ⑤ dead zone: hold face until scrollY > START, then morph over D
-      const START = window.innerHeight * 0.45;  // tweak in DevTools
-      const D     = window.innerHeight * 0.40;  // tweak in DevTools
+    // Work pages scroll deeper before reaching content, so thresholds are shifted earlier.
+    const THRESHOLD_FACE = isWorkPage ? 600 : 700;
+    const THRESHOLD_LAI  = isWorkPage ? 700 : 800;
+
+    const P_FACE = 1;
+    const P_HC   = 0.27; // build=0, contract=0, retract=1 → clean H.C.
+    const P_LAI  = 0;
+
+    function startTween(to: number) {
+      if (to === discreteTarget) return;
+      discreteTarget = to;
+      const fromP = pRef.current;
+      const pDist = Math.abs(to - fromP);
+      // face↔H.C. spans ~0.73 of p and changes many elements → give it more time
+      const ms    = pDist > 0.50 ? 520 : 380;
+      const t0    = performance.now();
+      if (tweenRaf !== null) cancelAnimationFrame(tweenRaf);
+      function tick(now: number) {
+        const t = clamp((now - t0) / ms);
+        render(fromP + (discreteTarget - fromP) * easeOutQuint(t), true);
+        tweenRaf = t < 1 ? requestAnimationFrame(tick) : null;
+      }
+      tweenRaf = requestAnimationFrame(tick);
+    }
+
+    // Mac / touch: original scroll-driven (START / D / snap unchanged)
+    function computePSmooth() {
+      const START = window.innerHeight * 0.45;
+      const D     = window.innerHeight * 0.40;
       const raw   = clamp((window.scrollY - START) / D);
       let p = 1 - raw;
       if (p > 0.97) p = 1;
@@ -129,18 +150,43 @@ export default function BrandMark({ className = "" }: { className?: string }) {
       return p;
     }
 
-    function update() { render(computeP()); }
-
-    function onScroll() {
-      if (raf !== null) return;
-      raf = requestAnimationFrame(() => { raf = null; update(); });
+    // All three states are position-based — same threshold triggers in both directions.
+    function syncDiscreteState() {
+      const y = window.scrollY;
+      const next = y >= THRESHOLD_LAI ? 2 : y >= THRESHOLD_FACE ? 1 : 0;
+      if (next !== discreteState) {
+        discreteState = next;
+        startTween(next === 2 ? P_LAI : next === 1 ? P_HC : P_FACE);
+      }
     }
 
-    window.addEventListener("scroll", onScroll, { passive: true });
-    window.addEventListener("resize", update);
-    update();
+    function onWheel(e: WheelEvent) {
+      const was = isDiscrete;
+      isDiscrete = e.deltaMode === 1 || (e.deltaMode === 0 && Math.abs(e.deltaY) >= 50);
+      if (isDiscrete) {
+        if (!was) syncDiscreteState(); // snap to correct state on first discrete event
+      } else if (was) {
+        if (tweenRaf !== null) { cancelAnimationFrame(tweenRaf); tweenRaf = null; }
+        render(computePSmooth());
+      }
+    }
 
-    // eye blink: every 5s, only while face is showing
+    function onScroll() {
+      if (isDiscrete) {
+        syncDiscreteState(); // position-based: fires for fast, slow, keyboard, scrollbar
+      } else {
+        if (scrollRaf !== null) return;
+        scrollRaf = requestAnimationFrame(() => { scrollRaf = null; render(computePSmooth()); });
+      }
+    }
+
+    function onResize() { if (!isDiscrete) render(computePSmooth()); }
+
+    window.addEventListener("wheel",  onWheel,  { passive: true });
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onResize);
+    render(computePSmooth());
+
     const blink = setInterval(() => {
       if (pRef.current <= 0.9) return;
       [dotOneRef.current, dotTwoRef.current].forEach(el => {
@@ -151,17 +197,15 @@ export default function BrandMark({ className = "" }: { className?: string }) {
     }, 5000);
 
     return () => {
+      window.removeEventListener("wheel",  onWheel);
       window.removeEventListener("scroll", onScroll);
-      window.removeEventListener("resize", update);
-      if (raf !== null) cancelAnimationFrame(raf);
+      window.removeEventListener("resize", onResize);
+      if (scrollRaf !== null) cancelAnimationFrame(scrollRaf);
+      if (tweenRaf  !== null) cancelAnimationFrame(tweenRaf);
       clearInterval(blink);
     };
   }, [render]);
 
-  // JSX initial state = p=1 (open face)
-  // ⑥ Text positions at new scale: H x=121, C x=359, Lai x=601, baseline y=394
-  //    viewBox expanded to cover both: face (x:343-697) and text (x:121-920)
-  // width explicit (not auto) to prevent browser from defaulting to 300px and overflowing slot
   return (
     <svg
       viewBox="100 150 840 270"
@@ -173,21 +217,17 @@ export default function BrandMark({ className = "" }: { className?: string }) {
       className={className}
       aria-label="H.C. Lai"
     >
-      {/* HC — hidden at p=1; new x positions for font-size 200 */}
       <g ref={wordHCRef} opacity="0">
         <text className="brand-name" x="121" y="394">H</text>
         <text className="brand-name" x="359" y="394">C</text>
       </g>
-      {/* Lai — hidden at p=1 */}
       <g ref={wordLaiRef} opacity="0">
         <text className="brand-name" x="601" y="394">Lai</text>
       </g>
-      {/* dots: start at eye positions (p=1), morph to larger punctuation (p=0) */}
       <rect ref={dotOneRef} className="brand-eye"
         x="470.4" y="263.3" width="34.1" height="43.4" rx="0" />
       <rect ref={dotTwoRef} className="brand-eye"
         x="535.5" y="263.3" width="34.1" height="43.4" rx="0" />
-      {/* open face — original polygon, single shape */}
       <g ref={openFriendRef} transform="translate(343.3 176.5) scale(1.55)" opacity="1">
         <polygon ref={leftBkRef}
           points="0,0 54,0 54,32 28,32 28,108 54,108 54,140 0,140" />

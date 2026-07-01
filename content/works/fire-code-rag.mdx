@@ -59,13 +59,17 @@ This project uses GB 55037-2022 as the knowledge source to build a RAG QA assist
 
 Query: "What is the scope of this code?"
 
-- **Coze 版** —— 正确召回第 1.0.2 条原文,5.1s / 1535 tokens
-- **Dify 初版** —— 索引模式为「经济」时,Bot 召回前言混合内容,出现 hallucination
-- **Dify 修正版** —— 切换「高质量」语义索引后,正确召回 1.0.2 条原文(对齐 Coze)
+同一条 query，对照三种检索配置:
 
-- **Coze** — correctly recalled Clause 1.0.2 verbatim — 5.1s / 1535 tokens
-- **Dify (initial)** — under "economical" indexing, the bot recalled mixed preface content and hallucinated
-- **Dify (fixed)** — after switching to "high-quality" semantic indexing, it correctly recalled Clause 1.0.2, aligned with Coze
+- **Coze · Hybrid 检索** —— 正确召回第 1.0.2 条原文,5.1s / 1535 tokens
+- **Dify · 经济索引（关键词）** —— 召回前言混合内容,出现 hallucination
+- **Dify · 高质量索引（语义）** —— 正确召回 1.0.2 条原文,与 Coze 对齐
+
+The same query, across three retrieval configurations:
+
+- **Coze · hybrid retrieval** — correctly recalled Clause 1.0.2 verbatim — 5.1s / 1535 tokens
+- **Dify · economical index (keyword)** — recalled mixed preface content and hallucinated
+- **Dify · high-quality index (semantic)** — correctly recalled Clause 1.0.2, aligned with Coze
 
 > **关键工程结论 / Key finding**
 >
@@ -81,13 +85,13 @@ Query: "What is the scope of this code?"
 
 <WorkImage
   src="/works/fire-code-rag/dify-hallucination.png"
-  caption="Dify 初版(经济索引)幻觉案例:召回前言混合内容。 / Dify (initial, economical index): a hallucination case recalling mixed preface content."
+  caption="Dify · 经济索引(关键词):召回前言混合内容的幻觉案例。 / Dify · economical index (keyword): a hallucination recalling mixed preface content."
   placeholder={false}
 />
 
 <WorkImage
   src="/works/fire-code-rag/dify-fixed.png"
-  caption="Dify 切换高质量语义索引后,召回结果对齐 Coze。 / After switching to high-quality semantic indexing, Dify's recall aligns with Coze."
+  caption="Dify · 高质量索引(语义):召回结果与 Coze 对齐。 / Dify · high-quality index (semantic): recall aligns with Coze."
   placeholder={false}
 />
 
@@ -107,9 +111,9 @@ Query: "What is the maximum plot ratio for civil buildings?" Both bots politely 
 
 ## 05 | LangChain 自研实现 Building It From Scratch
 
-Coze 和 Dify 让我理解了 RAG 的「产品形态」,但每一步底层都是平台替我做的——切块、嵌入、检索、Prompt 编排,我只是配置参数,真正的工程决策权在平台。LangChain 版本是**完全代码实现**,目的是把「每个组件做什么、为什么这样做」在自己手里走一遍。
+Coze 和 Dify 给出的是 RAG 的产品形态：切块、嵌入、检索、Prompt 编排都由平台封装，工程决策通过配置表达。LangChain 版本换一条路——**完全用代码实现**同一套管线，把每一层的实现与取舍都显式地摊开。
 
-Coze and Dify taught me the "product shape" of RAG, but the platform made every underlying decision for me — chunking, embeddings, retrieval, prompt orchestration — I was only setting parameters; the real engineering control sat with the platform. The LangChain version is **written entirely in code**, to walk through "what each component does and why" with my own hands.
+Coze and Dify give the product shape of RAG: chunking, embeddings, retrieval, and prompt orchestration are all encapsulated by the platform, with engineering decisions expressed through configuration. The LangChain version takes the other route — implementing the same pipeline **entirely in code**, making every layer's implementation and trade-offs explicit.
 
 | 平台 Platform | 实现方式 How | 工程控制权 Control |
 | --- | --- | --- |
@@ -119,11 +123,12 @@ Coze and Dify taught me the "product shape" of RAG, but the platform made every 
 
 <CaseExpandable
   title="LangChain 实现细节 · From Scratch"
+  alwaysOpen
   scenario="第三个版本:用 LangChain (LCEL) 从零写出完整 RAG 管线,把平台替我做的每个决策收回自己手里。"
-  whyItMatters="验证我不只是『会配置 RAG 平台』,而是理解 RAG 每个组件的工程取舍、能自己写出来。"
+  whyItMatters="对照低代码平台的配置路径，把 RAG 每个组件的工程取舍在代码层面走一遍——切块、嵌入、检索、Prompt 编排，每步都有显式决策，不依赖平台默认值。"
   whatItProves={[
-    "从『会用 AI 工具』上升到『会写 AI 应用代码』",
-    "完整掌握 LangChain LCEL、向量库、嵌入模型、prompt engineering 的工程组合",
+    "手写管线与低代码路径行为对齐：同一知识源，两条路径，召回结果可比对",
+    "LangChain LCEL、向量库、嵌入模型、prompt engineering 作为工程组合的联动方式与决策依据",
     "再次验证:RAG 的真实瓶颈在检索质量与切块策略,不在 LLM 推理能力"
   ]}
 >
@@ -144,25 +149,21 @@ Coze and Dify taught me the "product shape" of RAG, but the platform made every 
 
 1. **嵌入模型选 BGE 本地版而非 OpenAI** —— 中国大陆访问 OpenAI 嵌入 API 不稳定,BGE 本地零依赖,且中文场景质量更优。
 2. **LLM 选 DeepSeek-V3** —— 成本极低、国内可直连;RAG 场景对 LLM 推理要求不极致,DeepSeek 完全够用。
-3. **API key 通过 .env 管理** —— 硬编码进代码是工业界禁忌,.env + .gitignore 是基本素养。
+3. **密钥与配置分离** —— API key 走 .env + .gitignore,不进版本库。
 
 1. **Local BGE over OpenAI embeddings** — OpenAI's embedding API is unreliable from mainland China; BGE runs locally with zero dependency and performs better on Chinese text.
 2. **DeepSeek-V3 as the LLM** — very low cost and directly reachable domestically; RAG doesn't demand extreme reasoning, so DeepSeek is more than enough.
-3. **API keys via .env** — hardcoding keys is an industry taboo; .env + .gitignore is table stakes.
+3. **Secrets kept out of code** — API keys live in .env + .gitignore, never in the repo.
 
 ### 测试效果 / Test Results
 
 **Test 1(正常问题 / In-scope)**
 
-> Q:民用建筑的耐火等级是怎么规定的? / How are fire-resistance ratings for civil buildings defined?
->
-> A:按耐火等级一 / 二 / 三级分类,引用 5.3.1 / 5.3.2 / 5.3.3 条款 + 5.1.2 / 5.1.3 特殊要求,每条都标注页码。 / A graded answer across Grade I / II / III, citing Clauses 5.3.1 / 5.3.2 / 5.3.3 plus special requirements 5.1.2 / 5.1.3 — each with page numbers.
+Q:民用建筑的耐火等级是怎么规定的? / How are fire-resistance ratings for civil buildings defined?<br/>A:按耐火等级一 / 二 / 三级分类,引用 5.3.1 / 5.3.2 / 5.3.3 条款 + 5.1.2 / 5.1.3 特殊要求,每条都标注页码。 / A graded answer across Grade I / II / III, citing Clauses 5.3.1 / 5.3.2 / 5.3.3 plus special requirements 5.1.2 / 5.1.3 — each with page numbers.
 
 **Test 2(超纲拒答 / Out-of-scope)**
 
-> Q:民用建筑的容积率上限是多少? / What is the maximum plot ratio for civil buildings?
->
-> A:「检索到的条文未提及民用建筑容积率上限的相关规定。该问题超出本规范范围,无法回答。」 / "The retrieved clauses do not mention any limit on plot ratio for civil buildings. This question is outside the scope of this code and cannot be answered."
+Q:民用建筑的容积率上限是多少? / What is the maximum plot ratio for civil buildings?<br/>A:「检索到的条文未提及民用建筑容积率上限的相关规定。该问题超出本规范范围,无法回答。」 / "The retrieved clauses do not mention any limit on plot ratio for civil buildings. This question is outside the scope of this code and cannot be answered."
 
 对比 Dify 早期版本(gpt-4o-mini + 经济索引)曾幻觉编造 1.0.1 条款——LangChain 版本完全消除幻觉,再次印证检索质量是 RAG 可靠性的根本,而非 LLM 推理能力。
 
@@ -170,9 +171,9 @@ Where the early Dify build (gpt-4o-mini + economical index) once hallucinated a 
 
 ### 这一版的收获 / Takeaways
 
-- 从「会用 AI 工具」上升到「会写 AI 应用代码」 / From "using AI tools" to "writing AI application code"
-- 完整掌握 LCEL、向量数据库、嵌入模型、prompt engineering 的工程组合 / A full working grasp of LCEL, vector databases, embedding models, and prompt engineering as one stack
-- 理解 RAG 真实瓶颈不在 LLM,而在检索质量与切块策略 / Understanding that the real RAG bottleneck is retrieval quality and chunking, not the LLM
+- 手写管线与低代码路径行为对齐——同一知识源，两条路径，召回结果可比对 / Hand-written and low-code RAG pipelines produce aligned behavior — same source, two paths, comparable recall
+- LangChain LCEL、向量库、嵌入模型、prompt engineering 作为工程组合的联动方式 / LangChain LCEL, vector store, embedding model, and prompt engineering as an integrated engineering stack
+- 检索质量与切块策略是 RAG 可靠性的根本，不是 LLM 推理能力 / Retrieval quality and chunking strategy are the foundation of RAG reliability, not LLM reasoning
 
 <WorkImage
   src="/works/fire-code-rag/langchain-repo.png"

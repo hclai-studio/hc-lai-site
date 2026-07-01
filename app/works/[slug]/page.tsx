@@ -3,10 +3,11 @@ import { notFound } from 'next/navigation';
 type WorkModule = { default: React.ComponentType };
 
 const works: Record<string, () => Promise<WorkModule>> = {
-  'ai-workflow':   () => import('@/content/works/ai-workflow.mdx'),
-  nanobanana:      () => import('@/content/works/nanobanana.mdx'),
-  'job-decision':  () => import('@/content/works/job-decision.mdx'),
-  'fire-code-rag': () => import('@/content/works/fire-code-rag.mdx'),
+  'visual-standard-assistant': () => import('@/content/works/visual-standard-assistant.mdx'),
+  'ai-workflow':               () => import('@/content/works/ai-workflow.mdx'),
+  nanobanana:                  () => import('@/content/works/nanobanana.mdx'),
+  'job-decision':              () => import('@/content/works/job-decision.mdx'),
+  'fire-code-rag':             () => import('@/content/works/fire-code-rag.mdx'),
 };
 
 export function generateStaticParams() {
@@ -14,10 +15,11 @@ export function generateStaticParams() {
 }
 
 const moreWork = [
-  { number: '01', titleEn: 'AI Workflow & Enablement Portfolio',              href: '/works/ai-workflow' },
-  { number: '02', titleEn: 'Semi-agentic Architectural Image Iteration',      href: '/works/nanobanana' },
-  { number: '03', titleEn: 'Semi-automated Job Decision Workflow',            href: '/works/job-decision' },
-  { number: '04', titleEn: 'Cross-Platform RAG — Fire Code QA Assistant',    href: '/works/fire-code-rag' },
+  { number: '01', titleEn: 'Encoding Design Judgment — A Visual Standard Assistant', href: '/works/visual-standard-assistant' },
+  { number: '02', titleEn: 'Cross-Platform RAG — Fire Code QA Assistant',            href: '/works/fire-code-rag' },
+  { number: '03', titleEn: 'Semi-automated Job Decision Workflow',                    href: '/works/job-decision' },
+  { number: '04', titleEn: 'Semi-agentic Architectural Image Iteration',              href: '/works/nanobanana' },
+  { number: '05', titleEn: 'AI Workflow & Enablement Portfolio',                      href: '/works/ai-workflow' },
 ];
 
 export default async function WorkPage({ params }: { params: { slug: string } }) {
