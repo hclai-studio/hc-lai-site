@@ -35,16 +35,19 @@ export default function WorkImage({ src, caption, placeholder = false }: WorkIma
     setTimeout(() => setOpen(false), 200);
   }
 
+  const breakoutClass =
+    "w-[min(880px,calc(100vw-3rem))] mx-[calc((100%-min(880px,calc(100vw-3rem)))/2)]";
+
   if (placeholder) {
     return (
-      <figure className="my-10 max-w-[900px] mx-auto px-6 md:px-0">
-        <div className="w-full h-[300px] md:h-[400px] bg-[rgba(28,27,23,0.05)] border border-line flex items-center justify-center">
+      <figure className={`my-10 ${breakoutClass}`}>
+        <div className="w-full h-[300px] md:h-[400px] bg-[rgba(28,27,23,0.05)] border border-line rounded-xl flex items-center justify-center">
           <span className="font-mono text-ink-muted text-[11px] tracking-[0.1em] uppercase">
             image to be uploaded
           </span>
         </div>
         {caption && (
-          <figcaption className="font-mono text-ink-muted text-[11px] tracking-[0.08em] text-center mt-3">
+          <figcaption className="font-mono text-ink-muted text-[13px] tracking-[0.05em] leading-[1.6] text-left mt-4">
             {caption}
           </figcaption>
         )}
@@ -54,15 +57,15 @@ export default function WorkImage({ src, caption, placeholder = false }: WorkIma
 
   return (
     <>
-      <figure className="my-10 max-w-[900px] mx-auto px-6 md:px-0">
+      <figure className={`my-10 ${breakoutClass}`}>
         <img
           src={src}
           alt={caption ?? ''}
           onClick={() => setOpen(true)}
-          className="w-full cursor-zoom-in transition-opacity duration-300 hover:opacity-90"
+          className="w-full rounded-xl cursor-zoom-in transition-opacity duration-300 hover:opacity-90"
         />
         {caption && (
-          <figcaption className="font-mono text-ink-muted text-[11px] tracking-[0.08em] text-center mt-3">
+          <figcaption className="font-mono text-ink-muted text-[13px] tracking-[0.05em] leading-[1.6] text-left mt-4">
             {caption}
           </figcaption>
         )}
