@@ -6,7 +6,7 @@ export default function About() {
     >
       {/* ── Left: label + heading ─────────────────────────────────── */}
       <div>
-        <p className="font-mono uppercase text-ink-muted text-[10px] tracking-[0.18em] mb-7">
+        <p className="font-mono uppercase text-ink-muted text-[11px] tracking-[0.18em] mb-7">
           001 — About
         </p>
         <h2

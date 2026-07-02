@@ -33,7 +33,7 @@ export default function Contact() {
       <div className="contact-inner grid grid-cols-1 items-start gap-10 md:grid-cols-[1fr_1.1fr] md:gap-[80px]">
         {/* ── Left: label + heading ───────────────────────────────── */}
         <div>
-          <p className="font-mono uppercase text-ink-muted text-[10px] tracking-[0.18em] mb-7">
+          <p className="font-mono uppercase text-ink-muted text-[11px] tracking-[0.18em] mb-7">
             003 — Contact
           </p>
           <h2

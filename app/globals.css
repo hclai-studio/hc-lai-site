@@ -245,6 +245,10 @@
 
 .prose-works p + p { margin-top: 24px; }
 
+.prose-works blockquote { margin-top: 24px; margin-bottom: 24px; }
+.prose-works p + blockquote { margin-top: 24px; }
+.prose-works blockquote + p { margin-top: 24px; }
+
 /* Bold — Chiron Sung HK 700 (true VF weight, no faux bold) */
 .prose-works strong {
   font-weight: 700;
