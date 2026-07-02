@@ -284,7 +284,7 @@
 }
 
 .prose-works th {
-  font-family: var(--font-geist-mono), 'Menlo', monospace;
+  font-family: var(--font-geist-mono), 'Noto Sans SC', 'Menlo', monospace;
   font-size: 11px;
   font-weight: 400;
   letter-spacing: 0.08em;
@@ -316,7 +316,7 @@
 }
 
 .prose-works code {
-  font-family: var(--font-geist-mono), 'Menlo', monospace;
+  font-family: var(--font-geist-mono), 'Noto Sans SC', 'Menlo', monospace;
   font-size: 14px;
   background: rgba(184, 92, 56, 0.08);
   padding: 2px 6px;
