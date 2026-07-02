@@ -79,7 +79,7 @@ The same query, across three retrieval configurations:
 
 <WorkImage
   src="/works/fire-code-rag/coze-correct.png"
-  caption="Coze 版正确召回第 1.0.2 条原文。 / Coze correctly recalls Clause 1.0.2 verbatim."
+  caption="Coze 版正向测试的实际回答——目标条文第 1.0.2 条被逐字召回，未出现改写或杜撰。 / The Coze build on the in-scope test — target Clause 1.0.2 recalled verbatim, with no paraphrase or fabrication."
   placeholder={false}
 />
 
@@ -177,19 +177,19 @@ Where the early Dify build (gpt-4o-mini + economical index) once hallucinated a 
 
 <WorkImage
   src="/works/fire-code-rag/langchain-repo.png"
-  caption="GitHub 仓库首页。 / The GitHub repository homepage."
+  caption="LangChain 版的 GitHub 仓库首页——从零手写的完整 RAG 管线，按 step 脚本分步组织。 / The GitHub repo for the LangChain build — the complete hand-written RAG pipeline, organized as step-by-step scripts."
   placeholder={false}
 />
 
 <WorkImage
   src="/works/fire-code-rag/langchain-code.png"
-  caption="step5_rag.py 的核心 LCEL 链路代码。 / The core LCEL pipeline in step5_rag.py."
+  caption="step5_rag.py 的核心 LCEL 链路——检索、Prompt 组装与生成显式串成一条链，每一步取舍可见。 / The core LCEL chain in step5_rag.py — retrieval, prompt assembly, and generation wired explicitly into one chain, every decision visible."
   placeholder={false}
 />
 
 <WorkImage
   src="/works/fire-code-rag/langchain-test.png"
-  caption="测试 1 + 测试 2 的命令行原始输出。 / Raw command-line output for Test 1 and Test 2."
+  caption="测试 1 + 测试 2 的命令行原始输出——正向召回与超纲拒答，两组行为一屏对照。 / Raw command-line output of Tests 1 and 2 — in-scope recall and out-of-scope refusal, side by side."
   placeholder={false}
 />
 
