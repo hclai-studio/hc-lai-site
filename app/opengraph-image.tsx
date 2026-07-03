@@ -31,6 +31,7 @@ export default async function Image() {
             fontWeight: 400,
             color: "#1C1B17",
             lineHeight: 1,
+            transform: "translateX(-28px)",
           }}
         >
           H.C. Lai
@@ -41,6 +42,7 @@ export default async function Image() {
             alignItems: "baseline",
             marginTop: 28,
             fontSize: 38,
+            transform: "translateX(-56px)",
           }}
         >
           <span style={{ fontFamily: "Instrument Serif", color: "#1C1B17", marginRight: 8 }}>
