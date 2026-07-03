@@ -46,15 +46,21 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
-        {/* CJK fonts via Google Fonts — kept as <link> since next/font/google
-            handles CJK subset sizes poorly (auto-subset misses many glyphs). */}
-        {/* eslint-disable-next-line @next/next/no-page-custom-font */}
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        {/* eslint-disable-next-line @next/next/no-page-custom-font */}
+        {/* Instrument Serif latin subset (regular + italic) — the two files every
+            page needs immediately; CJK slices load on demand via unicode-range. */}
         <link
-          href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Noto+Serif+SC:wght@400;700&family=Noto+Sans+SC:wght@400;700&display=swap"
-          rel="stylesheet"
+          rel="preload"
+          href="/fonts/instrument-serif/jizBRFtNs2ka5fXjeivQ4LroWlx-6zUTjnTLgNs.woff2"
+          as="font"
+          type="font/woff2"
+          crossOrigin="anonymous"
+        />
+        <link
+          rel="preload"
+          href="/fonts/instrument-serif/jizHRFtNs2ka5fXjeivQ4LroWlx-6zAjjH7Motmp5g.woff2"
+          as="font"
+          type="font/woff2"
+          crossOrigin="anonymous"
         />
       </head>
       <body

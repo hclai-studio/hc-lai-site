@@ -2,8 +2,11 @@
 @tailwind components;
 @tailwind utilities;
 
-/* ── Chiron Sung HK — VF weight 200-900, 109 unicode-range slices, optional load ── */
+/* ── Chiron Sung HK — VF weight 200-900, 109 unicode-range slices, self-hosted ── */
 @import './fonts/chiron-sung.css';
+
+/* ── Instrument Serif + Noto Serif/Sans SC — self-hosted, mirrors Google Fonts slicing ── */
+@import './fonts/google-fonts-local.css';
 
 
 /* Digits-only face: 0-9 and numeric punctuation → Geist Mono lining figures */
