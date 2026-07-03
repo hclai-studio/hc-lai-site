@@ -70,6 +70,23 @@ export default function RootLayout({
           type="font/woff2"
           crossOrigin="anonymous"
         />
+        {/* Noto Sans SC 400 — most widely used weight (card/header subtitles, above the
+            fold on every page); 700 loads via swap, it's only below the fold in article h2/h3. */}
+        <link
+          rel="preload"
+          href="/fonts/noto-sans-sc-subset/noto-sans-sc-400-subset.woff2"
+          as="font"
+          type="font/woff2"
+          crossOrigin="anonymous"
+        />
+        {/* Noto Serif SC 700 — subset build for Chinese bold text */}
+        <link
+          rel="preload"
+          href="/fonts/noto-serif-sc-subset/noto-serif-sc-700-subset.woff2"
+          as="font"
+          type="font/woff2"
+          crossOrigin="anonymous"
+        />
       </head>
       <body
         className={`${geist.variable} ${geistMono.variable} font-sans antialiased bg-cream text-ink`}

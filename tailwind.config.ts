@@ -18,9 +18,9 @@ const config: Config = {
       },
       fontFamily: {
         serif: ["'Instrument Serif'", "Times New Roman", "serif"],
-        sans: ["var(--font-geist)", "Noto Serif SC", "system-ui", "-apple-system", "sans-serif"],
+        sans: ["var(--font-geist)", "Noto Sans SC", "system-ui", "-apple-system", "sans-serif"],
         mono: ["var(--font-geist-mono)", "'Noto Sans SC'", "Menlo", "monospace"],
-        "serif-cn": ["Noto Serif SC", "serif"],
+        "serif-cn": ["'Chiron Sung HK'", "Noto Serif SC", "serif"],
         "sans-cn": ["Noto Sans SC", "sans-serif"],
       },
       letterSpacing: {

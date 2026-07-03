@@ -1,0 +1,27 @@
+/**
+ * Noto Sans SC (400, 700) + Noto Serif SC 700 — character-subset builds, replace the
+ * old unicode-range slice sets for these families/weights.
+ * Regenerate with `npm run subset:fonts` after adding or editing Chinese copy
+ * (see scripts/subset-fonts.mjs).
+ */
+@font-face {
+  font-family: 'Noto Sans SC';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('/fonts/noto-sans-sc-subset/noto-sans-sc-400-subset.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Noto Sans SC';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url('/fonts/noto-sans-sc-subset/noto-sans-sc-700-subset.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Noto Serif SC';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url('/fonts/noto-serif-sc-subset/noto-serif-sc-700-subset.woff2') format('woff2');
+}

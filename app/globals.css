@@ -5,8 +5,11 @@
 /* ── Chiron Sung HK — character-subset build (was 109 unicode-range slices) ── */
 @import './fonts/chiron-sung-subset.css';
 
-/* ── Instrument Serif + Noto Serif/Sans SC — self-hosted, mirrors Google Fonts slicing ── */
+/* ── Instrument Serif + Noto Serif SC 400 (fallback slices) — self-hosted ── */
 @import './fonts/google-fonts-local.css';
+
+/* ── Noto Sans SC + Noto Serif SC 700 — character-subset builds ── */
+@import './fonts/noto-subset.css';
 
 
 /* Digits-only face: 0-9 and numeric punctuation → Geist Mono lining figures */
@@ -252,9 +255,22 @@
 .prose-works p + blockquote { margin-top: 24px; }
 .prose-works blockquote + p { margin-top: 24px; }
 
-/* Bold — Chiron Sung HK 700 (true VF weight, no faux bold) */
+/* Bold — Chiron Sung HK's subset is pinned to 400 with no other weight registered, and
+   browsers don't skip a family just because it lacks the requested weight — they render
+   that family's nearest face as-is (font-synthesis-weight: none only stops literal faux
+   embolden, it doesn't force fallthrough). So bold text drops Chiron from the stack
+   entirely here, landing on Noto Serif SC 700 for a real bold face. */
 .prose-works strong {
+  font-family: 'NumDigitsOnly', Georgia, 'Noto Serif SC', serif;
   font-weight: 700;
+  font-synthesis-weight: none;
+}
+
+/* font-serif-cn (About, JudgmentCard) — same real-bold fallback as .prose-works strong,
+   in case bold Chinese text is ever added through this utility. */
+.font-serif-cn.font-bold,
+.font-serif-cn.font-semibold {
+  font-family: 'Noto Serif SC', serif;
   font-synthesis-weight: none;
 }
 
