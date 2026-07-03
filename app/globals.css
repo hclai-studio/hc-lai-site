@@ -2,8 +2,8 @@
 @tailwind components;
 @tailwind utilities;
 
-/* ── Chiron Sung HK — VF weight 200-900, 109 unicode-range slices, self-hosted ── */
-@import './fonts/chiron-sung.css';
+/* ── Chiron Sung HK — character-subset build (was 109 unicode-range slices) ── */
+@import './fonts/chiron-sung-subset.css';
 
 /* ── Instrument Serif + Noto Serif/Sans SC — self-hosted, mirrors Google Fonts slicing ── */
 @import './fonts/google-fonts-local.css';

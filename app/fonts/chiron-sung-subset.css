@@ -1,0 +1,12 @@
+/**
+ * Chiron Sung HK — character-subset build, replaces the old 109-slice unicode-range setup.
+ * Regenerate with `npm run subset:fonts` after adding or editing Chinese copy
+ * (see scripts/subset-fonts.mjs).
+ */
+@font-face {
+  font-family: 'Chiron Sung HK';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('/fonts/chiron-sung-subset/chiron-sung-hk-subset.woff2') format('woff2');
+}

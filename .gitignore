@@ -36,6 +36,10 @@ Thumbs.db
 # generated font files (copied from node_modules at build time)
 /public/fonts/chiron-sung-hk/
 
+# full Chiron Sung HK VF source used only to generate the subset — re-fetch via
+# `npm pack @fontpkg/chiron-sung-hk-vf` if missing, see scripts/subset-fonts.mjs
+/fonts-src/
+
 # typescript
 *.tsbuildinfo
 next-env.d.ts

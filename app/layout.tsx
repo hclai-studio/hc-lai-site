@@ -62,6 +62,14 @@ export default function RootLayout({
           type="font/woff2"
           crossOrigin="anonymous"
         />
+        {/* Chiron Sung HK — single character-subset file (was 109 unicode-range slices) */}
+        <link
+          rel="preload"
+          href="/fonts/chiron-sung-subset/chiron-sung-hk-subset.woff2"
+          as="font"
+          type="font/woff2"
+          crossOrigin="anonymous"
+        />
       </head>
       <body
         className={`${geist.variable} ${geistMono.variable} font-sans antialiased bg-cream text-ink`}
