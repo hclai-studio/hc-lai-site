@@ -1,4 +1,5 @@
 import { notFound } from 'next/navigation';
+import type { Metadata } from 'next';
 
 type WorkModule = { default: React.ComponentType };
 
@@ -21,6 +22,11 @@ const moreWork = [
   { number: '04', titleEn: 'Semi-agentic Architectural Image Iteration',              href: '/works/nanobanana' },
   { number: '05', titleEn: 'AI Workflow & Enablement Portfolio',                      href: '/works/ai-workflow' },
 ];
+
+export function generateMetadata({ params }: { params: { slug: string } }): Metadata {
+  const work = moreWork.find((w) => w.href === `/works/${params.slug}`);
+  return { title: work?.titleEn };
+}
 
 export default async function WorkPage({ params }: { params: { slug: string } }) {
   const loader = works[params.slug];

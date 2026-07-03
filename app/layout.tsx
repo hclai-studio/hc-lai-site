@@ -19,8 +19,25 @@ const geistMono = localFont({
 
 
 export const metadata: Metadata = {
-  title: "H.C. Lai",
-  description: "Designer of spaces and systems.",
+  metadataBase: new URL("https://hclai.studio"),
+  title: {
+    default: "H.C. Lai — Designer of spaces and systems.",
+    template: "%s — H.C. Lai",
+  },
+  description: "五个 AI 项目的完整记录：从视觉标准判定到手写 RAG 管线。",
+  openGraph: {
+    title: "H.C. Lai — Designer of spaces and systems.",
+    description: "五个 AI 项目的完整记录：从视觉标准判定到手写 RAG 管线。",
+    url: "/",
+    siteName: "H.C. Lai",
+    locale: "zh_CN",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "H.C. Lai — Designer of spaces and systems.",
+    description: "五个 AI 项目的完整记录：从视觉标准判定到手写 RAG 管线。",
+  },
 };
 
 export default function RootLayout({
