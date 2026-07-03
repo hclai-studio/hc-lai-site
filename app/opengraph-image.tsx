@@ -24,36 +24,35 @@ export default async function Image() {
           backgroundColor: "#F2EFE9",
         }}
       >
-        <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end" }}>
-          <div
-            style={{
-              fontFamily: "Instrument Serif",
-              fontSize: 150,
-              fontWeight: 400,
-              color: "#1C1B17",
-              lineHeight: 1,
-            }}
-          >
-            H.C. Lai
-          </div>
-          <div
-            style={{
-              display: "flex",
-              alignItems: "baseline",
-              marginTop: 28,
-              fontSize: 38,
-            }}
-          >
-            <span style={{ fontFamily: "Instrument Serif", color: "#1C1B17", marginRight: 8 }}>
-              —
-            </span>
-            <span style={{ fontFamily: "Instrument Serif", fontStyle: "italic", color: "#6B6862" }}>
-              Designer of
-            </span>
-            <span style={{ fontFamily: "Instrument Serif", color: "#1C1B17", marginLeft: 8 }}>
-              spaces and systems.
-            </span>
-          </div>
+        <div
+          style={{
+            fontFamily: "Instrument Serif",
+            fontSize: 150,
+            fontWeight: 400,
+            color: "#1C1B17",
+            lineHeight: 1,
+          }}
+        >
+          H.C. Lai
+        </div>
+        <div
+          style={{
+            display: "flex",
+            alignItems: "baseline",
+            marginTop: 28,
+            fontSize: 38,
+            transform: "translateX(-6px)",
+          }}
+        >
+          <span style={{ fontFamily: "Instrument Serif", color: "#1C1B17", marginRight: 8 }}>
+            —
+          </span>
+          <span style={{ fontFamily: "Instrument Serif", fontStyle: "italic", color: "#6B6862" }}>
+            Designer of
+          </span>
+          <span style={{ fontFamily: "Instrument Serif", color: "#1C1B17", marginLeft: 8 }}>
+            spaces and systems.
+          </span>
         </div>
       </div>
     ),
