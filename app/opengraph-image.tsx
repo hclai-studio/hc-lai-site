@@ -1,14 +1,15 @@
 import { ImageResponse } from "next/og";
+import { readFile } from "node:fs/promises";
+import { join } from "node:path";
 
 export const alt = "H.C. Lai — Designer of spaces and systems.";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
-const INSTRUMENT_SERIF_TTF =
-  "https://fonts.gstatic.com/s/instrumentserif/v5/jizBRFtNs2ka5fXjeivQ4LroWlx-2zI.ttf";
-
 export default async function Image() {
-  const fontData = await fetch(INSTRUMENT_SERIF_TTF).then((res) => res.arrayBuffer());
+  const fontsDir = join(process.cwd(), "app/fonts");
+  const serifRegular = await readFile(join(fontsDir, "InstrumentSerif-Regular-OG.ttf"));
+  const serifItalic = await readFile(join(fontsDir, "InstrumentSerif-Italic-OG.ttf"));
 
   return new ImageResponse(
     (
@@ -19,9 +20,8 @@ export default async function Image() {
           display: "flex",
           flexDirection: "column",
           justifyContent: "center",
-          alignItems: "flex-start",
+          alignItems: "center",
           backgroundColor: "#F2EFE9",
-          paddingLeft: 110,
         }}
       >
         <div
@@ -37,26 +37,29 @@ export default async function Image() {
         </div>
         <div
           style={{
-            fontFamily: "Instrument Serif",
-            fontSize: 38,
-            fontWeight: 400,
-            color: "#6B6862",
+            display: "flex",
+            alignItems: "baseline",
             marginTop: 28,
+            fontSize: 38,
           }}
         >
-          — Designer of spaces and systems.
+          <span style={{ fontFamily: "Instrument Serif", color: "#1C1B17", marginRight: 8 }}>
+            —
+          </span>
+          <span style={{ fontFamily: "Instrument Serif", fontStyle: "italic", color: "#6B6862" }}>
+            Designer of
+          </span>
+          <span style={{ fontFamily: "Instrument Serif", color: "#1C1B17", marginLeft: 8 }}>
+            spaces and systems.
+          </span>
         </div>
       </div>
     ),
     {
       ...size,
       fonts: [
-        {
-          name: "Instrument Serif",
-          data: fontData,
-          style: "normal",
-          weight: 400,
-        },
+        { name: "Instrument Serif", data: serifRegular, style: "normal", weight: 400 },
+        { name: "Instrument Serif", data: serifItalic, style: "italic", weight: 400 },
       ],
     }
   );

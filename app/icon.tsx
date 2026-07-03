@@ -1,13 +1,12 @@
 import { ImageResponse } from "next/og";
+import { readFile } from "node:fs/promises";
+import { join } from "node:path";
 
 export const size = { width: 512, height: 512 };
 export const contentType = "image/png";
 
-const INSTRUMENT_SERIF_TTF =
-  "https://fonts.gstatic.com/s/instrumentserif/v5/jizBRFtNs2ka5fXjeivQ4LroWlx-2zI.ttf";
-
 export default async function Icon() {
-  const fontData = await fetch(INSTRUMENT_SERIF_TTF).then((res) => res.arrayBuffer());
+  const fontData = await readFile(join(process.cwd(), "app/fonts/InstrumentSerif-Regular-OG.ttf"));
 
   return new ImageResponse(
     (
