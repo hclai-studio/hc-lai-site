@@ -1,6 +1,7 @@
-'use client';
-
-import { useState, useEffect } from 'react';
+import { readFileSync } from 'node:fs';
+import { join } from 'node:path';
+import sharp from 'sharp';
+import WorkImageClient from './WorkImageClient';
 
 interface WorkImageProps {
   src: string;
@@ -8,36 +9,10 @@ interface WorkImageProps {
   placeholder?: boolean;
 }
 
-export default function WorkImage({ src, caption, placeholder = false }: WorkImageProps) {
-  const [open, setOpen] = useState(false);
-  const [visible, setVisible] = useState(false);
+const breakoutClass =
+  "w-[min(880px,calc(100vw-3rem))] mx-[calc((100%-min(880px,calc(100vw-3rem)))/2)]";
 
-  useEffect(() => {
-    if (open) {
-      document.body.style.overflow = 'hidden';
-      requestAnimationFrame(() => setVisible(true));
-    } else {
-      document.body.style.overflow = '';
-    }
-
-    const handleEsc = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') close();
-    };
-    window.addEventListener('keydown', handleEsc);
-    return () => {
-      window.removeEventListener('keydown', handleEsc);
-      document.body.style.overflow = '';
-    };
-  }, [open]);
-
-  function close() {
-    setVisible(false);
-    setTimeout(() => setOpen(false), 200);
-  }
-
-  const breakoutClass =
-    "w-[min(880px,calc(100vw-3rem))] mx-[calc((100%-min(880px,calc(100vw-3rem)))/2)]";
-
+export default async function WorkImage({ src, caption, placeholder = false }: WorkImageProps) {
   if (placeholder) {
     return (
       <figure className={`my-10 ${breakoutClass}`}>
@@ -55,45 +30,10 @@ export default function WorkImage({ src, caption, placeholder = false }: WorkIma
     );
   }
 
-  return (
-    <>
-      <figure className={`my-10 ${breakoutClass}`}>
-        <img
-          src={src}
-          alt={caption ?? ''}
-          onClick={() => setOpen(true)}
-          className="w-full rounded-xl cursor-zoom-in transition-opacity duration-300 hover:opacity-90"
-        />
-        {caption && (
-          <figcaption className="font-mono text-ink-muted text-[13px] tracking-[0.05em] leading-[1.6] text-left mt-4">
-            {caption}
-          </figcaption>
-        )}
-      </figure>
+  const filePath = join(process.cwd(), 'public', src);
+  const { width, height } = await sharp(readFileSync(filePath)).metadata();
 
-      {open && (
-        <div
-          className={`fixed inset-0 z-50 flex items-center justify-center p-4 cursor-zoom-out
-            bg-black/85 backdrop-blur-sm transition-opacity duration-200
-            ${visible ? 'opacity-100' : 'opacity-0'}`}
-          onClick={close}
-        >
-          <button
-            aria-label="Close"
-            className="absolute top-5 right-6 text-white/70 hover:text-white text-3xl leading-none transition-colors duration-150 select-none"
-            onClick={close}
-          >
-            ×
-          </button>
-          <img
-            src={src}
-            alt={caption ?? ''}
-            className={`max-w-[95vw] max-h-[90vh] object-contain cursor-default
-              transition-all duration-200 ${visible ? 'opacity-100 scale-100' : 'opacity-0 scale-95'}`}
-            onClick={(e) => e.stopPropagation()}
-          />
-        </div>
-      )}
-    </>
+  return (
+    <WorkImageClient src={src} caption={caption} width={width!} height={height!} />
   );
 }

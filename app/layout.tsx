@@ -79,14 +79,6 @@ export default function RootLayout({
           type="font/woff2"
           crossOrigin="anonymous"
         />
-        {/* Noto Serif SC 700 — subset build for Chinese bold text */}
-        <link
-          rel="preload"
-          href="/fonts/noto-serif-sc-subset/noto-serif-sc-700-subset.woff2"
-          as="font"
-          type="font/woff2"
-          crossOrigin="anonymous"
-        />
       </head>
       <body
         className={`${geist.variable} ${geistMono.variable} font-sans antialiased bg-cream text-ink`}

@@ -114,6 +114,20 @@
   }
 }
 
+@media (prefers-reduced-motion: reduce) {
+  .anim-annotation, .anim-nav, .anim-wordmark, .anim-footer-mark, .anim-scroll-cue {
+    animation: none;
+    opacity: 1;
+    transform: none;
+  }
+
+  .contact-inner.will-animate {
+    transition: none;
+    opacity: 1;
+    transform: none;
+  }
+}
+
 /* ── Component styles ───────────────────────────────────────────────── */
 @layer components {
   /* Nav link with terracotta underline on hover */
@@ -148,14 +162,16 @@
     font-size: 17px;
   }
 
-  /* Contact section — section holds natural layout; inner div animates */
-  .contact-inner {
+  /* Contact section — visible by default; JS opts into the fade-in only when it can
+     also guarantee the reveal (see Contact.tsx). Never rely on opacity:0 + JS alone,
+     or slow/failed JS leaves the section permanently blank. */
+  .contact-inner.will-animate {
     opacity: 0;
     transform: translateY(24px);
     transition: opacity 1.2s var(--ease-out), transform 1.2s var(--ease-out);
   }
 
-  .contact-section.in-view .contact-inner {
+  .contact-section.in-view .contact-inner.will-animate {
     opacity: 1;
     transform: translateY(0);
   }
