@@ -5,6 +5,7 @@ import ImagePlaceholder from '@/app/components/mdx/ImagePlaceholder';
 import WorkImage from '@/app/components/mdx/WorkImage';
 import CaseExpandable from '@/app/components/mdx/CaseExpandable';
 import JudgmentCard from '@/app/components/mdx/JudgmentCard';
+import DecisionTable from '@/app/components/mdx/DecisionTable';
 
 export function useMDXComponents(components: MDXComponents): MDXComponents {
   return {
@@ -15,5 +16,6 @@ export function useMDXComponents(components: MDXComponents): MDXComponents {
     WorkImage,
     CaseExpandable,
     JudgmentCard,
+    DecisionTable,
   };
 }
