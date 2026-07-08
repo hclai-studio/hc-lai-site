@@ -119,27 +119,48 @@ function RoleCell({ role, roleQualifier }: { role: string; roleQualifier?: strin
   );
 }
 
-// Row-level highlight: primary gets a terracotta box (built from per-cell
-// borders so the verdict cell can stay white while the border stays
-// unbroken), stretch gets a continuous cream fill (at half opacity), skip
-// is unstyled.
-function rowClass(verdict: Verdict) {
+// Row-level highlight: primary gets a terracotta box, stretch gets a
+// continuous cream fill (at half opacity), skip is unstyled.
+function rowFill(verdict: Verdict) {
   if (verdict === "primary") return "bg-[#B85C38]/[0.08]";
-  if (verdict === "stretch") return "border-b border-ink/10 last:border-b-0 bg-[#F2EFE9]/[0.5]";
-  return "border-b border-ink/10 last:border-b-0";
+  if (verdict === "stretch") return "bg-[#F2EFE9]/[0.5]";
+  return "";
 }
 
-// Highlighted rows (primary/stretch) get rounded outer corners matching the
-// white card's own radius, applied per-cell since border-radius can't be set
-// on a virtual "row" spanning multiple table cells.
-function rowEdgeRadius(verdict: Verdict, edge: "first" | "middle" | "last") {
-  if (verdict === "skip" || edge === "middle") return "";
+// Every row gets rounded outer corners on its first/last cell — even skip
+// rows, whose fill is invisible — purely so the divider shadow above it (see
+// dividerShadow) clips to a rounded start/end instead of running edge-to-edge.
+function rowEdgeRadius(edge: "first" | "middle" | "last") {
+  if (edge === "middle") return "";
   return edge === "first" ? "rounded-l-xl" : "rounded-r-xl";
 }
 
-function primaryCellBorder(edge: "first" | "middle" | "last") {
-  const side = edge === "first" ? " border-l" : edge === "last" ? " border-r" : "";
-  return `border-t border-b border-terracotta${side}`;
+// All row separators (the primary row's box included) are drawn as inset
+// box-shadows rather than real borders: a real `border` doesn't reliably
+// curve under table border-collapse, so it "pokes out" past a rounded
+// corner, but box-shadow always clips to border-radius correctly.
+//
+// NOTE: each branch below must be a complete, literal class string — Tailwind's
+// content scanner does a text-based scan of this file and can't resolve a
+// dynamically-concatenated class name (e.g. built via .join()), so those never
+// get generated. Every variant here is spelled out in full for that reason.
+function primaryCellShadow(edge: "first" | "middle" | "last") {
+  if (edge === "first") {
+    return "shadow-[inset_0_1px_0_0_#B85C38,inset_0_-1px_0_0_#B85C38,inset_1px_0_0_0_#B85C38]";
+  }
+  if (edge === "last") {
+    return "shadow-[inset_0_1px_0_0_#B85C38,inset_0_-1px_0_0_#B85C38,inset_-1px_0_0_0_#B85C38]";
+  }
+  return "shadow-[inset_0_1px_0_0_#B85C38,inset_0_-1px_0_0_#B85C38]";
+}
+
+// The plain inter-row divider (ink/10), or ink/20 for the header→row-0
+// boundary — always drawn as the CURRENT row's own top edge, never the
+// previous row's bottom, so it participates in that row's own rounding.
+function dividerShadow(isHeaderBoundary: boolean) {
+  return isHeaderBoundary
+    ? "shadow-[inset_0_1px_0_0_rgba(28,27,23,0.2)]"
+    : "shadow-[inset_0_1px_0_0_rgba(28,27,23,0.1)]";
 }
 
 const breakoutClass =
@@ -161,20 +182,20 @@ export default function DecisionTable() {
               <col className="w-[37%]" />
             </colgroup>
             <thead>
-              <tr className="border-b border-ink/20">
+              <tr>
                 <th className="py-3 px-3 align-middle text-center font-sans font-normal text-ink-muted text-[12px] tracking-[0.08em]">
                   日期
                 </th>
                 <th className="py-3 px-3 align-middle text-center font-sans font-normal text-ink-muted text-[12px] tracking-[0.08em]">
                   岗位
                 </th>
-                <th className="py-3 px-3 align-middle text-left font-sans font-normal text-ink-muted text-[12px] tracking-[0.08em]">
+                <th className="py-3 px-3 align-middle text-center font-sans font-normal text-ink-muted text-[12px] tracking-[0.08em]">
                   风险点
                 </th>
                 <th className="py-3 px-3 align-middle text-center font-sans font-normal text-ink-muted text-[12px] tracking-[0.08em]">
                   结论
                 </th>
-                <th className="py-3 px-3 align-middle text-left font-sans font-normal text-ink-muted text-[12px] tracking-[0.08em]">
+                <th className="py-3 px-3 align-middle text-center font-sans font-normal text-ink-muted text-[12px] tracking-[0.08em]">
                   投递理由
                 </th>
               </tr>
@@ -182,28 +203,34 @@ export default function DecisionTable() {
             <tbody>
               {rows.map((row, i) => {
                 const isPrimary = row.verdict === "primary";
+                const prevIsPrimary = i > 0 && rows[i - 1].verdict === "primary";
+                // No divider when this row IS primary (draws its own full box)
+                // or when the PREVIOUS row was primary (its own bottom edge
+                // already serves as this boundary — a plain divider here would
+                // double up against it).
+                const divider = !isPrimary && !prevIsPrimary ? dividerShadow(i === 0) : "";
                 return (
-                  <tr key={i} className={rowClass(row.verdict)}>
+                  <tr key={i} className={rowFill(row.verdict)}>
                     <td
-                      className={`py-3 px-3 align-middle text-center font-mono text-ink-muted text-[12px] tracking-[0.05em] ${rowEdgeRadius(row.verdict, "first")} ${isPrimary ? primaryCellBorder("first") : ""}`}
+                      className={`py-3 px-3 align-middle text-center font-mono text-ink-muted text-[12px] tracking-[0.05em] ${rowEdgeRadius("first")} ${isPrimary ? primaryCellShadow("first") : divider}`}
                     >
                       {row.date}
                     </td>
-                    <td className={`py-3 px-3 align-middle text-center ${isPrimary ? primaryCellBorder("middle") : ""}`}>
+                    <td className={`py-3 px-3 align-middle text-center ${isPrimary ? primaryCellShadow("middle") : divider}`}>
                       <RoleCell role={row.role} roleQualifier={row.roleQualifier} />
                     </td>
                     <td
-                      className={`py-3 px-3 align-middle text-left font-serif-cn text-ink-muted text-[13px] [text-wrap:pretty] ${isPrimary ? primaryCellBorder("middle") : ""}`}
+                      className={`py-3 px-3 align-middle text-left font-serif-cn text-ink-muted text-[13px] [text-wrap:pretty] ${isPrimary ? primaryCellShadow("middle") : divider}`}
                     >
                       {row.risk}
                     </td>
                     <td
-                      className={`py-3 px-3 align-middle text-center ${isPrimary ? `${primaryCellBorder("middle")} bg-white` : ""}`}
+                      className={`py-3 px-3 align-middle text-center ${isPrimary ? `${primaryCellShadow("middle")} bg-white` : divider}`}
                     >
                       <VerdictBadge verdict={row.verdict} />
                     </td>
                     <td
-                      className={`py-3 px-3 align-middle text-left font-serif-cn text-ink text-[13px] leading-[1.7] [text-wrap:pretty] ${rowEdgeRadius(row.verdict, "last")} ${isPrimary ? primaryCellBorder("last") : ""}`}
+                      className={`py-3 px-3 align-middle text-left font-serif-cn text-ink text-[13px] leading-[1.7] [text-wrap:pretty] ${rowEdgeRadius("last")} ${isPrimary ? primaryCellShadow("last") : divider}`}
                     >
                       {row.reason}
                     </td>
