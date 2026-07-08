@@ -100,20 +100,32 @@ function VerdictBadge({ verdict }: { verdict: Verdict }) {
     "inline-flex items-center whitespace-nowrap font-sans text-[12px] tracking-[0.05em] px-2 py-0.5 rounded border";
   const style =
     verdict === "primary"
-      ? "border-terracotta text-terracotta bg-white"
+      ? "border-terracotta text-terracotta bg-white font-bold"
       : verdict === "stretch"
         ? "border-ink/40 text-ink"
-        : "border-ink/15 text-ink-muted";
+        : "border-ink/15 text-ink";
 
   return <span className={`${base} ${style}`}>{verdictLabel[verdict]}</span>;
 }
 
-function RoleCell({ role, roleQualifier }: { role: string; roleQualifier?: string }) {
+// Bold is reserved for the primary row only — every other row (including its
+// own role-qualifier line) stays regular weight so the one highlighted row is
+// the only place emphasis reads as emphasis.
+function RoleCell({
+  role,
+  roleQualifier,
+  bold = false,
+}: {
+  role: string;
+  roleQualifier?: string;
+  bold?: boolean;
+}) {
+  const weight = bold ? "font-bold" : "font-normal";
   return (
     <>
-      <div className="font-sans font-medium text-ink text-[13px]">{role}</div>
+      <div className={`font-sans ${weight} text-ink text-[13px]`}>{role}</div>
       {roleQualifier && (
-        <div className="font-sans text-ink-muted text-[12px] mt-0.5">{roleQualifier}</div>
+        <div className={`font-sans ${weight} text-ink text-[12px] mt-0.5`}>{roleQualifier}</div>
       )}
     </>
   );
@@ -202,19 +214,19 @@ export default function DecisionTable() {
             </colgroup>
             <thead>
               <tr>
-                <th className="py-3 px-3 align-middle text-center font-sans font-normal text-ink-muted text-[12px] tracking-[0.08em]">
+                <th className="py-3 px-3 align-middle text-center font-sans font-normal text-ink text-[12px] tracking-[0.08em]">
                   日期
                 </th>
-                <th className="py-3 px-3 align-middle text-center font-sans font-normal text-ink-muted text-[12px] tracking-[0.08em]">
+                <th className="py-3 px-3 align-middle text-center font-sans font-normal text-ink text-[12px] tracking-[0.08em]">
                   岗位
                 </th>
-                <th className="py-3 px-3 align-middle text-center font-sans font-normal text-ink-muted text-[12px] tracking-[0.08em]">
+                <th className="py-3 px-3 align-middle text-center font-sans font-normal text-ink text-[12px] tracking-[0.08em]">
                   风险点
                 </th>
-                <th className="py-3 px-3 align-middle text-center font-sans font-normal text-ink-muted text-[12px] tracking-[0.08em]">
+                <th className="py-3 px-3 align-middle text-center font-sans font-normal text-ink text-[12px] tracking-[0.08em]">
                   结论
                 </th>
-                <th className="py-3 px-3 align-middle text-center font-sans font-normal text-ink-muted text-[12px] tracking-[0.08em]">
+                <th className="py-3 px-3 align-middle text-center font-sans font-normal text-ink text-[12px] tracking-[0.08em]">
                   投递理由
                 </th>
               </tr>
@@ -232,7 +244,7 @@ export default function DecisionTable() {
                 return (
                   <tr key={i} className={rowFill(row.verdict)}>
                     <td
-                      className={`py-3 px-3 align-middle text-center font-mono text-ink-muted text-[12px] tracking-[0.05em] ${rowEdgeRadius(row.verdict, "first")} ${isPrimary ? primaryCellShadow("first") : ""}`}
+                      className={`py-3 px-3 align-middle text-center font-mono text-ink text-[12px] tracking-[0.05em] ${isPrimary ? "font-bold" : ""} ${rowEdgeRadius(row.verdict, "first")} ${isPrimary ? primaryCellShadow("first") : ""}`}
                       style={showDivider ? dividerEdgeStyle(isHeaderBoundary, "first") : undefined}
                     >
                       {row.date}
@@ -240,10 +252,10 @@ export default function DecisionTable() {
                     <td
                       className={`py-3 px-3 align-middle text-center ${isPrimary ? primaryCellShadow("middle") : showDivider ? dividerMiddleShadow(isHeaderBoundary) : ""}`}
                     >
-                      <RoleCell role={row.role} roleQualifier={row.roleQualifier} />
+                      <RoleCell role={row.role} roleQualifier={row.roleQualifier} bold={isPrimary} />
                     </td>
                     <td
-                      className={`py-3 px-3 align-middle text-left font-serif-cn text-ink-muted text-[13px] [text-wrap:pretty] ${isPrimary ? primaryCellShadow("middle") : showDivider ? dividerMiddleShadow(isHeaderBoundary) : ""}`}
+                      className={`py-3 px-3 align-middle text-left font-serif-cn text-ink text-[13px] [text-wrap:pretty] ${isPrimary ? "font-bold" : ""} ${isPrimary ? primaryCellShadow("middle") : showDivider ? dividerMiddleShadow(isHeaderBoundary) : ""}`}
                     >
                       {row.risk}
                     </td>
@@ -253,7 +265,7 @@ export default function DecisionTable() {
                       <VerdictBadge verdict={row.verdict} />
                     </td>
                     <td
-                      className={`py-3 px-3 align-middle text-left font-serif-cn text-ink text-[13px] leading-[1.7] [text-wrap:pretty] ${rowEdgeRadius(row.verdict, "last")} ${isPrimary ? primaryCellShadow("last") : ""}`}
+                      className={`py-3 px-3 align-middle text-left font-serif-cn text-ink text-[13px] leading-[1.7] [text-wrap:pretty] ${isPrimary ? "font-bold" : ""} ${rowEdgeRadius(row.verdict, "last")} ${isPrimary ? primaryCellShadow("last") : ""}`}
                       style={showDivider ? dividerEdgeStyle(isHeaderBoundary, "last") : undefined}
                     >
                       {row.reason}
@@ -269,25 +281,27 @@ export default function DecisionTable() {
       {/* Mobile: stacked cards */}
       <div className="sm:hidden flex flex-col gap-3">
         {rows.map((row, i) => {
-          const cardClass =
-            row.verdict === "primary"
-              ? "border border-terracotta bg-[#B85C38]/[0.08]"
-              : row.verdict === "stretch"
-                ? "border border-ink/10 bg-[#F2EFE9]/[0.5]"
-                : "border border-ink/10 bg-white";
+          const isPrimary = row.verdict === "primary";
+          const cardClass = isPrimary
+            ? "border border-terracotta bg-[#B85C38]/[0.08]"
+            : row.verdict === "stretch"
+              ? "border border-ink/10 bg-[#F2EFE9]/[0.5]"
+              : "border border-ink/10 bg-white";
           return (
             <div key={i} className={`rounded-xl p-3 ${cardClass}`}>
               <div className="flex items-start justify-between gap-3">
                 <div>
-                  <RoleCell role={row.role} roleQualifier={row.roleQualifier} />
+                  <RoleCell role={row.role} roleQualifier={row.roleQualifier} bold={isPrimary} />
                 </div>
                 <VerdictBadge verdict={row.verdict} />
               </div>
-              <p className="font-mono text-ink-muted text-[12px] tracking-[0.05em] mt-1">
+              <p className={`font-mono text-ink text-[12px] tracking-[0.05em] mt-1 ${isPrimary ? "font-bold" : ""}`}>
                 {row.date}
               </p>
-              <p className="font-serif-cn text-ink-muted text-[13px] mt-2">{row.risk}</p>
-              <p className="font-serif-cn text-ink text-[13px] leading-[1.7] mt-2">{row.reason}</p>
+              <p className={`font-serif-cn text-ink text-[13px] mt-2 ${isPrimary ? "font-bold" : ""}`}>{row.risk}</p>
+              <p className={`font-serif-cn text-ink text-[13px] leading-[1.7] mt-2 ${isPrimary ? "font-bold" : ""}`}>
+                {row.reason}
+              </p>
             </div>
           );
         })}
