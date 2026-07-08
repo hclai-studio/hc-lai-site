@@ -95,7 +95,7 @@ function VerdictBadge({ verdict }: { verdict: Verdict }) {
       ? "bg-ink text-cream"
       : verdict === "stretch"
         ? "border border-ink/40 text-ink"
-        : "text-ink-muted";
+        : "border border-ink/15 text-ink-muted";
 
   return <span className={`${base} ${style}`}>{verdictLabel[verdict]}</span>;
 }
@@ -107,8 +107,8 @@ export default function DecisionTable() {
   return (
     <figure className={`my-10 ${breakoutClass}`}>
       {/* Desktop / tablet: real table */}
-      <div className="hidden sm:block rounded-xl border border-ink/10 overflow-hidden">
-        <table className="w-full table-fixed border-collapse">
+      <div className="hidden sm:block rounded-xl border border-ink/10 bg-white overflow-hidden">
+        <table className="decision-table w-full table-fixed border-collapse">
           <colgroup>
             <col className="w-[10%]" />
             <col className="w-[16%]" />
@@ -162,7 +162,7 @@ export default function DecisionTable() {
       {/* Mobile: stacked cards */}
       <div className="sm:hidden flex flex-col gap-3">
         {rows.map((row, i) => (
-          <div key={i} className="rounded-xl border border-ink/10 p-4">
+          <div key={i} className="rounded-xl border border-ink/10 bg-white p-4">
             <div className="flex items-start justify-between gap-3">
               <span className="font-sans font-medium text-ink text-[13px]">{row.role}</span>
               <VerdictBadge verdict={row.verdict} />
