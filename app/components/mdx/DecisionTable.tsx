@@ -3,6 +3,7 @@ type Verdict = "primary" | "stretch" | "skip";
 interface DecisionRow {
   date: string;
   role: string;
+  roleQualifier?: string;
   risk: string;
   verdict: Verdict;
   reason: string;
@@ -11,7 +12,8 @@ interface DecisionRow {
 const rows: DecisionRow[] = [
   {
     date: "05-02",
-    role: "AI 产品经理（建筑方向）",
+    role: "AI 产品经理",
+    roleQualifier: "建筑方向",
     risk: "模型训练与优化有技术门槛",
     verdict: "stretch",
     reason: "建筑背景是这岗少有的硬门槛，你天然过了，值得试一试。",
@@ -25,7 +27,8 @@ const rows: DecisionRow[] = [
   },
   {
     date: "05-03",
-    role: "产品经理（全生命周期）",
+    role: "产品经理",
+    roleQualifier: "全生命周期",
     risk: "明确招 2026 届应届生",
     verdict: "skip",
     reason: "专招应届生且偏工程背景，两道硬门槛同时卡住，这一轮先跳过。",
@@ -60,7 +63,8 @@ const rows: DecisionRow[] = [
   },
   {
     date: "05-04",
-    role: "AI 产品运营（校招）",
+    role: "AI 产品运营",
+    roleQualifier: "校招",
     risk: "实质是社媒内容＋增长",
     verdict: "skip",
     reason: "典型同名异向，核心工作是发内容和拉新留存，不是你想走的那条路。",
@@ -87,17 +91,31 @@ const verdictLabel: Record<Verdict, string> = {
   skip: "暂不主投",
 };
 
+// Terracotta is a scarce sitewide accent — the "primary" badge must stay unique
+// to exactly one row in this table. If a future data edit produces more than
+// one "primary" row, revert this badge to the solid-ink treatment instead.
 function VerdictBadge({ verdict }: { verdict: Verdict }) {
   const base =
     "inline-flex items-center whitespace-nowrap font-sans text-[12px] tracking-[0.05em] px-2 py-0.5 rounded";
   const style =
     verdict === "primary"
-      ? "bg-ink text-cream"
+      ? "border border-terracotta text-terracotta bg-terracotta/8"
       : verdict === "stretch"
-        ? "border border-ink/40 text-ink"
+        ? "bg-cream text-ink"
         : "border border-ink/15 text-ink-muted";
 
   return <span className={`${base} ${style}`}>{verdictLabel[verdict]}</span>;
+}
+
+function RoleCell({ role, roleQualifier }: { role: string; roleQualifier?: string }) {
+  return (
+    <>
+      <div className="font-sans font-medium text-ink text-[13px]">{role}</div>
+      {roleQualifier && (
+        <div className="font-sans text-ink-muted text-[12px] mt-0.5">{roleQualifier}</div>
+      )}
+    </>
+  );
 }
 
 const breakoutClass =
@@ -106,65 +124,70 @@ const breakoutClass =
 export default function DecisionTable() {
   return (
     <figure className={`my-10 ${breakoutClass}`}>
-      {/* Desktop / tablet: real table */}
+      {/* Desktop / tablet: real table, white card with an inset content region so
+          separator lines never touch the card's outer edge. */}
       <div className="hidden sm:block rounded-xl border border-ink/10 bg-white overflow-hidden">
-        <table className="decision-table w-full table-fixed border-collapse">
-          <colgroup>
-            <col className="w-[10%]" />
-            <col className="w-[16%]" />
-            <col className="w-[20%]" />
-            <col className="w-[12%]" />
-            <col className="w-[42%]" />
-          </colgroup>
-          <thead>
-            <tr className="border-b border-ink/20">
-              <th className="py-3 pl-5 pr-4 text-left font-sans font-normal text-ink-muted text-[12px] tracking-[0.08em]">
-                日期
-              </th>
-              <th className="py-3 px-4 text-left font-sans font-normal text-ink-muted text-[12px] tracking-[0.08em]">
-                岗位
-              </th>
-              <th className="py-3 px-4 text-left font-sans font-normal text-ink-muted text-[12px] tracking-[0.08em]">
-                风险点
-              </th>
-              <th className="py-3 px-4 text-left font-sans font-normal text-ink-muted text-[12px] tracking-[0.08em]">
-                结论
-              </th>
-              <th className="py-3 pl-4 pr-5 text-left font-sans font-normal text-ink-muted text-[12px] tracking-[0.08em]">
-                投递理由
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            {rows.map((row, i) => (
-              <tr key={i} className="border-b border-ink/10 last:border-b-0">
-                <td className="py-3 pl-5 pr-4 align-top font-mono text-ink-muted text-[12px] tracking-[0.05em]">
-                  {row.date}
-                </td>
-                <td className="py-3 px-4 align-top font-sans font-medium text-ink text-[13px]">
-                  {row.role}
-                </td>
-                <td className="py-3 px-4 align-top font-serif-cn text-ink-muted text-[13px]">
-                  {row.risk}
-                </td>
-                <td className="py-3 px-4 align-top">
-                  <VerdictBadge verdict={row.verdict} />
-                </td>
-                <td className="py-3 pl-4 pr-5 align-top font-serif-cn text-ink text-[13px] leading-[1.7]">
-                  {row.reason}
-                </td>
+        <div className="p-5">
+          <table className="decision-table w-full table-fixed border-collapse">
+            <colgroup>
+              <col className="w-[10%]" />
+              <col className="w-[18%]" />
+              <col className="w-[24%]" />
+              <col className="w-[11%]" />
+              <col className="w-[37%]" />
+            </colgroup>
+            <thead>
+              <tr className="border-b border-ink/20">
+                <th className="py-3 px-3 text-center font-sans font-normal text-ink-muted text-[12px] tracking-[0.08em]">
+                  日期
+                </th>
+                <th className="py-3 px-3 text-center font-sans font-normal text-ink-muted text-[12px] tracking-[0.08em]">
+                  岗位
+                </th>
+                <th className="py-3 px-3 text-center font-sans font-normal text-ink-muted text-[12px] tracking-[0.08em]">
+                  风险点
+                </th>
+                <th className="py-3 px-3 text-center font-sans font-normal text-ink-muted text-[12px] tracking-[0.08em]">
+                  结论
+                </th>
+                <th className="py-3 px-3 text-center font-sans font-normal text-ink-muted text-[12px] tracking-[0.08em]">
+                  投递理由
+                </th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {rows.map((row, i) => (
+                <tr key={i} className="border-b border-ink/10 last:border-b-0">
+                  <td className="py-3 px-3 align-top text-center font-mono text-ink-muted text-[12px] tracking-[0.05em]">
+                    {row.date}
+                  </td>
+                  <td className="py-3 px-3 align-top text-center">
+                    <RoleCell role={row.role} roleQualifier={row.roleQualifier} />
+                  </td>
+                  <td className="py-3 px-3 align-top text-center font-serif-cn text-ink-muted text-[13px]">
+                    {row.risk}
+                  </td>
+                  <td className="py-3 px-3 align-top text-center">
+                    <VerdictBadge verdict={row.verdict} />
+                  </td>
+                  <td className="py-3 px-3 align-top text-center font-serif-cn text-ink text-[13px] leading-[1.7]">
+                    {row.reason}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       </div>
 
       {/* Mobile: stacked cards */}
       <div className="sm:hidden flex flex-col gap-3">
         {rows.map((row, i) => (
-          <div key={i} className="rounded-xl border border-ink/10 bg-white p-4">
+          <div key={i} className="rounded-xl border border-ink/10 bg-white p-3">
             <div className="flex items-start justify-between gap-3">
-              <span className="font-sans font-medium text-ink text-[13px]">{row.role}</span>
+              <div>
+                <RoleCell role={row.role} roleQualifier={row.roleQualifier} />
+              </div>
               <VerdictBadge verdict={row.verdict} />
             </div>
             <p className="font-mono text-ink-muted text-[12px] tracking-[0.05em] mt-1">
