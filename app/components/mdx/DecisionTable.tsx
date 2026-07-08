@@ -121,11 +121,20 @@ function RoleCell({ role, roleQualifier }: { role: string; roleQualifier?: strin
 
 // Row-level highlight: primary gets a terracotta box (built from per-cell
 // borders so the verdict cell can stay white while the border stays
-// unbroken), stretch gets a continuous cream fill, skip is unstyled.
+// unbroken), stretch gets a continuous cream fill (at half opacity), skip
+// is unstyled.
 function rowClass(verdict: Verdict) {
   if (verdict === "primary") return "bg-[#B85C38]/[0.08]";
-  if (verdict === "stretch") return "border-b border-ink/10 last:border-b-0 bg-cream";
+  if (verdict === "stretch") return "border-b border-ink/10 last:border-b-0 bg-[#F2EFE9]/[0.5]";
   return "border-b border-ink/10 last:border-b-0";
+}
+
+// Highlighted rows (primary/stretch) get rounded outer corners matching the
+// white card's own radius, applied per-cell since border-radius can't be set
+// on a virtual "row" spanning multiple table cells.
+function rowEdgeRadius(verdict: Verdict, edge: "first" | "middle" | "last") {
+  if (verdict === "skip" || edge === "middle") return "";
+  return edge === "first" ? "rounded-l-xl" : "rounded-r-xl";
 }
 
 function primaryCellBorder(edge: "first" | "middle" | "last") {
@@ -176,7 +185,7 @@ export default function DecisionTable() {
                 return (
                   <tr key={i} className={rowClass(row.verdict)}>
                     <td
-                      className={`py-3 px-3 align-middle text-center font-mono text-ink-muted text-[12px] tracking-[0.05em] ${isPrimary ? primaryCellBorder("first") : ""}`}
+                      className={`py-3 px-3 align-middle text-center font-mono text-ink-muted text-[12px] tracking-[0.05em] ${rowEdgeRadius(row.verdict, "first")} ${isPrimary ? primaryCellBorder("first") : ""}`}
                     >
                       {row.date}
                     </td>
@@ -194,7 +203,7 @@ export default function DecisionTable() {
                       <VerdictBadge verdict={row.verdict} />
                     </td>
                     <td
-                      className={`py-3 px-3 align-middle text-left font-serif-cn text-ink text-[13px] leading-[1.7] [text-wrap:pretty] ${isPrimary ? primaryCellBorder("last") : ""}`}
+                      className={`py-3 px-3 align-middle text-left font-serif-cn text-ink text-[13px] leading-[1.7] [text-wrap:pretty] ${rowEdgeRadius(row.verdict, "last")} ${isPrimary ? primaryCellBorder("last") : ""}`}
                     >
                       {row.reason}
                     </td>
@@ -213,7 +222,7 @@ export default function DecisionTable() {
             row.verdict === "primary"
               ? "border border-terracotta bg-[#B85C38]/[0.08]"
               : row.verdict === "stretch"
-                ? "border border-ink/10 bg-cream"
+                ? "border border-ink/10 bg-[#F2EFE9]/[0.5]"
                 : "border border-ink/10 bg-white";
           return (
             <div key={i} className={`rounded-xl p-3 ${cardClass}`}>
