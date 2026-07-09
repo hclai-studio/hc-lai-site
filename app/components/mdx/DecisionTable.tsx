@@ -97,13 +97,13 @@ const verdictLabel: Record<Verdict, string> = {
 // instead of letting terracotta repeat.
 function VerdictBadge({ verdict }: { verdict: Verdict }) {
   const base =
-    "inline-flex items-center whitespace-nowrap font-sans text-[12px] tracking-[0.05em] px-2 py-0.5 rounded border";
+    "inline-flex items-center justify-center whitespace-nowrap font-sans text-[13px] tracking-[0.05em] h-[26px] px-2.5 rounded-[10px] border-[1.5px]";
   const style =
     verdict === "primary"
-      ? "border-terracotta text-terracotta bg-white font-bold"
+      ? "border-terracotta text-terracotta font-bold"
       : verdict === "stretch"
         ? "border-ink/40 text-ink"
-        : "border-ink/15 text-ink";
+        : "border-ink/15 text-ink-muted";
 
   return <span className={`${base} ${style}`}>{verdictLabel[verdict]}</span>;
 }
@@ -123,32 +123,34 @@ function RoleCell({
   const weight = bold ? "font-bold" : "font-normal";
   return (
     <>
-      <div className={`font-sans ${weight} text-ink text-[13px]`}>{role}</div>
+      <div className={`font-sans ${weight} text-ink text-[13px] leading-[1.6]`}>{role}</div>
       {roleQualifier && (
-        <div className={`font-sans ${weight} text-ink text-[12px] mt-0.5`}>{roleQualifier}</div>
+        <div className={`font-sans ${weight} text-ink-muted text-[12px] leading-[1.6] mt-0.5`}>
+          {roleQualifier}
+        </div>
       )}
     </>
   );
 }
 
-// Row-level highlight: primary gets a terracotta box, stretch gets a
-// continuous cream fill (at half opacity), skip is unstyled.
+// Row-level highlight: primary gets a terracotta box + 10% fill, stretch gets
+// a continuous, full-opacity cream fill, skip is unstyled.
 function rowFill(verdict: Verdict) {
-  if (verdict === "primary") return "bg-[#B85C38]/[0.08]";
-  if (verdict === "stretch") return "bg-[#F2EFE9]/[0.5]";
+  if (verdict === "primary") return "bg-[#B85C38]/[0.10]";
+  if (verdict === "stretch") return "bg-[#F2EFE9]";
   return "";
 }
 
-// Only highlighted rows (primary/stretch) get rounded corners on their
-// first/last cell, purely cosmetic for their own fill/outline.
+// Only the primary row gets rounded corners on its first/last cell — stretch
+// rows are a plain full-width fill with no rounding or border.
 function rowEdgeRadius(verdict: Verdict, edge: "first" | "middle" | "last") {
-  if (verdict === "skip" || edge === "middle") return "";
-  return edge === "first" ? "rounded-l-xl" : "rounded-r-xl";
+  if (verdict !== "primary" || edge === "middle") return "";
+  return edge === "first" ? "rounded-l-[10px]" : "rounded-r-[10px]";
 }
 
-// The primary row's own box outline: drawn as inset box-shadow (not a real
-// `border`, which doesn't reliably curve under table border-collapse) so it
-// traces the rounded corner as one continuous stroke — that curving is
+// The primary row's own 1.5px box outline: drawn as inset box-shadow (not a
+// real `border`, which doesn't reliably curve under table border-collapse)
+// so it traces the rounded corner as one continuous stroke — that curving is
 // exactly what we want for a self-contained rounded-rectangle outline.
 //
 // NOTE: each branch below must be a complete, literal class string — Tailwind's
@@ -157,35 +159,33 @@ function rowEdgeRadius(verdict: Verdict, edge: "first" | "middle" | "last") {
 // get generated. Every variant here is spelled out in full for that reason.
 function primaryCellShadow(edge: "first" | "middle" | "last") {
   if (edge === "first") {
-    return "shadow-[inset_0_1px_0_0_#B85C38,inset_0_-1px_0_0_#B85C38,inset_1px_0_0_0_#B85C38]";
+    return "shadow-[inset_0_1.5px_0_0_#B85C38,inset_0_-1.5px_0_0_#B85C38,inset_1.5px_0_0_0_#B85C38]";
   }
   if (edge === "last") {
-    return "shadow-[inset_0_1px_0_0_#B85C38,inset_0_-1px_0_0_#B85C38,inset_-1px_0_0_0_#B85C38]";
+    return "shadow-[inset_0_1.5px_0_0_#B85C38,inset_0_-1.5px_0_0_#B85C38,inset_-1.5px_0_0_0_#B85C38]";
   }
-  return "shadow-[inset_0_1px_0_0_#B85C38,inset_0_-1px_0_0_#B85C38]";
+  return "shadow-[inset_0_1.5px_0_0_#B85C38,inset_0_-1.5px_0_0_#B85C38]";
 }
 
-// The plain inter-row divider (ink/10, or ink/20 for the header→row-0
-// boundary) is a DIFFERENT case from the primary outline above: it's just a
-// straight rule that should stop dead 12px short of each edge, not curve
-// into the corner. Clipping a box-shadow with border-radius doesn't
-// truncate it — it traces the full rounded arc, producing a little hook
-// where the line curls into the corner instead of ending flat. A
-// background-image gradient with a hard color stop gives a genuine blunt
-// cutoff, so the middle cells use a plain shadow (no rounding, no issue)
-// while the first/last cells use this gradient via inline style.
-function dividerMiddleShadow(isHeaderBoundary: boolean) {
-  return isHeaderBoundary
-    ? "shadow-[inset_0_1px_0_0_rgba(28,27,23,0.2)]"
-    : "shadow-[inset_0_1px_0_0_rgba(28,27,23,0.1)]";
+// The plain inter-row divider (uniform ink/10 weight, no header exception) is
+// a DIFFERENT case from the primary outline above: it's just a straight rule
+// that should stop dead 10px short of each edge, not curve into the corner.
+// Clipping a box-shadow with border-radius doesn't truncate it — it traces
+// the full rounded arc, producing a little hook where the line curls into the
+// corner instead of ending flat. A background-image gradient with a hard
+// color stop gives a genuine blunt cutoff, so the middle cells use a plain
+// shadow (no rounding, no issue) while the first/last cells use this gradient
+// via inline style.
+function dividerMiddleShadow() {
+  return "shadow-[inset_0_1px_0_0_rgba(28,27,23,0.1)]";
 }
 
-function dividerEdgeStyle(isHeaderBoundary: boolean, edge: "first" | "last") {
-  const color = isHeaderBoundary ? "rgba(28,27,23,0.2)" : "rgba(28,27,23,0.1)";
+function dividerEdgeStyle(edge: "first" | "last") {
+  const color = "rgba(28,27,23,0.1)";
   const gradient =
     edge === "first"
-      ? `linear-gradient(to right, transparent 12px, ${color} 12px)`
-      : `linear-gradient(to right, ${color} calc(100% - 12px), transparent calc(100% - 12px))`;
+      ? `linear-gradient(to right, transparent 10px, ${color} 10px)`
+      : `linear-gradient(to right, ${color} calc(100% - 10px), transparent calc(100% - 10px))`;
   return {
     backgroundImage: gradient,
     backgroundRepeat: "no-repeat",
@@ -206,27 +206,27 @@ export default function DecisionTable() {
         <div className="p-5">
           <table className="decision-table w-full table-fixed border-collapse">
             <colgroup>
-              <col className="w-[10%]" />
-              <col className="w-[18%]" />
-              <col className="w-[24%]" />
-              <col className="w-[11%]" />
-              <col className="w-[37%]" />
+              <col className="w-[9.7%]" />
+              <col className="w-[20.2%]" />
+              <col className="w-[22.2%]" />
+              <col className="w-[12.5%]" />
+              <col className="w-[35.4%]" />
             </colgroup>
             <thead>
               <tr>
-                <th className="py-3 px-3 align-middle text-center font-sans font-normal text-ink text-[12px] tracking-[0.08em]">
+                <th className="min-h-[54px] py-3 px-3 align-middle text-center font-sans font-medium text-ink text-[13px] tracking-[0.05em]">
                   日期
                 </th>
-                <th className="py-3 px-3 align-middle text-center font-sans font-normal text-ink text-[12px] tracking-[0.08em]">
+                <th className="min-h-[54px] py-3 px-3 align-middle text-center font-sans font-medium text-ink text-[13px] tracking-[0.05em]">
                   岗位
                 </th>
-                <th className="py-3 px-3 align-middle text-center font-sans font-normal text-ink text-[12px] tracking-[0.08em]">
+                <th className="min-h-[54px] py-3 px-3 align-middle text-center font-sans font-medium text-ink text-[13px] tracking-[0.05em]">
                   风险点
                 </th>
-                <th className="py-3 px-3 align-middle text-center font-sans font-normal text-ink text-[12px] tracking-[0.08em]">
+                <th className="min-h-[54px] py-3 px-3 align-middle text-center font-sans font-medium text-ink text-[13px] tracking-[0.05em]">
                   结论
                 </th>
-                <th className="py-3 px-3 align-middle text-center font-sans font-normal text-ink text-[12px] tracking-[0.08em]">
+                <th className="min-h-[54px] py-3 px-3 align-middle text-center font-sans font-medium text-ink text-[13px] tracking-[0.05em]">
                   投递理由
                 </th>
               </tr>
@@ -240,33 +240,32 @@ export default function DecisionTable() {
                 // already serves as this boundary — a plain divider here would
                 // double up against it).
                 const showDivider = !isPrimary && !prevIsPrimary;
-                const isHeaderBoundary = i === 0;
                 return (
                   <tr key={i} className={rowFill(row.verdict)}>
                     <td
-                      className={`py-3 px-3 align-middle text-center font-mono text-ink text-[12px] tracking-[0.05em] ${isPrimary ? "font-bold" : ""} ${rowEdgeRadius(row.verdict, "first")} ${isPrimary ? primaryCellShadow("first") : ""}`}
-                      style={showDivider ? dividerEdgeStyle(isHeaderBoundary, "first") : undefined}
+                      className={`min-h-[54px] py-3 px-3 align-middle text-center font-mono text-ink text-[13px] tracking-[0.05em] ${isPrimary ? "font-bold" : ""} ${rowEdgeRadius(row.verdict, "first")} ${isPrimary ? primaryCellShadow("first") : ""}`}
+                      style={showDivider ? dividerEdgeStyle("first") : undefined}
                     >
                       {row.date}
                     </td>
                     <td
-                      className={`py-3 px-3 align-middle text-center ${isPrimary ? primaryCellShadow("middle") : showDivider ? dividerMiddleShadow(isHeaderBoundary) : ""}`}
+                      className={`min-h-[54px] py-3 px-3 align-middle text-center ${isPrimary ? primaryCellShadow("middle") : showDivider ? dividerMiddleShadow() : ""}`}
                     >
                       <RoleCell role={row.role} roleQualifier={row.roleQualifier} bold={isPrimary} />
                     </td>
                     <td
-                      className={`py-3 px-3 align-middle text-left font-serif-cn text-ink text-[13px] [text-wrap:pretty] ${isPrimary ? "font-bold" : ""} ${isPrimary ? primaryCellShadow("middle") : showDivider ? dividerMiddleShadow(isHeaderBoundary) : ""}`}
+                      className={`min-h-[54px] py-3 px-3 align-middle text-left font-sans text-ink text-[13px] leading-[1.6] [text-wrap:pretty] ${isPrimary ? "font-bold" : ""} ${isPrimary ? primaryCellShadow("middle") : showDivider ? dividerMiddleShadow() : ""}`}
                     >
                       {row.risk}
                     </td>
                     <td
-                      className={`py-3 px-3 align-middle text-center ${isPrimary ? `${primaryCellShadow("middle")} bg-white` : showDivider ? dividerMiddleShadow(isHeaderBoundary) : ""}`}
+                      className={`min-h-[54px] py-3 px-3 align-middle text-center ${isPrimary ? `${primaryCellShadow("middle")} bg-white` : showDivider ? dividerMiddleShadow() : ""}`}
                     >
                       <VerdictBadge verdict={row.verdict} />
                     </td>
                     <td
-                      className={`py-3 px-3 align-middle text-left font-serif-cn text-ink text-[13px] leading-[1.7] [text-wrap:pretty] ${isPrimary ? "font-bold" : ""} ${rowEdgeRadius(row.verdict, "last")} ${isPrimary ? primaryCellShadow("last") : ""}`}
-                      style={showDivider ? dividerEdgeStyle(isHeaderBoundary, "last") : undefined}
+                      className={`min-h-[54px] py-3 px-3 align-middle text-left font-sans text-ink text-[13px] leading-[1.6] [text-wrap:pretty] ${isPrimary ? "font-bold" : ""} ${rowEdgeRadius(row.verdict, "last")} ${isPrimary ? primaryCellShadow("last") : ""}`}
+                      style={showDivider ? dividerEdgeStyle("last") : undefined}
                     >
                       {row.reason}
                     </td>
@@ -283,9 +282,9 @@ export default function DecisionTable() {
         {rows.map((row, i) => {
           const isPrimary = row.verdict === "primary";
           const cardClass = isPrimary
-            ? "border border-terracotta bg-[#B85C38]/[0.08]"
+            ? "border-[1.5px] border-terracotta bg-[#B85C38]/[0.10]"
             : row.verdict === "stretch"
-              ? "border border-ink/10 bg-[#F2EFE9]/[0.5]"
+              ? "border border-ink/10 bg-[#F2EFE9]"
               : "border border-ink/10 bg-white";
           return (
             <div key={i} className={`rounded-xl p-3 ${cardClass}`}>
@@ -298,8 +297,10 @@ export default function DecisionTable() {
               <p className={`font-mono text-ink text-[12px] tracking-[0.05em] mt-1 ${isPrimary ? "font-bold" : ""}`}>
                 {row.date}
               </p>
-              <p className={`font-serif-cn text-ink text-[13px] mt-2 ${isPrimary ? "font-bold" : ""}`}>{row.risk}</p>
-              <p className={`font-serif-cn text-ink text-[13px] leading-[1.7] mt-2 ${isPrimary ? "font-bold" : ""}`}>
+              <p className={`font-sans text-ink text-[13px] leading-[1.6] mt-2 ${isPrimary ? "font-bold" : ""}`}>
+                {row.risk}
+              </p>
+              <p className={`font-sans text-ink text-[13px] leading-[1.6] mt-2 ${isPrimary ? "font-bold" : ""}`}>
                 {row.reason}
               </p>
             </div>
