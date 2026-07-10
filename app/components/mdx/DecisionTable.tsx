@@ -141,10 +141,11 @@ function rowFill(verdict: Verdict) {
   return "";
 }
 
-// Only the primary row gets rounded corners on its first/last cell — stretch
-// rows are a plain full-width fill with no rounding or border.
+// Both highlighted-row types get the same 10px corner rounding on their
+// first/last cell fill (measured off the Figma export — stretch and primary
+// share one radius); skip rows stay square since they have no fill.
 function rowEdgeRadius(verdict: Verdict, edge: "first" | "middle" | "last") {
-  if (verdict !== "primary" || edge === "middle") return "";
+  if (verdict === "skip" || edge === "middle") return "";
   return edge === "first" ? "rounded-l-[10px]" : "rounded-r-[10px]";
 }
 
