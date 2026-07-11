@@ -200,7 +200,7 @@ const breakoutClass =
 
 export default function DecisionTable() {
   return (
-    <figure className={`my-10 ${breakoutClass}`}>
+    <figure className={breakoutClass}>
       {/* Desktop / tablet: real table, white card with an inset content region so
           separator lines never touch the card's outer edge. */}
       <div className="hidden sm:block rounded-xl border border-ink/10 bg-white overflow-hidden">
@@ -309,8 +309,8 @@ export default function DecisionTable() {
         })}
       </div>
 
-      <figcaption className="font-mono text-ink-muted text-[13px] tracking-[0.05em] leading-[1.6] text-left mt-4">
-        节选 10 条 · 完整台账 decisions_log.csv 共 108 条记录 / Excerpt of 10 — full log: 108 entries in decisions_log.csv
+      <figcaption className="font-sans text-ink-muted text-[14px] tracking-[0.01em] leading-[1.6] text-left mt-[var(--figure-gap-caption)] [text-wrap:balance]">
+        节选 10 条 · 完整台账 <code>decisions_log.csv</code> 共 108 条记录 / Excerpt of 10 — full log: 108 entries in <code>decisions_log.csv</code>
       </figcaption>
     </figure>
   );

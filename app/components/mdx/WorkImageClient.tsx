@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Image from 'next/image';
+import { renderCaption, stripCaptionCode } from './renderCaption';
 
 interface WorkImageClientProps {
   src: string;
@@ -45,10 +46,10 @@ export default function WorkImageClient({ src, caption, width, height }: WorkIma
 
   return (
     <>
-      <figure className={`my-10 ${breakoutClass}`}>
+      <figure className={breakoutClass}>
         <Image
           src={src}
-          alt={caption ?? ''}
+          alt={caption ? stripCaptionCode(caption) : ''}
           width={width}
           height={height}
           sizes="(max-width: 920px) 100vw, 880px"
@@ -57,8 +58,8 @@ export default function WorkImageClient({ src, caption, width, height }: WorkIma
           className="w-full h-auto rounded-xl cursor-zoom-in transition-opacity duration-300 hover:opacity-90"
         />
         {caption && (
-          <figcaption className="font-mono text-ink-muted text-[13px] tracking-[0.05em] leading-[1.6] text-left mt-4">
-            {caption}
+          <figcaption className="font-sans text-ink-muted text-[14px] tracking-[0.01em] leading-[1.6] text-left mt-[var(--figure-gap-caption)] [text-wrap:balance]">
+            {renderCaption(caption)}
           </figcaption>
         )}
       </figure>
@@ -79,7 +80,7 @@ export default function WorkImageClient({ src, caption, width, height }: WorkIma
           </button>
           <Image
             src={src}
-            alt={caption ?? ''}
+            alt={caption ? stripCaptionCode(caption) : ''}
             width={lightboxWidth}
             height={lightboxHeight}
             quality={85}

@@ -38,6 +38,16 @@
   --nav-size:   15px;
   --nav-weight: 500;
   --nav-color:  var(--ink);
+
+  /* Figure spacing — case-page image/table blocks (WorkImage, DecisionTable, …) */
+  --figure-gap-block:   64px; /* figure ↔ surrounding prose */
+  --figure-gap-caption: 16px; /* image ↔ caption, unchanged from prior mt-4 */
+}
+
+@media (min-width: 640px) {
+  :root {
+    --figure-gap-block: 96px;
+  }
 }
 
 @layer base {
@@ -359,6 +369,28 @@
   background: rgba(184, 92, 56, 0.08);
   padding: 2px 6px;
   border-radius: 3px;
+}
+
+/* ── Figure blocks — WorkImage, DecisionTable, and future chart components ── */
+.prose-works figure {
+  margin-top: var(--figure-gap-block);
+  margin-bottom: var(--figure-gap-block);
+}
+
+/* Two figures with no prose between them — hold extra breathing room until
+   copy is added (see project handoff notes for the current "figure-adjacent-
+   to-figure" locations awaiting author copy). */
+.prose-works figure + figure {
+  margin-top: calc(var(--figure-gap-block) * 1.5);
+}
+
+/* Inline code inside a figcaption (file/command tokens) — mono font via the
+   inherited .prose-works code rule above, but no pill background/border. */
+.prose-works figcaption code {
+  background: transparent;
+  padding: 0;
+  border-radius: 0;
+  white-space: nowrap;
 }
 
 .prose-works pre {
