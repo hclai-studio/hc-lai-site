@@ -285,8 +285,8 @@ export default function DecisionTable() {
           const cardClass = isPrimary
             ? "border-[1.5px] border-terracotta bg-[#B85C38]/[0.10]"
             : row.verdict === "stretch"
-              ? "border border-ink/10 bg-[#F2EFE9]"
-              : "border border-ink/10 bg-white";
+              ? "border border-ink/10 bg-white"
+              : "border border-ink/10 bg-[#F2EFE9]";
           return (
             <div key={i} className={`rounded-xl p-3 ${cardClass}`}>
               <div className="flex items-start justify-between gap-3">
