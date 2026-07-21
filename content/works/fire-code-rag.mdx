@@ -47,7 +47,7 @@ This project uses GB 55037-2022 as the knowledge source to build a RAG QA assist
 
 <WorkImage
   src="/works/fire-code-rag/kb-segments.png"
-  caption="知识库入库:GB 55037-2022 切分为 113 个 segments。 / Knowledge base: GB 55037-2022 split into 113 segments."
+  caption="知识库入库:GB 55037-2022 按条文层级切分为 113 个 segments，保留章节结构以支持逐条召回。 / Knowledge base: GB 55037-2022 split into 113 segments along its clause hierarchy, preserving structure for verbatim recall."
   placeholder={false}
 />
 
@@ -85,7 +85,7 @@ The same query, across three retrieval configurations:
 
 <WorkImage
   src="/works/fire-code-rag/dify-hallucination.png"
-  caption="Dify · 经济索引(关键词):召回前言混合内容的幻觉案例。 / Dify · economical index (keyword): a hallucination recalling mixed preface content."
+  caption="Dify · 经济索引(关键词):召回了前言混合内容的幻觉案例。 / Dify · economical index (keyword mode): a hallucination case that recalled mixed preface content instead of the target clause."
   placeholder={false}
 />
 
