@@ -11,7 +11,7 @@ export default function ImagePlaceholder({ caption }: ImagePlaceholderProps) {
         </span>
       </div>
       {caption && (
-        <figcaption className="font-sans text-ink-muted text-[14px] tracking-[0.01em] leading-[1.6] text-left mt-[var(--figure-gap-caption)] [text-wrap:balance]">
+        <figcaption className="font-sans text-ink-muted text-[14px] tracking-[0.01em] leading-[1.6] text-left mt-[var(--figure-gap-caption)] [text-wrap:pretty]">
           {caption}
         </figcaption>
       )}

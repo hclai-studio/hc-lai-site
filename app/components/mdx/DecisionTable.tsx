@@ -309,7 +309,7 @@ export default function DecisionTable() {
         })}
       </div>
 
-      <figcaption className="font-sans text-ink-muted text-[14px] tracking-[0.01em] leading-[1.6] text-left mt-[var(--figure-gap-caption)] [text-wrap:balance]">
+      <figcaption className="font-sans text-ink-muted text-[14px] tracking-[0.01em] leading-[1.6] text-left mt-[var(--figure-gap-caption)] [text-wrap:pretty]">
         节选 10 条 · 完整台账 <code>decisions_log.csv</code> 共 108 条记录 / Excerpt of 10 — full log: 108 entries in <code>decisions_log.csv</code>
       </figcaption>
     </figure>

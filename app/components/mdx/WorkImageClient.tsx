@@ -58,7 +58,7 @@ export default function WorkImageClient({ src, caption, width, height }: WorkIma
           className="w-full h-auto rounded-xl cursor-zoom-in transition-opacity duration-300 hover:opacity-90"
         />
         {caption && (
-          <figcaption className="font-sans text-ink-muted text-[14px] tracking-[0.01em] leading-[1.6] text-left mt-[var(--figure-gap-caption)] [text-wrap:balance]">
+          <figcaption className="font-sans text-ink-muted text-[14px] tracking-[0.01em] leading-[1.6] text-left mt-[var(--figure-gap-caption)] [text-wrap:pretty]">
             {renderCaption(caption)}
           </figcaption>
         )}
