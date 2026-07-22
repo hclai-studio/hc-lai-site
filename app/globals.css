@@ -394,31 +394,29 @@
 }
 
 /* ── Case-page hero — full-bleed cover image, scroll-driven grow ──
-   Two rounds of live testing both turned up the same root cause: any
-   property that changes .case-hero's own rendered box — width (via
-   height:auto following the image's intrinsic ratio), and then even
-   transform:scale (Chrome's view() timeline measures the post-transform
-   visual box, not the untransformed layout box) — feeds back into the
-   view-timeline's own progress range when that timeline lives on the
-   same element being animated. Confirmed by scrolling a live preview:
-   the effect finished after ~100–300px of scroll instead of the ~800px+
-   the range should have needed.
-
-   Fix: track a separate, zero-height marker (.case-hero-track, placed
-   immediately before the image) with its own named view-timeline. A
-   zero-height subject's "cover" range is just the viewport height, start
-   to finish, entirely independent of anything the hero image does —
-   there's nothing left for the animated element to feed back into.
-   .case-hero itself only *consumes* that named timeline; its own width
-   stays fixed at the full-bleed target and only transform:scale moves.
-   --hero-start-scale is computed by a resize-only inline script (never a
-   scroll listener) since the 880/target ratio needs two real
-   viewport-width numbers CSS calc() can't divide against each other. */
-.case-hero-track {
-  view-timeline-name: --hero-track;
-  view-timeline-axis: block;
-}
-
+   Went through two false starts before this one:
+   1. Animating `width` directly (height:auto following it via the
+      image's intrinsic ratio) fed back into view()'s own progress range,
+      since that range is computed from the animated element's height.
+   2. Tried decoupling via a separate zero-height marker with its own
+      *named* view-timeline (.case-hero-track { view-timeline-name }) —
+      but that marker was a sibling of .case-hero, and named timelines
+      only propagate to descendants per spec. The reference silently
+      failed to resolve, animation-timeline fell back to the default
+      (document) timeline, and since no explicit duration was set (there
+      was never meant to be one — progress was supposed to come from
+      scroll, not a clock), the 0s-duration animation just completed
+      instantly. Isolated test confirmed both the bug and the cause.
+   Landed here: plain `animation-timeline: view()` directly on
+   .case-hero, animating only `transform: scale()`. An isolated,
+   file-server-hosted test with this exact combination (self-referencing
+   view(), transform-only) scrolled correctly end to end — the earlier
+   "premature completion" reports on the live site traced back to stale
+   animation state from repeated in-tab test navigations, not a real bug
+   in this combination. --hero-start-scale is computed by a resize-only
+   inline script (never a scroll listener) since the 880/target ratio
+   needs two real viewport-width numbers CSS calc() can't divide against
+   each other. */
 .case-hero {
   display: block;
   width: min(1440px, 100vw);
@@ -438,14 +436,14 @@
   to   { transform: scale(1); }
 }
 
-/* Desktop/tablet: grow on scroll via the marker's view-progress timeline
-   (no JS scroll listener — the timeline itself drives every frame). */
+/* Desktop/tablet: grow on scroll via a view-progress timeline (no JS
+   scroll listener — the timeline itself drives every frame). */
 @media (min-width: 768px) {
   @supports (animation-timeline: view()) {
     @media (prefers-reduced-motion: no-preference) {
       .case-hero {
         animation: case-hero-grow linear both;
-        animation-timeline: --hero-track;
+        animation-timeline: view();
         animation-range: cover 0% cover 50%;
       }
     }

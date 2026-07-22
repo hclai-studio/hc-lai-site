@@ -14,10 +14,6 @@ export default async function Hero({ src, alt }: HeroProps) {
 
   return (
     <>
-      {/* Zero-height marker owning the named view-timeline .case-hero
-          consumes below — see globals.css for why this can't just live on
-          the image itself. */}
-      <div className="case-hero-track" aria-hidden="true" />
       <Image
         src={src}
         alt={alt}
