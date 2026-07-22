@@ -433,7 +433,8 @@
    each other. */
 .case-hero {
   display: block;
-  width: min(1440px, 100vw);
+  width: 96vw; /* no 1440px cap — hero is an ambient image, not bound to the
+                  prose reading width; goes nearly edge-to-edge at any viewport */
   max-width: none; /* override Tailwind preflight's img{max-width:100%} — otherwise it clamps
                        to .prose-works's 672px content box regardless of the width above */
   height: auto;
@@ -446,8 +447,8 @@
      shoving the whole box (and its visible content) to the right and off
      the edge. Setting both sides to the same explicit calc() forces a
      true 50/50 split regardless of how oversized the box is. */
-  margin-left: calc((100% - min(1440px, 100vw)) / 2);
-  margin-right: calc((100% - min(1440px, 100vw)) / 2);
+  margin-left: calc((100% - 96vw) / 2);
+  margin-right: calc((100% - 96vw) / 2);
   border-radius: 12px;
   transform-origin: center center;
   transform: scale(var(--hero-start-scale, 0.6111));
@@ -466,7 +467,7 @@
       .case-hero {
         animation: case-hero-grow linear both;
         animation-timeline: view();
-        animation-range: cover 0% cover 50%;
+        animation-range: entry 0% entry 45%;
       }
     }
   }
