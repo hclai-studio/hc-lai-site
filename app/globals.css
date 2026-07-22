@@ -394,29 +394,42 @@
 }
 
 /* ── Case-page hero — full-bleed cover image, scroll-driven grow ──
-   width is the only animated property; margin-inline:auto keeps the image
-   viewport-centered at every width along the way, including once width
-   exceeds .prose-works's own column (auto margins go negative — the same
-   math that makes plain `margin:auto` breakout centering work at any size),
-   so no vw-based calc(50% - 50vw) hack is needed. Border-radius clips the
-   <img> element directly; no wrapper/overflow required since intrinsic
-   width+height:auto sizing never crops, only scales uniformly. */
+   The box's own LAYOUT width is always the final, full-bleed size
+   (min(1440px, 100vw), constant) — only `transform: scale()` animates.
+   This is deliberate: animating `width` directly on the same element that
+   hosts `animation-timeline: view()` creates a feedback loop, because the
+   view-timeline's own progress range is computed from the element's
+   height, and with height:auto tracking width via the image's intrinsic
+   16:9 ratio, the animated width was changing the very box the timeline
+   measures against (observed in testing as the box undershooting its own
+   "from" keyframe value). `transform` never touches layout geometry, so
+   it can't feed back into the timeline — the element just reserves its
+   full-size box in the document flow from the start (standard for this
+   "reveal" pattern; the image visually starts small, centered, inside
+   space already reserved for its grown state) and paints smaller via
+   scale until the animation finishes. --hero-start-scale is computed by
+   a resize-only inline script below (never a scroll listener) since the
+   880/target ratio needs two real viewport-width numbers CSS calc() can't
+   divide against each other. */
 .case-hero {
   display: block;
-  width: min(880px, calc(100vw - 3rem));
+  width: min(1440px, 100vw);
   height: auto;
   margin-top: 0;
   margin-bottom: var(--figure-gap-block);
   margin-inline: auto;
   border-radius: 12px;
+  transform-origin: center center;
+  transform: scale(var(--hero-start-scale, 0.6111));
 }
 
 @keyframes case-hero-grow {
-  from { width: min(880px, calc(100vw - 3rem)); }
-  to   { width: min(1440px, 100vw); }
+  from { transform: scale(var(--hero-start-scale, 0.6111)); }
+  to   { transform: scale(1); }
 }
 
-/* Desktop/tablet: grow on scroll via a view-progress timeline (no JS). */
+/* Desktop/tablet: grow on scroll via a view-progress timeline (no JS
+   scroll listener — the timeline itself drives every frame). */
 @media (min-width: 768px) {
   @supports (animation-timeline: view()) {
     @media (prefers-reduced-motion: no-preference) {
@@ -427,18 +440,18 @@
       }
     }
   }
-  /* Reduced motion: skip the animation but still land on the full-bleed
-     size, rather than freezing at the smaller column width. */
+  /* Reduced motion: skip the animation but still land at full size,
+     rather than freezing at the smaller scale. */
   @media (prefers-reduced-motion: reduce) {
-    .case-hero { width: min(1440px, 100vw); }
+    .case-hero { transform: scale(1); }
   }
 }
 
 /* Browsers without scroll-driven animation support get the same static
-   full-bleed fallback as reduced-motion, instead of being stuck at 880px. */
+   full-size fallback as reduced-motion, instead of being stuck small. */
 @supports not (animation-timeline: view()) {
   @media (min-width: 768px) {
-    .case-hero { width: min(1440px, 100vw); }
+    .case-hero { transform: scale(1); }
   }
 }
 
@@ -449,6 +462,7 @@
 @media (max-width: 767px) {
   .case-hero {
     width: 100vw;
+    transform: scale(1);
     border-radius: 0;
   }
 }
