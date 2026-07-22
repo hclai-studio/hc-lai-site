@@ -63,10 +63,24 @@
     background-color: var(--cream);
   }
 
+  /*
+   * body must NOT have overflow-x:hidden either, for a second reason beyond
+   * html's: per the CSS Overflow spec, overflow-x:hidden paired with the
+   * (default) overflow-y:visible forces overflow-y to compute as "auto" —
+   * silently turning body into its own scroll container. That container
+   * never actually scrolls (its scrollHeight always equals its clientHeight,
+   * since real page scrolling happens on the document/viewport, not body's
+   * own box), but it's still what a bare `animation-timeline: view()"
+   * resolves to as the "nearest ancestor scroll container" — so a
+   * scroll-driven animation anywhere on the page would see a permanently
+   * stuck (always-at-its-edge) timeline instead of real scroll progress.
+   * Traced the hero's grow-on-scroll animation completing instantly to
+   * exactly this. overflow-x:clip doesn't trigger that forcing rule.
+   */
   body {
     background-color: var(--cream);
     color: var(--ink);
-    overflow-x: hidden;
+    overflow-x: clip;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     font-family: var(--font-geist), "Noto Serif SC", system-ui, sans-serif;
