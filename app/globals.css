@@ -393,6 +393,66 @@
   white-space: nowrap;
 }
 
+/* ── Case-page hero — full-bleed cover image, scroll-driven grow ──
+   width is the only animated property; margin-inline:auto keeps the image
+   viewport-centered at every width along the way, including once width
+   exceeds .prose-works's own column (auto margins go negative — the same
+   math that makes plain `margin:auto` breakout centering work at any size),
+   so no vw-based calc(50% - 50vw) hack is needed. Border-radius clips the
+   <img> element directly; no wrapper/overflow required since intrinsic
+   width+height:auto sizing never crops, only scales uniformly. */
+.case-hero {
+  display: block;
+  width: min(880px, calc(100vw - 3rem));
+  height: auto;
+  margin-top: 0;
+  margin-bottom: var(--figure-gap-block);
+  margin-inline: auto;
+  border-radius: 12px;
+}
+
+@keyframes case-hero-grow {
+  from { width: min(880px, calc(100vw - 3rem)); }
+  to   { width: min(1440px, 100vw); }
+}
+
+/* Desktop/tablet: grow on scroll via a view-progress timeline (no JS). */
+@media (min-width: 768px) {
+  @supports (animation-timeline: view()) {
+    @media (prefers-reduced-motion: no-preference) {
+      .case-hero {
+        animation: case-hero-grow linear both;
+        animation-timeline: view();
+        animation-range: cover 0% cover 50%;
+      }
+    }
+  }
+  /* Reduced motion: skip the animation but still land on the full-bleed
+     size, rather than freezing at the smaller column width. */
+  @media (prefers-reduced-motion: reduce) {
+    .case-hero { width: min(1440px, 100vw); }
+  }
+}
+
+/* Browsers without scroll-driven animation support get the same static
+   full-bleed fallback as reduced-motion, instead of being stuck at 880px. */
+@supports not (animation-timeline: view()) {
+  @media (min-width: 768px) {
+    .case-hero { width: min(1440px, 100vw); }
+  }
+}
+
+/* Mobile: no room for a "grows on scroll" effect — static, full-bleed.
+   Corner radius is dropped here on purpose: rounding a corner that sits
+   exactly on the physical screen edge reads as a rendering glitch, not a
+   design choice — see report for a screenshot of this call. */
+@media (max-width: 767px) {
+  .case-hero {
+    width: 100vw;
+    border-radius: 0;
+  }
+}
+
 .prose-works pre {
   background: rgba(28, 27, 23, 0.04);
   border: 1px solid var(--line);

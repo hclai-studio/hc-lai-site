@@ -1,5 +1,6 @@
 import type { MDXComponents } from 'mdx/types';
 import ProjectHeader from '@/app/components/mdx/ProjectHeader';
+import Hero from '@/app/components/mdx/Hero';
 import Caption from '@/app/components/mdx/Caption';
 import ImagePlaceholder from '@/app/components/mdx/ImagePlaceholder';
 import WorkImage from '@/app/components/mdx/WorkImage';
@@ -11,6 +12,7 @@ export function useMDXComponents(components: MDXComponents): MDXComponents {
   return {
     ...components,
     ProjectHeader,
+    Hero,
     Caption,
     ImagePlaceholder,
     WorkImage,
