@@ -394,23 +394,31 @@
 }
 
 /* ── Case-page hero — full-bleed cover image, scroll-driven grow ──
-   The box's own LAYOUT width is always the final, full-bleed size
-   (min(1440px, 100vw), constant) — only `transform: scale()` animates.
-   This is deliberate: animating `width` directly on the same element that
-   hosts `animation-timeline: view()` creates a feedback loop, because the
-   view-timeline's own progress range is computed from the element's
-   height, and with height:auto tracking width via the image's intrinsic
-   16:9 ratio, the animated width was changing the very box the timeline
-   measures against (observed in testing as the box undershooting its own
-   "from" keyframe value). `transform` never touches layout geometry, so
-   it can't feed back into the timeline — the element just reserves its
-   full-size box in the document flow from the start (standard for this
-   "reveal" pattern; the image visually starts small, centered, inside
-   space already reserved for its grown state) and paints smaller via
-   scale until the animation finishes. --hero-start-scale is computed by
-   a resize-only inline script below (never a scroll listener) since the
-   880/target ratio needs two real viewport-width numbers CSS calc() can't
-   divide against each other. */
+   Two rounds of live testing both turned up the same root cause: any
+   property that changes .case-hero's own rendered box — width (via
+   height:auto following the image's intrinsic ratio), and then even
+   transform:scale (Chrome's view() timeline measures the post-transform
+   visual box, not the untransformed layout box) — feeds back into the
+   view-timeline's own progress range when that timeline lives on the
+   same element being animated. Confirmed by scrolling a live preview:
+   the effect finished after ~100–300px of scroll instead of the ~800px+
+   the range should have needed.
+
+   Fix: track a separate, zero-height marker (.case-hero-track, placed
+   immediately before the image) with its own named view-timeline. A
+   zero-height subject's "cover" range is just the viewport height, start
+   to finish, entirely independent of anything the hero image does —
+   there's nothing left for the animated element to feed back into.
+   .case-hero itself only *consumes* that named timeline; its own width
+   stays fixed at the full-bleed target and only transform:scale moves.
+   --hero-start-scale is computed by a resize-only inline script (never a
+   scroll listener) since the 880/target ratio needs two real
+   viewport-width numbers CSS calc() can't divide against each other. */
+.case-hero-track {
+  view-timeline-name: --hero-track;
+  view-timeline-axis: block;
+}
+
 .case-hero {
   display: block;
   width: min(1440px, 100vw);
@@ -430,14 +438,14 @@
   to   { transform: scale(1); }
 }
 
-/* Desktop/tablet: grow on scroll via a view-progress timeline (no JS
-   scroll listener — the timeline itself drives every frame). */
+/* Desktop/tablet: grow on scroll via the marker's view-progress timeline
+   (no JS scroll listener — the timeline itself drives every frame). */
 @media (min-width: 768px) {
   @supports (animation-timeline: view()) {
     @media (prefers-reduced-motion: no-preference) {
       .case-hero {
         animation: case-hero-grow linear both;
-        animation-timeline: view();
+        animation-timeline: --hero-track;
         animation-range: cover 0% cover 50%;
       }
     }
