@@ -414,6 +414,8 @@
 .case-hero {
   display: block;
   width: min(1440px, 100vw);
+  max-width: none; /* override Tailwind preflight's img{max-width:100%} — otherwise it clamps
+                       to .prose-works's 672px content box regardless of the width above */
   height: auto;
   margin-top: 0;
   margin-bottom: var(--figure-gap-block);
