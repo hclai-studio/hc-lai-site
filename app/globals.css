@@ -439,7 +439,15 @@
   height: auto;
   margin-top: 0;
   margin-bottom: var(--figure-gap-block);
-  margin-inline: auto;
+  /* NOT margin-inline:auto — confirmed in an isolated test that once a
+     block element's width exceeds its containing block, Chrome's auto-
+     margin centering doesn't split the deficit evenly: it pins the left
+     margin at 0 and dumps the entire overflow into the right margin,
+     shoving the whole box (and its visible content) to the right and off
+     the edge. Setting both sides to the same explicit calc() forces a
+     true 50/50 split regardless of how oversized the box is. */
+  margin-left: calc((100% - min(1440px, 100vw)) / 2);
+  margin-right: calc((100% - min(1440px, 100vw)) / 2);
   border-radius: 12px;
   transform-origin: center center;
   transform: scale(var(--hero-start-scale, 0.6111));
