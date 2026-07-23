@@ -432,6 +432,8 @@
 .case-hero {
   display: block;
   width: min(880px, calc(100vw - 3rem));
+  max-width: none; /* override Tailwind preflight's img{max-width:100%} — otherwise it clamps
+                       to .prose-works's 672px content box regardless of the width above */
   aspect-ratio: 16 / 9;
   height: auto;
   object-fit: cover; /* the source is ~16:9 but not bit-exact; this guarantees
