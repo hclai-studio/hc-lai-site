@@ -408,112 +408,59 @@
 }
 
 /* ── Case-page hero — full-bleed cover image, scroll-driven grow ──
-   Went through two false starts before this one:
-   1. Animating `width` directly (height:auto following it via the
-      image's intrinsic ratio) fed back into view()'s own progress range,
-      since that range is computed from the animated element's height.
-   2. Tried decoupling via a separate zero-height marker with its own
-      *named* view-timeline (.case-hero-track { view-timeline-name }) —
-      but that marker was a sibling of .case-hero, and named timelines
-      only propagate to descendants per spec. The reference silently
-      failed to resolve, animation-timeline fell back to the default
-      (document) timeline, and since no explicit duration was set (there
-      was never meant to be one — progress was supposed to come from
-      scroll, not a clock), the 0s-duration animation just completed
-      instantly. Isolated test confirmed both the bug and the cause.
-   Landed here: plain `animation-timeline: view()` directly on
-   .case-hero, animating only `transform: scale()`. An isolated,
-   file-server-hosted test with this exact combination (self-referencing
-   view(), transform-only) scrolled correctly end to end — the earlier
-   "premature completion" reports on the live site traced back to stale
-   animation state from repeated in-tab test navigations, not a real bug
-   in this combination. --hero-start-scale is computed by a resize-only
-   inline script (never a scroll listener) since the 880/target ratio
-   needs two real viewport-width numbers CSS calc() can't divide against
-   each other. */
+   Third design for this effect. The previous transform:scale + view()
+   version was dropped entirely: transform never changes an element's
+   *layout* box, so the box had to permanently reserve its full-grown
+   size in the document flow — leaving a hole of dead cream space between
+   the title and the hero while it sat small (visually) inside that
+   already-large reserved area. Fixed here by animating the *real* width
+   (plus margin-top/bottom and border-radius) instead: the box's layout
+   size now matches whatever it currently looks like, so growth reflows
+   the page and pushes the next heading down — nothing is ever reserved
+   ahead of time.
+   That rules out animation-timeline:view() too (it needs a subject whose
+   own geometry it can track without the subject's animation feeding back
+   into that tracking — exactly the trap the old version was built around
+   avoiding). Progress now comes from a plain rAF loop keyed off
+   window.scrollY, in HeroClient.tsx: trigger positions (scrollY where the
+   hero's center sits at 70%/40% of viewport height) are computed once at
+   mount and on resize — never read back from the element's own current,
+   possibly mid-animation rect, which would be the same self-tracking
+   trap in JS form. An exponential-smoothing term (cur += (eased-cur) *
+   0.08) gives the motion inertia a linear timeline can't. See
+   HeroClient.tsx for the full implementation. */
 .case-hero {
   display: block;
-  width: 96vw; /* no 1440px cap — hero is an ambient image, not bound to the
-                  prose reading width; goes nearly edge-to-edge at any viewport */
-  max-width: none; /* override Tailwind preflight's img{max-width:100%} — otherwise it clamps
-                       to .prose-works's 672px content box regardless of the width above */
+  width: min(880px, calc(100vw - 3rem));
+  aspect-ratio: 16 / 9;
   height: auto;
-  margin-top: 0;
+  object-fit: cover; /* the source is ~16:9 but not bit-exact; this guarantees
+                         no stretching even for the tiny leftover mismatch */
+  margin-top: var(--figure-gap-block);
   margin-bottom: var(--figure-gap-block);
-  /* NOT margin-inline:auto — confirmed in an isolated test that once a
+  /* NOT margin-inline:auto — confirmed in an earlier round that once a
      block element's width exceeds its containing block, Chrome's auto-
-     margin centering doesn't split the deficit evenly: it pins the left
-     margin at 0 and dumps the entire overflow into the right margin,
-     shoving the whole box (and its visible content) to the right and off
-     the edge. Setting both sides to the same explicit calc() forces a
-     true 50/50 split regardless of how oversized the box is. */
-  margin-left: calc((100% - 96vw) / 2);
-  margin-right: calc((100% - 96vw) / 2);
+     margin centering doesn't split the deficit evenly (pins left at 0,
+     dumps the whole overflow into the right margin). Explicit calc on
+     both sides forces a true 50/50 split at any width. HeroClient.tsx
+     recomputes this same pair in pixels every animation frame once width
+     starts changing; this is just the resting/no-JS/pre-hydration value. */
+  margin-left: calc((100% - min(880px, calc(100vw - 3rem))) / 2);
+  margin-right: calc((100% - min(880px, calc(100vw - 3rem))) / 2);
   border-radius: 12px;
-  transform-origin: center center;
-  transform: scale(var(--hero-start-scale, 0.6111));
-}
-
-@keyframes case-hero-grow {
-  from { transform: scale(var(--hero-start-scale, 0.6111)); }
-  to   { transform: scale(1); }
-}
-
-/* Desktop/tablet: grow on scroll via a view-progress timeline (no JS
-   scroll listener — the timeline itself drives every frame). */
-@media (min-width: 768px) {
-  @supports (animation-timeline: view()) {
-    @media (prefers-reduced-motion: no-preference) {
-      .case-hero {
-        animation: case-hero-grow ease-out both;
-        animation-timeline: view();
-        /* .case-hero's own *layout* box is always the large 96vw target
-           size (never animated — see the comment above), which on most
-           wide-but-short viewports is taller than the viewport itself.
-           That means "contain" (subject fully inside the viewport at
-           once) never actually occurs — its 0%/100% collapse to the same
-           point, right where "entry" finishes (leading edge fully in).
-           Anchoring the start there is exactly "image has finished
-           entering" without needing entry's own 0%–100% span, which
-           starts counting from the very first visible pixel — too early
-           per feedback.
-           The end point took two live-scroll rounds to land: cover 90%
-           measured out to ~850px of scroll after the start anchor (image
-           mostly scrolled past by the time it finished) — nowhere near
-           the intended ~1 viewport-height. cover 55% measured out to
-           ~300px after the same start point on a 1920x878 test viewport
-           — the actual target. Not derived from the nominal cover-range
-           formula (viewport height + subject height): that formula
-           assumes a roughly linear percent-to-pixel mapping which didn't
-           hold in practice, so this was calibrated against real scroll
-           positions instead. */
-        animation-range: contain 0% cover 55%;
-      }
-    }
-  }
-  /* Reduced motion: skip the animation but still land at full size,
-     rather than freezing at the smaller scale. */
-  @media (prefers-reduced-motion: reduce) {
-    .case-hero { transform: scale(1); }
-  }
-}
-
-/* Browsers without scroll-driven animation support get the same static
-   full-size fallback as reduced-motion, instead of being stuck small. */
-@supports not (animation-timeline: view()) {
-  @media (min-width: 768px) {
-    .case-hero { transform: scale(1); }
-  }
 }
 
 /* Mobile: no room for a "grows on scroll" effect — static, full-bleed.
-   Corner radius is dropped here on purpose: rounding a corner that sits
-   exactly on the physical screen edge reads as a rendering glitch, not a
-   design choice — see report for a screenshot of this call. */
+   HeroClient.tsx's rAF loop checks this same breakpoint and never writes
+   inline styles below it, so this is the actual rendered state, not just
+   a fallback. Corner radius is dropped on purpose: rounding a corner that
+   sits exactly on the physical screen edge reads as a rendering glitch,
+   not a design choice. */
 @media (max-width: 767px) {
   .case-hero {
     width: 100vw;
-    transform: scale(1);
+    margin-left: calc((100% - 100vw) / 2);
+    margin-right: calc((100% - 100vw) / 2);
     border-radius: 0;
   }
 }

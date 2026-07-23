@@ -1,7 +1,7 @@
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import sharp from 'sharp';
-import Image from 'next/image';
+import HeroClient from './HeroClient';
 
 interface HeroProps {
   src: string;
@@ -12,35 +12,5 @@ export default async function Hero({ src, alt }: HeroProps) {
   const filePath = join(process.cwd(), 'public', src);
   const { width, height } = await sharp(readFileSync(filePath)).metadata();
 
-  return (
-    <>
-      <Image
-        src={src}
-        alt={alt}
-        width={width!}
-        height={height!}
-        priority
-        sizes="(max-width: 767px) 100vw, 96vw"
-        className="case-hero"
-      />
-      {/* Sets --hero-start-scale = (column width) / (full-bleed target width).
-          Resize-only — never runs on scroll, the animation itself is 100% CSS. */}
-      <script
-        dangerouslySetInnerHTML={{
-          __html: `(function(){
-            function setHeroScale(){
-              var start = Math.min(880, window.innerWidth - 48);
-              var target = window.innerWidth * 0.96;
-              document.documentElement.style.setProperty('--hero-start-scale', String(start / target));
-            }
-            setHeroScale();
-            if (!window.__heroScaleResizeBound) {
-              window.__heroScaleResizeBound = true;
-              window.addEventListener('resize', setHeroScale);
-            }
-          })();`,
-        }}
-      />
-    </>
-  );
+  return <HeroClient src={src} alt={alt} width={width!} height={height!} />;
 }

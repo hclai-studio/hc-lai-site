@@ -1,0 +1,162 @@
+'use client';
+
+import { useEffect, useRef } from 'react';
+import Image from 'next/image';
+
+interface HeroClientProps {
+  src: string;
+  alt: string;
+  width: number;
+  height: number;
+}
+
+const BASE_RADIUS = 12; // must match .case-hero's border-radius in globals.css
+const SMOOTHING = 0.08; // ≈ GSAP ScrollTrigger scrub: 0.8
+const START_VIEWPORT_FRACTION = 0.7; // hero center at 70% of viewport height
+const END_VIEWPORT_FRACTION = 0.4; // hero center at 40% of viewport height
+const CONVERGED_THRESHOLD = 0.001;
+
+export default function HeroClient({ src, alt, width, height }: HeroClientProps) {
+  const imgRef = useRef<HTMLImageElement>(null);
+
+  useEffect(() => {
+    const el = imgRef.current;
+    if (!el) return;
+
+    const mqMobile = window.matchMedia('(max-width: 767px)');
+    const mqReduced = window.matchMedia('(prefers-reduced-motion: reduce)');
+
+    let startScrollY = 0;
+    let endScrollY = 0;
+    let startWidth = 880;
+    let endWidth = 880;
+    let startMarginV = 0;
+    let cur = 0;
+    let rafId = 0;
+
+    // Trigger positions and start/end sizes are computed once here (and again
+    // on resize) — never re-derived from the element's own current rect mid-
+    // animation, which would be the same self-tracking trap the previous
+    // view()-based version was built to avoid.
+    function computeTriggers() {
+      const el2 = imgRef.current;
+      if (!el2) return;
+
+      // Reset to the resting CSS state before measuring, in case this runs
+      // (on resize) while a previous animation frame left inline styles set.
+      el2.style.width = '';
+      el2.style.marginTop = '';
+      el2.style.marginBottom = '';
+      el2.style.marginLeft = '';
+      el2.style.marginRight = '';
+      el2.style.borderRadius = '';
+
+      const rect = el2.getBoundingClientRect();
+      const computed = getComputedStyle(el2);
+      const vh = window.innerHeight;
+      const centerDocY = rect.top + window.scrollY + rect.height / 2;
+
+      startScrollY = centerDocY - vh * START_VIEWPORT_FRACTION;
+      endScrollY = centerDocY - vh * END_VIEWPORT_FRACTION;
+      startWidth = Math.min(880, window.innerWidth - 48);
+      endWidth = document.documentElement.clientWidth; // not 100vw — excludes the scrollbar
+      startMarginV = parseFloat(computed.marginTop) || 0;
+    }
+
+    function applyStatic() {
+      const el2 = imgRef.current;
+      if (!el2) return;
+      el2.style.width = '';
+      el2.style.marginTop = '';
+      el2.style.marginBottom = '';
+      el2.style.marginLeft = '';
+      el2.style.marginRight = '';
+      el2.style.borderRadius = '';
+    }
+
+    function tick() {
+      rafId = 0;
+      const el2 = imgRef.current;
+      if (!el2) return;
+
+      if (mqMobile.matches || mqReduced.matches) {
+        applyStatic();
+        return;
+      }
+
+      const span = endScrollY - startScrollY;
+      let p = span > 0 ? (window.scrollY - startScrollY) / span : 1;
+      p = Math.min(1, Math.max(0, p));
+      const eased = 1 - Math.pow(1 - p, 2); // power2.out
+
+      cur += (eased - cur) * SMOOTHING;
+
+      const w = startWidth + (endWidth - startWidth) * cur;
+      const mv = startMarginV * (1 - cur);
+      const br = BASE_RADIUS * (1 - cur);
+      const sideMargin = (document.documentElement.clientWidth - w) / 2;
+
+      el2.style.width = `${w}px`;
+      el2.style.marginLeft = `${sideMargin}px`;
+      el2.style.marginRight = `${sideMargin}px`;
+      el2.style.marginTop = `${mv}px`;
+      el2.style.marginBottom = `${mv}px`;
+      el2.style.borderRadius = `${br}px`;
+
+      if (Math.abs(eased - cur) > CONVERGED_THRESHOLD) {
+        rafId = requestAnimationFrame(tick);
+      }
+    }
+
+    function requestTick() {
+      if (!rafId) rafId = requestAnimationFrame(tick);
+    }
+
+    function handleResize() {
+      computeTriggers();
+      requestTick();
+    }
+
+    function handleMediaChange() {
+      if (mqMobile.matches || mqReduced.matches) {
+        if (rafId) {
+          cancelAnimationFrame(rafId);
+          rafId = 0;
+        }
+        applyStatic();
+      } else {
+        computeTriggers();
+        requestTick();
+      }
+    }
+
+    computeTriggers();
+    requestTick();
+
+    window.addEventListener('scroll', requestTick, { passive: true });
+    window.addEventListener('resize', handleResize);
+    mqMobile.addEventListener('change', handleMediaChange);
+    mqReduced.addEventListener('change', handleMediaChange);
+
+    return () => {
+      window.removeEventListener('scroll', requestTick);
+      window.removeEventListener('resize', handleResize);
+      mqMobile.removeEventListener('change', handleMediaChange);
+      mqReduced.removeEventListener('change', handleMediaChange);
+      if (rafId) cancelAnimationFrame(rafId);
+    };
+  }, []);
+
+  return (
+    <Image
+      ref={imgRef}
+      src={src}
+      alt={alt}
+      width={width}
+      height={height}
+      priority
+      sizes="(max-width: 767px) 100vw, 100vw"
+      className="case-hero"
+    />
+  );
+}
