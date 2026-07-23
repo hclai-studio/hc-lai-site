@@ -48,6 +48,16 @@
      growth step (below) isn't a jarring +116%. 1280px ≈ Anthropic's own
      1272px resting hero width. */
   --hero-width-start: 1280px;
+
+  /* Divider→hero desktop gap = ProjectHeader's pb-[80px] (left untouched —
+     shared by every case page's title block) + this. 80 + 16 = 96px,
+     measured against a 176px resting gap (80 + the old shared 96px
+     --figure-gap-block) that read as too airy. Not reusing
+     --figure-gap-block here since that token is shared with WorkImage/
+     DecisionTable figures elsewhere in the page — changing it would have
+     shifted their spacing too. Mobile (≤767px) explicitly reverts to
+     --figure-gap-block below, so this is a desktop-only change. */
+  --hero-gap-top: 16px;
 }
 
 @media (min-width: 640px) {
@@ -444,7 +454,7 @@
   height: auto;
   object-fit: cover; /* the source is ~16:9 but not bit-exact; this guarantees
                          no stretching even for the tiny leftover mismatch */
-  margin-top: var(--figure-gap-block);
+  margin-top: var(--hero-gap-top);
   margin-bottom: var(--figure-gap-block);
   /* NOT margin-inline:auto — confirmed in an earlier round that once a
      block element's width exceeds its containing block, Chrome's auto-
@@ -467,6 +477,9 @@
 @media (max-width: 767px) {
   .case-hero {
     width: 100vw;
+    margin-top: var(--figure-gap-block); /* revert to the shared token — the
+      narrower --hero-gap-top above is a desktop-only adjustment; mobile
+      keeps its original spacing unchanged */
     margin-left: calc((100% - 100vw) / 2);
     margin-right: calc((100% - 100vw) / 2);
     border-radius: 0;

@@ -13,8 +13,8 @@ interface HeroClientProps {
 const BASE_RADIUS = 12; // must match .case-hero's border-radius in globals.css
 const HERO_WIDTH_START = 1280; // must match --hero-width-start in globals.css
 const SMOOTHING = 0.08; // ≈ GSAP ScrollTrigger scrub: 0.8
-const START_VIEWPORT_FRACTION = 0.7; // hero center at 70% of viewport height
 const END_VIEWPORT_FRACTION = 0.4; // hero center at 40% of viewport height
+const SPAN_VH_FRACTION = 0.3; // scroll span = 30% of viewport height, anchored off the end trigger
 const CONVERGED_THRESHOLD = 0.001;
 
 export default function HeroClient({ src, alt, width, height }: HeroClientProps) {
@@ -31,7 +31,8 @@ export default function HeroClient({ src, alt, width, height }: HeroClientProps)
     let endScrollY = 0;
     let startWidth = 880;
     let endWidth = 880;
-    let startMarginV = 0;
+    let startMarginTop = 0;
+    let startMarginBottom = 0;
     let containingBlockWidth = 0;
     let cur = 0;
     let rafId = 0;
@@ -58,11 +59,19 @@ export default function HeroClient({ src, alt, width, height }: HeroClientProps)
       const vh = window.innerHeight;
       const centerDocY = rect.top + window.scrollY + rect.height / 2;
 
-      startScrollY = centerDocY - vh * START_VIEWPORT_FRACTION;
+      // Only the end trigger is anchored to the hero's own position; the start
+      // trigger is derived by subtracting a fixed viewport-height fraction
+      // from it. Anchoring both ends independently (each as "hero center at
+      // X% of viewport height") let the actual span balloon past its
+      // intended size whenever the hero's height changed the position of its
+      // own center — diluting power2.out's front-loaded feel over a much
+      // longer scroll distance than intended.
       endScrollY = centerDocY - vh * END_VIEWPORT_FRACTION;
+      startScrollY = endScrollY - vh * SPAN_VH_FRACTION;
       startWidth = Math.min(HERO_WIDTH_START, window.innerWidth - 48);
       endWidth = document.documentElement.clientWidth; // not 100vw — excludes the scrollbar
-      startMarginV = parseFloat(computed.marginTop) || 0;
+      startMarginTop = parseFloat(computed.marginTop) || 0;
+      startMarginBottom = parseFloat(computed.marginBottom) || 0;
 
       // The margin math below centers the image against its *containing
       // block* (.prose-works's content box, capped at 720px minus its own
@@ -111,15 +120,16 @@ export default function HeroClient({ src, alt, width, height }: HeroClientProps)
       cur += (eased - cur) * SMOOTHING;
 
       const w = startWidth + (endWidth - startWidth) * cur;
-      const mv = startMarginV * (1 - cur);
+      const mt = startMarginTop * (1 - cur);
+      const mb = startMarginBottom * (1 - cur);
       const br = BASE_RADIUS * (1 - cur);
       const sideMargin = (containingBlockWidth - w) / 2;
 
       el2.style.width = `${w}px`;
       el2.style.marginLeft = `${sideMargin}px`;
       el2.style.marginRight = `${sideMargin}px`;
-      el2.style.marginTop = `${mv}px`;
-      el2.style.marginBottom = `${mv}px`;
+      el2.style.marginTop = `${mt}px`;
+      el2.style.marginBottom = `${mb}px`;
       el2.style.borderRadius = `${br}px`;
 
       if (Math.abs(eased - cur) > CONVERGED_THRESHOLD) {
