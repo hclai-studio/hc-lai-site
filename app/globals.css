@@ -476,10 +476,18 @@
            Anchoring the start there is exactly "image has finished
            entering" without needing entry's own 0%–100% span, which
            starts counting from the very first visible pixel — too early
-           per feedback. cover 90% ends it roughly one more viewport-
-           height of scroll later. Tuned against a live scroll test, not
-           derived from an exact formula — see report for the numbers. */
-        animation-range: contain 0% cover 90%;
+           per feedback.
+           The end point took two live-scroll rounds to land: cover 90%
+           measured out to ~850px of scroll after the start anchor (image
+           mostly scrolled past by the time it finished) — nowhere near
+           the intended ~1 viewport-height. cover 55% measured out to
+           ~300px after the same start point on a 1920x878 test viewport
+           — the actual target. Not derived from the nominal cover-range
+           formula (viewport height + subject height): that formula
+           assumes a roughly linear percent-to-pixel mapping which didn't
+           hold in practice, so this was calibrated against real scroll
+           positions instead. */
+        animation-range: contain 0% cover 55%;
       }
     }
   }
