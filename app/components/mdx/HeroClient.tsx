@@ -31,6 +31,7 @@ export default function HeroClient({ src, alt, width, height }: HeroClientProps)
     let startWidth = 880;
     let endWidth = 880;
     let startMarginV = 0;
+    let containingBlockWidth = 0;
     let cur = 0;
     let rafId = 0;
 
@@ -61,6 +62,23 @@ export default function HeroClient({ src, alt, width, height }: HeroClientProps)
       startWidth = Math.min(880, window.innerWidth - 48);
       endWidth = document.documentElement.clientWidth; // not 100vw — excludes the scrollbar
       startMarginV = parseFloat(computed.marginTop) || 0;
+
+      // The margin math below centers the image against its *containing
+      // block* (.prose-works's content box, capped at 720px minus its own
+      // padding — e.g. 672px, not the full viewport) — the same box a plain
+      // CSS `calc((100% - width) / 2)` margin would resolve against. Using
+      // document.documentElement.clientWidth here instead was a real bug:
+      // it centered against the viewport, which only coincides with the
+      // containing block below .prose-works's own max-width cap. Above it
+      // (any viewport ≥ ~768px), that mismatch shifted the whole box left
+      // and let it overflow off the right edge — caught on the first live
+      // scroll test after deploying.
+      const parent = el2.parentElement;
+      if (parent) {
+        const parentStyle = getComputedStyle(parent);
+        containingBlockWidth =
+          parent.clientWidth - parseFloat(parentStyle.paddingLeft) - parseFloat(parentStyle.paddingRight);
+      }
     }
 
     function applyStatic() {
@@ -94,7 +112,7 @@ export default function HeroClient({ src, alt, width, height }: HeroClientProps)
       const w = startWidth + (endWidth - startWidth) * cur;
       const mv = startMarginV * (1 - cur);
       const br = BASE_RADIUS * (1 - cur);
-      const sideMargin = (document.documentElement.clientWidth - w) / 2;
+      const sideMargin = (containingBlockWidth - w) / 2;
 
       el2.style.width = `${w}px`;
       el2.style.marginLeft = `${sideMargin}px`;
