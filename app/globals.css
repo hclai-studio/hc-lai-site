@@ -465,9 +465,21 @@
   @supports (animation-timeline: view()) {
     @media (prefers-reduced-motion: no-preference) {
       .case-hero {
-        animation: case-hero-grow linear both;
+        animation: case-hero-grow ease-out both;
         animation-timeline: view();
-        animation-range: entry 0% entry 45%;
+        /* .case-hero's own *layout* box is always the large 96vw target
+           size (never animated — see the comment above), which on most
+           wide-but-short viewports is taller than the viewport itself.
+           That means "contain" (subject fully inside the viewport at
+           once) never actually occurs — its 0%/100% collapse to the same
+           point, right where "entry" finishes (leading edge fully in).
+           Anchoring the start there is exactly "image has finished
+           entering" without needing entry's own 0%–100% span, which
+           starts counting from the very first visible pixel — too early
+           per feedback. cover 90% ends it roughly one more viewport-
+           height of scroll later. Tuned against a live scroll test, not
+           derived from an exact formula — see report for the numbers. */
+        animation-range: contain 0% cover 90%;
       }
     }
   }
