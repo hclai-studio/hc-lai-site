@@ -11,6 +11,7 @@ interface HeroClientProps {
 }
 
 const BASE_RADIUS = 12; // must match .case-hero's border-radius in globals.css
+const HERO_WIDTH_START = 1280; // must match --hero-width-start in globals.css
 const SMOOTHING = 0.08; // ≈ GSAP ScrollTrigger scrub: 0.8
 const START_VIEWPORT_FRACTION = 0.7; // hero center at 70% of viewport height
 const END_VIEWPORT_FRACTION = 0.4; // hero center at 40% of viewport height
@@ -59,7 +60,7 @@ export default function HeroClient({ src, alt, width, height }: HeroClientProps)
 
       startScrollY = centerDocY - vh * START_VIEWPORT_FRACTION;
       endScrollY = centerDocY - vh * END_VIEWPORT_FRACTION;
-      startWidth = Math.min(880, window.innerWidth - 48);
+      startWidth = Math.min(HERO_WIDTH_START, window.innerWidth - 48);
       endWidth = document.documentElement.clientWidth; // not 100vw — excludes the scrollbar
       startMarginV = parseFloat(computed.marginTop) || 0;
 

@@ -42,6 +42,12 @@
   /* Figure spacing — case-page image/table blocks (WorkImage, DecisionTable, …) */
   --figure-gap-block:   64px; /* figure ↔ surrounding prose */
   --figure-gap-caption: 16px; /* image ↔ caption, unchanged from prior mt-4 */
+
+  /* Hero is the page's only full-bleed element — its resting width is wider
+     than the 880px column-width figures use, so the first scroll-driven
+     growth step (below) isn't a jarring +116%. 1280px ≈ Anthropic's own
+     1272px resting hero width. */
+  --hero-width-start: 1280px;
 }
 
 @media (min-width: 640px) {
@@ -431,7 +437,7 @@
    HeroClient.tsx for the full implementation. */
 .case-hero {
   display: block;
-  width: min(880px, calc(100vw - 3rem));
+  width: min(var(--hero-width-start), calc(100vw - 3rem));
   max-width: none; /* override Tailwind preflight's img{max-width:100%} — otherwise it clamps
                        to .prose-works's 672px content box regardless of the width above */
   aspect-ratio: 16 / 9;
@@ -447,8 +453,8 @@
      both sides forces a true 50/50 split at any width. HeroClient.tsx
      recomputes this same pair in pixels every animation frame once width
      starts changing; this is just the resting/no-JS/pre-hydration value. */
-  margin-left: calc((100% - min(880px, calc(100vw - 3rem))) / 2);
-  margin-right: calc((100% - min(880px, calc(100vw - 3rem))) / 2);
+  margin-left: calc((100% - min(var(--hero-width-start), calc(100vw - 3rem))) / 2);
+  margin-right: calc((100% - min(var(--hero-width-start), calc(100vw - 3rem))) / 2);
   border-radius: 12px;
 }
 
