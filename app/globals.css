@@ -439,7 +439,7 @@
    into that tracking — exactly the trap the old version was built around
    avoiding). Progress now comes from a plain rAF loop keyed off
    window.scrollY, in HeroClient.tsx: trigger positions (scrollY where the
-   hero's center reaches 50% of viewport height, with the start trigger
+   hero's center reaches 40% of viewport height, with the start trigger
    derived backward from a fixed scroll-span fraction) are computed once at
    mount and on resize — never read back from the element's own current,
    possibly mid-animation rect, which would be the same self-tracking
@@ -451,16 +451,10 @@
   width: min(var(--hero-width-start), calc(100vw - 3rem));
   max-width: none; /* override Tailwind preflight's img{max-width:100%} — otherwise it clamps
                        to .prose-works's 672px content box regardless of the width above */
-  /* Source images are now authored at 4140×1882 (2.2:1) specifically for
-     this box — a 16:9 crop, at full viewport width, renders taller than
-     common desktop viewports (e.g. 1905px wide → 1071px tall vs. a
-     953px-tall viewport), clipping the top once the grow animation
-     finishes. 2.2/1 (≈866px tall at 1905px wide) fits inside that viewport
-     with room to spare. */
-  aspect-ratio: 2.2 / 1;
+  aspect-ratio: 16 / 9;
   height: auto;
-  object-fit: cover; /* source ratio is 4140/1882 ≈ 2.1998, not bit-exact 2.2;
-                         this guarantees no stretching from that rounding */
+  object-fit: cover; /* the source is ~16:9 but not bit-exact; this guarantees
+                         no stretching even for the tiny leftover mismatch */
   margin-top: var(--hero-gap-top);
   margin-bottom: var(--figure-gap-block);
   /* NOT margin-inline:auto — confirmed in an earlier round that once a
