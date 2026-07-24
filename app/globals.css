@@ -58,6 +58,15 @@
      shifted their spacing too. Mobile (≤767px) explicitly reverts to
      --figure-gap-block below, so this is a desktop-only change. */
   --hero-gap-top: 16px;
+
+  /* Desktop container ratio for the hero crop — a pure CSS knob now that
+     the 5646×1882 source has plain cream on both sides: narrowing this
+     only trims cream (object-fit:cover), never subject content, so it's
+     safe to retune live in DevTools. 3:1 (previous value) left the subject
+     too thin (~1128px wide at full viewport vs ~1538px at 2.2:1); 2.35:1
+     is the new default. Mobile overrides to 16/9 below — see that rule for
+     why. */
+  --hero-aspect: 2.35 / 1;
 }
 
 @media (min-width: 640px) {
@@ -451,16 +460,18 @@
   width: min(var(--hero-width-start), calc(100vw - 3rem));
   max-width: none; /* override Tailwind preflight's img{max-width:100%} — otherwise it clamps
                        to .prose-works's 672px content box regardless of the width above */
-  /* Source images are authored at 5646×1882 (exactly 3:1) for this box —
-     16/9 renders taller than common desktop viewports at full width (e.g.
-     1905px wide → 1071px tall vs. a 953px-tall viewport, never fully
-     visible), and an intermediate 2.2:1 tried previously left too short a
-     scroll window (~87px) to reliably land on the fully-visible frame. 3:1
-     (≈635px tall at 1905px wide) leaves a ~300px-tall window to land in. */
-  aspect-ratio: 3 / 1;
+  /* Source is authored at 5646×1882 (3:1) with plain cream on both sides,
+     so the desktop container ratio is now a pure CSS knob — narrowing it
+     only trims cream via object-fit:cover, never subject content. 3:1 left
+     the subject too thin (~1128px wide at full viewport); 2.35:1 is wide
+     enough to still land in a comfortable fully-visible scroll window
+     while showing more of the subject (~1538px-equivalent framing). Retune
+     --hero-aspect live in DevTools to compare 2.2/1, 2.35/1, 2.5/1 before
+     committing to a different value. */
+  aspect-ratio: var(--hero-aspect);
   height: auto;
-  object-fit: cover; /* source ratio is 5646/1882 = 3.0000 exactly, but kept
-                         for consistency/safety against any resize rounding */
+  object-fit: cover;
+  object-position: center;
   margin-top: var(--hero-gap-top);
   margin-bottom: var(--figure-gap-block);
   /* NOT margin-inline:auto — confirmed in an earlier round that once a
@@ -484,6 +495,12 @@
 @media (max-width: 767px) {
   .case-hero {
     width: 100vw;
+    /* 16/9 here (not var(--hero-aspect)) exactly reverses the desktop crop:
+       it re-trims the cream this source's canvas was extended with on both
+       sides, back down to the original 3344×1882 framing — full subject
+       size restored, zero content loss either way since it's all still
+       object-fit:cover on the same untouched source file. */
+    aspect-ratio: 16 / 9;
     margin-top: var(--figure-gap-block); /* revert to the shared token — the
       narrower --hero-gap-top above is a desktop-only adjustment; mobile
       keeps its original spacing unchanged */
