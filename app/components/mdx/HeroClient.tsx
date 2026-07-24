@@ -12,6 +12,15 @@ interface HeroClientProps {
 
 const BASE_RADIUS = 12; // must match .case-hero's border-radius in globals.css
 const HERO_WIDTH_START = 1280; // must match --hero-width-start in globals.css
+const HERO_BAND = 71; // target single-side cream band (px) at full growth — the
+// author-approved look at 1920×953; --hero-aspect is now solved backward from
+// this instead of being a fixed ratio, so the band stays ~71px regardless of
+// window shape (previously it drifted: (vh - vw/2.35)/2 shrank toward ~30px
+// on shorter/wider windows like ~1568×728). Clamped to [2.0, 3.0] since the
+// source is 3:1 with plain cream on both sides — beyond 3.0 there's no more
+// cream left to trim, only actual subject content, so the band can fall
+// below 71px on very short/wide viewports; that's a real material limit, not
+// a bug.
 const SMOOTHING = 0.08; // ≈ GSAP ScrollTrigger scrub: 0.8
 const END_VIEWPORT_FRACTION = 0.5; // hero center at 50% (vertically centered) of viewport height —
 // with the 3:1 source images this leaves a scroll window where the
@@ -63,6 +72,18 @@ export default function HeroClient({ src, alt, width, height }: HeroClientProps)
       endWidth = document.documentElement.clientWidth; // not 100vw — excludes the scrollbar
       startMarginTop = parseFloat(computed.marginTop) || 0;
       startMarginBottom = parseFloat(computed.marginBottom) || 0;
+
+      // Solve --hero-aspect backward from the target cream band instead of
+      // using a fixed ratio: aspect = endWidth / (vh - 2*HERO_BAND) gives
+      // whatever ratio makes the fully-grown hero's height leave exactly
+      // HERO_BAND px above and below at the current window's shape. Written
+      // onto the element itself (not :root) so it only affects this hero
+      // instance; the mobile media query overrides with a literal 16/9
+      // regardless, so this has no effect there. Must happen before the
+      // end-state measurement below, since that measurement's height comes
+      // from whatever aspect-ratio is in effect at the time.
+      const solvedAspect = Math.min(3.0, Math.max(2.0, endWidth / (vh - 2 * HERO_BAND)));
+      el2.style.setProperty('--hero-aspect', String(solvedAspect));
 
       // endScrollY must be anchored to the hero's END-STATE geometric center,
       // not its resting-state one. By the time growth finishes, height has
