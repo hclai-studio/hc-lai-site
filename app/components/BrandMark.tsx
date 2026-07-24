@@ -140,25 +140,23 @@ export default function BrandMark({ className = "" }: { className?: string }) {
     let discreteTarget = 1;  // tracks current tween p-target to skip redundant tweens
 
     // Home page: unchanged, fixed thresholds — zero behavior change there.
-    // Work pages: THRESHOLD_FACE used to be a hand-tuned absolute scrollY
-    // (600) that only happened to line up because it was tuned against one
-    // specific hero aspect ratio/viewport combination — it silently drifted
-    // out of sync every time that geometry changed (as it did across v3.1–
-    // v3.6). Now derived from the hero's own endScrollY (see
+    // Work pages: derived from the hero's own endScrollY (see
     // computeHeroEndScrollY above, which mirrors HeroClient.tsx's end-state
-    // measurement) minus a lead so the ~520ms face→H.C. tween has time to
-    // finish by the time scrolling reaches endScrollY — expressed as a
-    // viewport-height fraction rather than a fixed px guess, since wheel
-    // notch size varies by device and can't be measured in advance; this is
-    // a best-effort approximation, not frame-exact sync. LOGO_LEAD_FRACTION
-    // was first tried at 0.05 (~44px), but that's far smaller than a typical
-    // wheel notch (~100-130px) and endScrollY (664 in testing) minus 44 was
-    // still *later* than the old hardcoded 600 — so it landed in the same
-    // notch as before and produced no perceptible change. 0.15 (~132px)
-    // pulls the trigger back into the notch before that. Falls back to the
-    // previous 600 value only if the hero isn't found (shouldn't happen on
-    // an actual /works/ page). THRESHOLD_LAI keeps the same 100px gap that
-    // existed before this change — untouched per brief.
+    // measurement) — expressed as a viewport-height fraction rather than a
+    // fixed px guess, since wheel notch size varies by device and can't be
+    // measured in advance; this is a best-effort approximation, not
+    // frame-exact sync. Falls back to the previous 600/700 values only if
+    // the hero isn't found (shouldn't happen on an actual /works/ page).
+    //
+    // THRESHOLD_LAI (not THRESHOLD_FACE) is now the one anchored directly to
+    // endScrollY, with THRESHOLD_FACE derived backward from it by
+    // subtracting the same 100px gap as before. Previously it was the other
+    // way around (THRESHOLD_FACE anchored, THRESHOLD_LAI = THRESHOLD_FACE +
+    // 100), which meant the hero reaching full-width+symmetric coincided
+    // with "H.C." being complete — "H.C. Lai" only appeared a further notch
+    // later. Anchoring THRESHOLD_LAI instead makes "H.C. Lai" (the fully
+    // resolved wordmark) the one that lands with the hero, which is what the
+    // brief wants highlighted at that moment.
     const LOGO_LEAD_FRACTION = 0.15;
     const LAI_GAP = 100;
     let THRESHOLD_FACE = isWorkPage ? 600 : 700;
@@ -168,8 +166,8 @@ export default function BrandMark({ className = "" }: { className?: string }) {
       if (!isWorkPage) return;
       const endScrollY = computeHeroEndScrollY();
       if (endScrollY === null) return;
-      THRESHOLD_FACE = endScrollY - window.innerHeight * LOGO_LEAD_FRACTION;
-      THRESHOLD_LAI  = THRESHOLD_FACE + LAI_GAP;
+      THRESHOLD_LAI  = endScrollY - window.innerHeight * LOGO_LEAD_FRACTION;
+      THRESHOLD_FACE = THRESHOLD_LAI - LAI_GAP;
     }
     updateWorkPageThresholds();
 
@@ -197,19 +195,15 @@ export default function BrandMark({ className = "" }: { className?: string }) {
     // Mac / touch: scroll-driven, continuous (no snap). Home page: START/D
     // are the original fixed viewport-height fractions, untouched.
     // Work pages: this used to be the SAME fixed START/D as home — entirely
-    // unrelated to the hero's own endScrollY, so "H.C. fully formed"
-    // (contract reaches 0 at p=0.55) landed wherever 0.45vh of scroll
-    // happened to be, with no connection to where the hero actually finished
-    // growing. A real bug, distinct from the discrete-mode one fixed
-    // earlier: that fix only touched THRESHOLD_FACE for the Windows/wheel
-    // state machine, never the fraction used here. Fixed the same way: solve
-    // START so that p=0.55 lands exactly at THRESHOLD_FACE (same anchor,
-    // same LOGO_LEAD_FRACTION, as the discrete path) — D (the span) is kept
-    // exactly as before so the pacing/feel and the existing H.C.→Lai gap in
-    // p-space are unchanged, just repositioned on the page.
+    // unrelated to the hero's own endScrollY. Anchored the same way as the
+    // discrete path above: START is solved so that p=0 (the wordmark fully
+    // resolved to "H.C. Lai" — retract's segment ends at p=0) lands exactly
+    // at THRESHOLD_LAI. D (the span) is kept exactly as before so the
+    // pacing/feel and the existing H.C.→Lai gap in p-space are unchanged,
+    // just repositioned on the page.
     function computePSmooth() {
       const D = window.innerHeight * 0.40;
-      const START = isWorkPage ? THRESHOLD_FACE - 0.45 * D : window.innerHeight * 0.45;
+      const START = isWorkPage ? THRESHOLD_LAI - D : window.innerHeight * 0.45;
       const raw   = clamp((window.scrollY - START) / D);
       let p = 1 - raw;
       if (p > 0.97) p = 1;
