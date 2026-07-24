@@ -13,7 +13,9 @@ interface HeroClientProps {
 const BASE_RADIUS = 12; // must match .case-hero's border-radius in globals.css
 const HERO_WIDTH_START = 1280; // must match --hero-width-start in globals.css
 const SMOOTHING = 0.08; // ≈ GSAP ScrollTrigger scrub: 0.8
-const END_VIEWPORT_FRACTION = 0.4; // hero center at 40% of viewport height
+const END_VIEWPORT_FRACTION = 0.5; // hero center at 50% (vertically centered) of viewport height —
+// 40% left the fully-grown hero pushed up far enough to clip its top edge
+// against the viewport, since the grown hero can be taller than the viewport
 const SPAN_VH_FRACTION = 0.3; // scroll span = 30% of viewport height, anchored off the end trigger
 const CONVERGED_THRESHOLD = 0.001;
 

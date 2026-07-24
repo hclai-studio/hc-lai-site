@@ -439,7 +439,8 @@
    into that tracking — exactly the trap the old version was built around
    avoiding). Progress now comes from a plain rAF loop keyed off
    window.scrollY, in HeroClient.tsx: trigger positions (scrollY where the
-   hero's center sits at 70%/40% of viewport height) are computed once at
+   hero's center reaches 50% of viewport height, with the start trigger
+   derived backward from a fixed scroll-span fraction) are computed once at
    mount and on resize — never read back from the element's own current,
    possibly mid-animation rect, which would be the same self-tracking
    trap in JS form. An exponential-smoothing term (cur += (eased-cur) *
@@ -450,10 +451,17 @@
   width: min(var(--hero-width-start), calc(100vw - 3rem));
   max-width: none; /* override Tailwind preflight's img{max-width:100%} — otherwise it clamps
                        to .prose-works's 672px content box regardless of the width above */
-  aspect-ratio: 16 / 9;
+  /* 2.2/1, not the source images' native 16/9 (~1.78:1) — at full viewport
+     width, 16/9 makes the hero taller than the viewport itself on common
+     desktop aspect ratios (e.g. 1905px wide → 1071px tall vs. a 953px-tall
+     viewport), clipping the top of the image once the grow animation
+     finishes. 2.2/1 (≈866px tall at 1905px wide) fits inside that viewport
+     with room to spare. This crops the CSS box only — the source WebP
+     files are untouched and stay 16:9. */
+  aspect-ratio: 2.2 / 1;
   height: auto;
-  object-fit: cover; /* the source is ~16:9 but not bit-exact; this guarantees
-                         no stretching even for the tiny leftover mismatch */
+  object-fit: cover;
+  object-position: center;
   margin-top: var(--hero-gap-top);
   margin-bottom: var(--figure-gap-block);
   /* NOT margin-inline:auto — confirmed in an earlier round that once a
