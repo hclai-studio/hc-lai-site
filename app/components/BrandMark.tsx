@@ -146,15 +146,20 @@ export default function BrandMark({ className = "" }: { className?: string }) {
     // out of sync every time that geometry changed (as it did across v3.1–
     // v3.6). Now derived from the hero's own endScrollY (see
     // computeHeroEndScrollY above, which mirrors HeroClient.tsx's end-state
-    // measurement) minus a small lead so the ~520ms face→H.C. tween has time
-    // to finish by the time scrolling reaches endScrollY — expressed as a
+    // measurement) minus a lead so the ~520ms face→H.C. tween has time to
+    // finish by the time scrolling reaches endScrollY — expressed as a
     // viewport-height fraction rather than a fixed px guess, since wheel
     // notch size varies by device and can't be measured in advance; this is
-    // a best-effort approximation, not frame-exact sync. Falls back to the
+    // a best-effort approximation, not frame-exact sync. LOGO_LEAD_FRACTION
+    // was first tried at 0.05 (~44px), but that's far smaller than a typical
+    // wheel notch (~100-130px) and endScrollY (664 in testing) minus 44 was
+    // still *later* than the old hardcoded 600 — so it landed in the same
+    // notch as before and produced no perceptible change. 0.15 (~132px)
+    // pulls the trigger back into the notch before that. Falls back to the
     // previous 600 value only if the hero isn't found (shouldn't happen on
     // an actual /works/ page). THRESHOLD_LAI keeps the same 100px gap that
     // existed before this change — untouched per brief.
-    const TRANSITION_LEAD_VH = 0.05;
+    const LOGO_LEAD_FRACTION = 0.15;
     const LAI_GAP = 100;
     let THRESHOLD_FACE = isWorkPage ? 600 : 700;
     let THRESHOLD_LAI  = isWorkPage ? 700 : 800;
@@ -163,7 +168,7 @@ export default function BrandMark({ className = "" }: { className?: string }) {
       if (!isWorkPage) return;
       const endScrollY = computeHeroEndScrollY();
       if (endScrollY === null) return;
-      THRESHOLD_FACE = endScrollY - window.innerHeight * TRANSITION_LEAD_VH;
+      THRESHOLD_FACE = endScrollY - window.innerHeight * LOGO_LEAD_FRACTION;
       THRESHOLD_LAI  = THRESHOLD_FACE + LAI_GAP;
     }
     updateWorkPageThresholds();
