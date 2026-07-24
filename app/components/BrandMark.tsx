@@ -25,6 +25,31 @@ function seg(p: number, s: number, e: number, type = "standard") {
 }
 function mix(a: number, b: number, t: number) { return a + (b - a) * t; }
 
+// Work-page-only: mirrors HeroClient.tsx's own end-state-geometry measurement
+// (momentarily applying the hero's end-state width/margin-top and reading the
+// resulting rect) so the discrete face→H.C. threshold below tracks wherever
+// the hero's real "fully grown, symmetric" scrollY actually is — rather than
+// a hand-tuned absolute pixel value that only matched by coincidence for one
+// specific aspect ratio/viewport and silently drifted whenever those changed.
+function computeHeroEndScrollY(): number | null {
+  const hero = document.querySelector<HTMLElement>(".case-hero");
+  if (!hero) return null;
+
+  const prevWidth = hero.style.width;
+  const prevMarginTop = hero.style.marginTop;
+  hero.style.width = "";
+  hero.style.marginTop = "";
+  const endWidth = document.documentElement.clientWidth;
+  hero.style.width = `${endWidth}px`;
+  hero.style.marginTop = "0px";
+  const rect = hero.getBoundingClientRect();
+  const centerDocY = rect.top + window.scrollY + rect.height / 2;
+  hero.style.width = prevWidth;
+  hero.style.marginTop = prevMarginTop;
+
+  return centerDocY - window.innerHeight * 0.5;
+}
+
 export default function BrandMark({ className = "" }: { className?: string }) {
   const pathname = usePathname();
   const isWorkPage = pathname?.startsWith("/works/") ?? false;
@@ -114,9 +139,34 @@ export default function BrandMark({ className = "" }: { className?: string }) {
     let discreteState = 0;   // 0=face  1=H.C.  2=H.C.Lai
     let discreteTarget = 1;  // tracks current tween p-target to skip redundant tweens
 
-    // Work pages scroll deeper before reaching content, so thresholds are shifted earlier.
-    const THRESHOLD_FACE = isWorkPage ? 600 : 700;
-    const THRESHOLD_LAI  = isWorkPage ? 700 : 800;
+    // Home page: unchanged, fixed thresholds — zero behavior change there.
+    // Work pages: THRESHOLD_FACE used to be a hand-tuned absolute scrollY
+    // (600) that only happened to line up because it was tuned against one
+    // specific hero aspect ratio/viewport combination — it silently drifted
+    // out of sync every time that geometry changed (as it did across v3.1–
+    // v3.6). Now derived from the hero's own endScrollY (see
+    // computeHeroEndScrollY above, which mirrors HeroClient.tsx's end-state
+    // measurement) minus a small lead so the ~520ms face→H.C. tween has time
+    // to finish by the time scrolling reaches endScrollY — expressed as a
+    // viewport-height fraction rather than a fixed px guess, since wheel
+    // notch size varies by device and can't be measured in advance; this is
+    // a best-effort approximation, not frame-exact sync. Falls back to the
+    // previous 600 value only if the hero isn't found (shouldn't happen on
+    // an actual /works/ page). THRESHOLD_LAI keeps the same 100px gap that
+    // existed before this change — untouched per brief.
+    const TRANSITION_LEAD_VH = 0.05;
+    const LAI_GAP = 100;
+    let THRESHOLD_FACE = isWorkPage ? 600 : 700;
+    let THRESHOLD_LAI  = isWorkPage ? 700 : 800;
+
+    function updateWorkPageThresholds() {
+      if (!isWorkPage) return;
+      const endScrollY = computeHeroEndScrollY();
+      if (endScrollY === null) return;
+      THRESHOLD_FACE = endScrollY - window.innerHeight * TRANSITION_LEAD_VH;
+      THRESHOLD_LAI  = THRESHOLD_FACE + LAI_GAP;
+    }
+    updateWorkPageThresholds();
 
     const P_FACE = 1;
     const P_HC   = 0.27; // build=0, contract=0, retract=1 → clean H.C.
@@ -180,7 +230,10 @@ export default function BrandMark({ className = "" }: { className?: string }) {
       }
     }
 
-    function onResize() { if (!isDiscrete) render(computePSmooth()); }
+    function onResize() {
+      updateWorkPageThresholds();
+      if (!isDiscrete) render(computePSmooth());
+    }
 
     window.addEventListener("wheel",  onWheel,  { passive: true });
     window.addEventListener("scroll", onScroll, { passive: true });
