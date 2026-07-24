@@ -56,24 +56,45 @@ export default function HeroClient({ src, alt, width, height }: HeroClientProps)
       el2.style.marginRight = '';
       el2.style.borderRadius = '';
 
-      const rect = el2.getBoundingClientRect();
       const computed = getComputedStyle(el2);
       const vh = window.innerHeight;
-      const centerDocY = rect.top + window.scrollY + rect.height / 2;
 
-      // Only the end trigger is anchored to the hero's own position; the start
-      // trigger is derived by subtracting a fixed viewport-height fraction
-      // from it. Anchoring both ends independently (each as "hero center at
-      // X% of viewport height") let the actual span balloon past its
-      // intended size whenever the hero's height changed the position of its
-      // own center — diluting power2.out's front-loaded feel over a much
-      // longer scroll distance than intended.
-      endScrollY = centerDocY - vh * END_VIEWPORT_FRACTION;
-      startScrollY = endScrollY - vh * SPAN_VH_FRACTION;
       startWidth = Math.min(HERO_WIDTH_START, window.innerWidth - 48);
       endWidth = document.documentElement.clientWidth; // not 100vw — excludes the scrollbar
       startMarginTop = parseFloat(computed.marginTop) || 0;
       startMarginBottom = parseFloat(computed.marginBottom) || 0;
+
+      // endScrollY must be anchored to the hero's END-STATE geometric center,
+      // not its resting-state one. By the time growth finishes, height has
+      // grown from startWidth/aspectRatio to endWidth/aspectRatio (a couple
+      // hundred px at typical desktop widths) and margin-top has collapsed
+      // to 0 — both shift the true center further down the document than a
+      // resting-state measurement would suggest. An earlier version measured
+      // the resting rect and used that as the center, which made endScrollY
+      // too small: growth finished a scroll notch before the hero's real
+      // center reached 50%, leaving it briefly parked around 62% (cream on
+      // top, clipped on the bottom) until more scrolling caught it up.
+      // Measuring the end-state center directly — by momentarily applying
+      // the end-state width/margin-top and reading the resulting rect —
+      // rather than computing it from a hardcoded aspect ratio keeps this
+      // correct even if --hero-aspect is retuned later. Synchronous with no
+      // yield in between, so it never paints.
+      el2.style.width = `${endWidth}px`;
+      el2.style.marginTop = '0px';
+      const endRect = el2.getBoundingClientRect();
+      const endCenterDocY = endRect.top + window.scrollY + endRect.height / 2;
+      el2.style.width = '';
+      el2.style.marginTop = '';
+
+      // Only the end trigger is anchored to the hero's own (end-state)
+      // position; the start trigger is derived by subtracting a fixed
+      // viewport-height fraction from it, rather than being independently
+      // anchored to its own "X% of viewport height" — that let the actual
+      // span balloon past its intended size whenever the hero's height
+      // changed the position of its own center, diluting power2.out's
+      // front-loaded feel over a much longer scroll distance than intended.
+      endScrollY = endCenterDocY - vh * END_VIEWPORT_FRACTION;
+      startScrollY = endScrollY - vh * SPAN_VH_FRACTION;
 
       // The margin math below centers the image against its *containing
       // block* (.prose-works's content box, capped at 720px minus its own
