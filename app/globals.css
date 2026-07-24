@@ -439,7 +439,7 @@
    into that tracking — exactly the trap the old version was built around
    avoiding). Progress now comes from a plain rAF loop keyed off
    window.scrollY, in HeroClient.tsx: trigger positions (scrollY where the
-   hero's center reaches 40% of viewport height, with the start trigger
+   hero's center reaches 50% of viewport height, with the start trigger
    derived backward from a fixed scroll-span fraction) are computed once at
    mount and on resize — never read back from the element's own current,
    possibly mid-animation rect, which would be the same self-tracking
@@ -451,10 +451,16 @@
   width: min(var(--hero-width-start), calc(100vw - 3rem));
   max-width: none; /* override Tailwind preflight's img{max-width:100%} — otherwise it clamps
                        to .prose-works's 672px content box regardless of the width above */
-  aspect-ratio: 16 / 9;
+  /* Source images are authored at 5646×1882 (exactly 3:1) for this box —
+     16/9 renders taller than common desktop viewports at full width (e.g.
+     1905px wide → 1071px tall vs. a 953px-tall viewport, never fully
+     visible), and an intermediate 2.2:1 tried previously left too short a
+     scroll window (~87px) to reliably land on the fully-visible frame. 3:1
+     (≈635px tall at 1905px wide) leaves a ~300px-tall window to land in. */
+  aspect-ratio: 3 / 1;
   height: auto;
-  object-fit: cover; /* the source is ~16:9 but not bit-exact; this guarantees
-                         no stretching even for the tiny leftover mismatch */
+  object-fit: cover; /* source ratio is 5646/1882 = 3.0000 exactly, but kept
+                         for consistency/safety against any resize rounding */
   margin-top: var(--hero-gap-top);
   margin-bottom: var(--figure-gap-block);
   /* NOT margin-inline:auto — confirmed in an earlier round that once a
