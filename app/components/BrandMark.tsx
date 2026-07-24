@@ -194,10 +194,22 @@ export default function BrandMark({ className = "" }: { className?: string }) {
       tweenRaf = requestAnimationFrame(tick);
     }
 
-    // Mac / touch: original scroll-driven (START / D / snap unchanged)
+    // Mac / touch: scroll-driven, continuous (no snap). Home page: START/D
+    // are the original fixed viewport-height fractions, untouched.
+    // Work pages: this used to be the SAME fixed START/D as home — entirely
+    // unrelated to the hero's own endScrollY, so "H.C. fully formed"
+    // (contract reaches 0 at p=0.55) landed wherever 0.45vh of scroll
+    // happened to be, with no connection to where the hero actually finished
+    // growing. A real bug, distinct from the discrete-mode one fixed
+    // earlier: that fix only touched THRESHOLD_FACE for the Windows/wheel
+    // state machine, never the fraction used here. Fixed the same way: solve
+    // START so that p=0.55 lands exactly at THRESHOLD_FACE (same anchor,
+    // same LOGO_LEAD_FRACTION, as the discrete path) — D (the span) is kept
+    // exactly as before so the pacing/feel and the existing H.C.→Lai gap in
+    // p-space are unchanged, just repositioned on the page.
     function computePSmooth() {
-      const START = window.innerHeight * 0.45;
-      const D     = window.innerHeight * 0.40;
+      const D = window.innerHeight * 0.40;
+      const START = isWorkPage ? THRESHOLD_FACE - 0.45 * D : window.innerHeight * 0.45;
       const raw   = clamp((window.scrollY - START) / D);
       let p = 1 - raw;
       if (p > 0.97) p = 1;
