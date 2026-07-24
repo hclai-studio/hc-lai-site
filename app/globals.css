@@ -59,6 +59,18 @@
      --figure-gap-block below, so this is a desktop-only change. */
   --hero-gap-top: 16px;
 
+  /* Mobile-only "divider→hero" gap, split across the two components that
+     make it up: --mobile-header-gap (ProjectHeader.tsx's pb-[...] below
+     md:) + --hero-gap-top-mobile (.case-hero's margin-top in the mobile
+     media query below). 40 + 16 = 56px total — an author-chosen starting
+     value, expected to be retuned after seeing it on a real device; both
+     numbers live here so a follow-up adjustment only ever touches this one
+     spot. Desktop is untouched: ProjectHeader.tsx explicitly restores
+     pb-[80px] at md: and up, and --hero-gap-top above is the separate
+     desktop-only hero token this mobile pair doesn't affect. */
+  --mobile-header-gap: 40px;
+  --hero-gap-top-mobile: 16px;
+
   /* Desktop container ratio for the hero crop — a pure CSS knob now that
      the 5646×1882 source has plain cream on both sides: narrowing this
      only trims cream (object-fit:cover), never subject content, so it's
@@ -501,9 +513,9 @@
        size restored, zero content loss either way since it's all still
        object-fit:cover on the same untouched source file. */
     aspect-ratio: 16 / 9;
-    margin-top: var(--figure-gap-block); /* revert to the shared token — the
-      narrower --hero-gap-top above is a desktop-only adjustment; mobile
-      keeps its original spacing unchanged */
+    margin-top: var(--hero-gap-top-mobile); /* was var(--figure-gap-block)
+      (64px) — dedicated token now, tuned alongside --mobile-header-gap
+      (see :root) to hit a 56px total divider→hero gap on mobile */
     margin-left: calc((100% - 100vw) / 2);
     margin-right: calc((100% - 100vw) / 2);
     border-radius: 0;
