@@ -12,14 +12,14 @@ interface HeroClientProps {
 
 const BASE_RADIUS = 12; // must match .case-hero's border-radius in globals.css
 const HERO_WIDTH_START = 1280; // must match --hero-width-start in globals.css
-const HERO_BAND = 90; // target single-side cream band (px) at full growth — the
+const HERO_BAND = 71; // target single-side cream band (px) at full growth — the
 // author-approved look at 1920×953; --hero-aspect is now solved backward from
-// this instead of being a fixed ratio, so the band stays ~90px regardless of
+// this instead of being a fixed ratio, so the band stays ~71px regardless of
 // window shape (previously it drifted: (vh - vw/2.35)/2 shrank toward ~30px
 // on shorter/wider windows like ~1568×728). Clamped to [2.0, 3.0] since the
 // source is 3:1 with plain cream on both sides — beyond 3.0 there's no more
 // cream left to trim, only actual subject content, so the band can fall
-// below 90px on very short/wide viewports; that's a real material limit, not
+// below 71px on very short/wide viewports; that's a real material limit, not
 // a bug.
 const SMOOTHING = 0.08; // ≈ GSAP ScrollTrigger scrub: 0.8
 const END_VIEWPORT_FRACTION = 0.5; // hero center at 50% (vertically centered) of viewport height —
