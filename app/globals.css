@@ -49,6 +49,21 @@
      1272px resting hero width. */
   --hero-width-start: 1280px;
 
+  /* All 5 case pages' ProjectHeader renders at a different height (category
+     tag and h1 title wrap to different line counts per page's own text),
+     which independently drives each page's Hero endScrollY (HeroClient
+     anchors it off .case-hero's own end-state position, which sits right
+     after ProjectHeader in document flow) — with scroll input landing in
+     fixed-size notches, a different endScrollY per page means a different,
+     unpredictable remainder-to-center per page, i.e. different LOGO-trigger
+     notch counts and cream-band symmetry page to page. Pinning every page's
+     header to one shared min-height (the tallest of the 5, measured at
+     1920px: visual-standard-assistant/fire-code-rag at 702.28125px →
+     rounded up to the next 8px multiple) makes endScrollY converge across
+     all 5 pages without touching Hero/BrandMark's own math. Desktop-only
+     (md: and up) — mobile's hero is static, unaffected by endScrollY. */
+  --project-header-min-height: 704px;
+
   /* Divider→hero desktop gap = ProjectHeader's pb-[80px] (left untouched —
      shared by every case page's title block) + this. 80 + 16 = 96px,
      measured against a 176px resting gap (80 + the old shared 96px

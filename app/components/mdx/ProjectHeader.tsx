@@ -7,7 +7,7 @@ interface ProjectHeaderProps {
 
 export default function ProjectHeader({ category, titleEn, titleCn, year }: ProjectHeaderProps) {
   return (
-    <header className="text-center px-6 pt-[80px] pb-[var(--mobile-header-gap)] md:pt-[120px] md:pb-[80px] md:px-12">
+    <header className="text-center px-6 pt-[80px] pb-[var(--mobile-header-gap)] md:pt-[120px] md:pb-[80px] md:px-12 md:min-h-[var(--project-header-min-height)]">
       {/* Category tag — Geist Mono, uppercase, ink-muted */}
       <p className="font-mono uppercase text-ink-muted text-[11px] tracking-[0.18em] mb-10">
         {category}
