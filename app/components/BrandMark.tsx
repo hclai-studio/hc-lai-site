@@ -138,6 +138,7 @@ export default function BrandMark({ className = "" }: { className?: string }) {
     let isDiscrete    = false;
     let discreteState = 0;   // 0=face  1=H.C.  2=H.C.Lai
     let discreteTarget = 1;  // tracks current tween p-target to skip redundant tweens
+    let discreteSeqActive = false; // an in-flight multi-stage catch-up (see runDiscreteSequence)
 
     // Smooth path (Mac trackpad / LinearMouse-style continuous wheel input) has
     // no notion of "stage" by default — computePSmooth() is a stateless position
@@ -191,8 +192,8 @@ export default function BrandMark({ className = "" }: { className?: string }) {
     const P_HC   = 0.27; // build=0, contract=0, retract=1 → clean H.C.
     const P_LAI  = 0;
 
-    function startTween(to: number) {
-      if (to === discreteTarget) return;
+    function startTween(to: number, onDone?: () => void) {
+      if (to === discreteTarget) { onDone?.(); return; }
       discreteTarget = to;
       const fromP = pRef.current;
       const pDist = Math.abs(to - fromP);
@@ -203,7 +204,12 @@ export default function BrandMark({ className = "" }: { className?: string }) {
       function tick(now: number) {
         const t = clamp((now - t0) / ms);
         render(fromP + (discreteTarget - fromP) * easeOutQuint(t), true);
-        tweenRaf = t < 1 ? requestAnimationFrame(tick) : null;
+        if (t < 1) {
+          tweenRaf = requestAnimationFrame(tick);
+        } else {
+          tweenRaf = null;
+          onDone?.();
+        }
       }
       tweenRaf = requestAnimationFrame(tick);
     }
@@ -231,14 +237,43 @@ export default function BrandMark({ className = "" }: { className?: string }) {
       return p;
     }
 
+    // Steps discreteState one stage at a time toward target instead of
+    // jumping straight there in a single startTween() call. Needed because
+    // "discrete" doesn't mean "small" — some devices (e.g. LinearMouse's "By
+    // Lines" mode) report wheel events with deltaMode:1 regardless of how
+    // large the actual scroll distance is, so a single event can legitimately
+    // skip the whole ~100px window where "H.C." is the only thing rendered.
+    // Genuine small wheel notches never trigger this (target is never more
+    // than one stage from discreteState for those), so this is a no-op for
+    // real Windows-mouse-wheel-scale input — only large discrete jumps detour
+    // through here, regardless of which OS/device produced them.
+    function runDiscreteSequence(target: number) {
+      discreteSeqActive = true;
+      function step() {
+        if (discreteState === target) {
+          discreteSeqActive = false;
+          syncDiscreteState(); // resync with live scrollY in case it moved further meanwhile
+          return;
+        }
+        const next = discreteState + (target > discreteState ? 1 : -1);
+        discreteState = next;
+        startTween(next === 2 ? P_LAI : next === 1 ? P_HC : P_FACE, step);
+      }
+      step();
+    }
+
     // All three states are position-based — same threshold triggers in both directions.
     function syncDiscreteState() {
       const y = window.scrollY;
-      const next = y >= THRESHOLD_LAI ? 2 : y >= THRESHOLD_FACE ? 1 : 0;
-      if (next !== discreteState) {
-        discreteState = next;
-        startTween(next === 2 ? P_LAI : next === 1 ? P_HC : P_FACE);
+      const target = y >= THRESHOLD_LAI ? 2 : y >= THRESHOLD_FACE ? 1 : 0;
+      if (target === discreteState) return;
+      if (discreteSeqActive) return; // an in-flight catch-up owns it — don't interrupt
+      if (Math.abs(target - discreteState) > 1) {
+        runDiscreteSequence(target);
+        return;
       }
+      discreteState = target;
+      startTween(target === 2 ? P_LAI : target === 1 ? P_HC : P_FACE);
     }
 
     // Same 0/1/2 classification syncDiscreteState() uses, reused so the smooth
@@ -313,9 +348,16 @@ export default function BrandMark({ className = "" }: { className?: string }) {
       const was = isDiscrete;
       isDiscrete = e.deltaMode === 1 || (e.deltaMode === 0 && Math.abs(e.deltaY) >= 50);
       if (isDiscrete) {
-        if (!was) syncDiscreteState(); // snap to correct state on first discrete event
+        if (!was) {
+          // input just switched from smooth to discrete — the smooth path's
+          // own catch-up (if any) is no longer authoritative
+          if (smoothSeqRaf !== null) { cancelAnimationFrame(smoothSeqRaf); smoothSeqRaf = null; }
+          smoothSeqActive = false;
+          syncDiscreteState(); // snap to correct state on first discrete event
+        }
       } else if (was) {
         if (tweenRaf !== null) { cancelAnimationFrame(tweenRaf); tweenRaf = null; }
+        discreteSeqActive = false;
         updateSmoothStage();
       }
     }
