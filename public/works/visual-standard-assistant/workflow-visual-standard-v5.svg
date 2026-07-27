@@ -1,0 +1,103 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1320 530" width="1320" height="530" font-family="Noto Sans SC, PingFang SC, sans-serif">
+
+  <rect x="0" y="0" width="1320" height="530" fill="#FFFFFF"/>
+
+  <defs>
+    <marker id="arrow" viewBox="0 0 8 8" refX="6.5" refY="4" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,1 L6.5,4 L0,7" fill="none" stroke="#1C1B17" stroke-opacity="0.45" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/>
+    </marker>
+  </defs>
+
+  <!-- ========== 连线：直角折线 + 8px 圆角，箭头贴近节点 ========== -->
+  <g stroke="#1C1B17" stroke-opacity="0.3" stroke-width="1.1" fill="none">
+    <path d="M180,250 H216" marker-end="url(#arrow)"/>
+    <path d="M360,250 H382 Q390,250 390,242 V170 Q390,162 398,162 H516" marker-end="url(#arrow)"/>
+    <path d="M360,250 H382 Q390,250 390,258 V330 Q390,338 398,338 H516" marker-end="url(#arrow)"/>
+    <path d="M660,162 H720" marker-end="url(#arrow)"/>
+    <path d="M864,162 H924" marker-end="url(#arrow)"/>
+    <path d="M660,338 H720" marker-end="url(#arrow)"/>
+    <path d="M864,338 H924" marker-end="url(#arrow)"/>
+    <path d="M1068,338 H1128" marker-end="url(#arrow)"/>
+  </g>
+
+  <!-- 连线上的数据流转（完整落在线段内） -->
+  <g font-family="Geist Mono, ui-monospace, monospace" font-size="12" fill="#6B6862" text-anchor="middle" letter-spacing="0.03em">
+    <text x="692" y="152">context</text>
+    <text x="896" y="152">text</text>
+    <text x="692" y="328">desc</text>
+    <text x="896" y="328">context</text>
+    <text x="1100" y="328">verdict</text>
+  </g>
+
+  <!-- 分支：IF/ELSE 在线上方，泳道名在线下方 -->
+  <g font-family="Geist Mono, ui-monospace, monospace" font-size="12" fill="#6B6862" text-anchor="middle" letter-spacing="0.06em">
+    <text x="458" y="154">IF · 无图</text>
+    <text x="458" y="330">ELSE · 有图</text>
+  </g>
+  <g font-family="Geist Mono, ui-monospace, monospace" font-size="12" fill="#6B6862" text-anchor="middle" letter-spacing="0.1em">
+    <text x="458" y="184">TEXT PATH</text>
+    <text x="458" y="360">VISION PATH</text>
+  </g>
+
+  <!-- ========== 节点：中文职责在上，等宽技术标识在下 ========== -->
+
+  <!-- 用户输入 -->
+  <rect x="40" y="208" width="140" height="84" rx="8" fill="#FFFFFF" stroke="#1C1B17" stroke-opacity="0.15"/>
+  <text x="56" y="238" font-size="16" font-weight="500" fill="#1C1B17">用户输入</text>
+  <text x="56" y="261" font-size="12" fill="#6B6862">文本必填 · 图片选填</text>
+  <text x="56" y="280" font-size="11" fill="#6B6862" font-family="Geist Mono, ui-monospace, monospace">text · picture</text>
+
+  <!-- 条件分支 —— 全图唯一 terracotta -->
+  <rect x="220" y="208" width="140" height="84" rx="8" fill="#B85C38" fill-opacity="0.1" stroke="#B85C38" stroke-width="1.5"/>
+  <text x="236" y="238" font-size="16" font-weight="700" fill="#B85C38">条件分支</text>
+  <text x="236" y="261" font-size="12" fill="#B85C38" fill-opacity="0.85">存在性判断 · 分流</text>
+  <text x="236" y="280" font-size="11" fill="#B85C38" fill-opacity="0.85" font-family="Geist Mono, ui-monospace, monospace">picture_upload</text>
+
+  <!-- 上支 · 文本路径 -->
+  <rect x="520" y="120" width="140" height="84" rx="8" fill="#FFFFFF" stroke="#1C1B17" stroke-opacity="0.15"/>
+  <text x="536" y="150" font-size="16" font-weight="500" fill="#1C1B17">知识检索</text>
+  <text x="536" y="173" font-size="12" fill="#6B6862">主图标准库 v1</text>
+  <text x="536" y="192" font-size="11" fill="#6B6862" font-family="Geist Mono, ui-monospace, monospace">text</text>
+
+  <rect x="724" y="120" width="140" height="84" rx="8" fill="#F2EFE9" stroke="#1C1B17" stroke-opacity="0.15"/>
+  <text x="740" y="150" font-size="16" font-weight="500" fill="#1C1B17">文字回答</text>
+  <text x="740" y="173" font-size="12" fill="#6B6862">标准条目解释</text>
+  <text x="740" y="192" font-size="11" fill="#6B6862" font-family="Geist Mono, ui-monospace, monospace">gpt-4o-mini</text>
+
+  <rect x="928" y="120" width="120" height="84" rx="8" fill="#FFFFFF" stroke="#1C1B17" stroke-opacity="0.15"/>
+  <text x="944" y="150" font-size="16" font-weight="500" fill="#1C1B17">输出 1</text>
+  <text x="944" y="173" font-size="12" fill="#6B6862">问答模式</text>
+  <text x="944" y="192" font-size="11" fill="#6B6862" font-family="Geist Mono, ui-monospace, monospace">text String</text>
+
+  <!-- 下支 · 图文路径 -->
+  <rect x="520" y="296" width="140" height="84" rx="8" fill="#F2EFE9" stroke="#1C1B17" stroke-opacity="0.15"/>
+  <text x="536" y="326" font-size="16" font-weight="500" fill="#1C1B17">视觉分析</text>
+  <text x="536" y="349" font-size="12" fill="#6B6862">先观察，不判断</text>
+  <text x="536" y="368" font-size="11" fill="#6B6862" font-family="Geist Mono, ui-monospace, monospace">gpt-4o-mini</text>
+
+  <rect x="724" y="296" width="140" height="84" rx="8" fill="#FFFFFF" stroke="#1C1B17" stroke-opacity="0.15"/>
+  <text x="740" y="326" font-size="16" font-weight="500" fill="#1C1B17">知识检索</text>
+  <text x="740" y="349" font-size="12" fill="#6B6862">主图标准库 v1</text>
+  <text x="740" y="368" font-size="11" fill="#6B6862" font-family="Geist Mono, ui-monospace, monospace">text + vision</text>
+
+  <rect x="928" y="296" width="140" height="84" rx="8" fill="#F2EFE9" stroke="#1C1B17" stroke-opacity="0.15"/>
+  <text x="944" y="326" font-size="16" font-weight="500" fill="#1C1B17">图片判断</text>
+  <text x="944" y="349" font-size="12" fill="#6B6862">判定 + 逐项建议</text>
+  <text x="944" y="368" font-size="11" fill="#6B6862" font-family="Geist Mono, ui-monospace, monospace">gpt-4o-mini</text>
+
+  <rect x="1132" y="296" width="140" height="84" rx="8" fill="#FFFFFF" stroke="#1C1B17" stroke-opacity="0.15"/>
+  <text x="1148" y="326" font-size="16" font-weight="500" fill="#1C1B17">输出 2</text>
+  <text x="1148" y="349" font-size="12" fill="#6B6862">判图模式</text>
+  <text x="1148" y="368" font-size="11" fill="#6B6862" font-family="Geist Mono, ui-monospace, monospace">text String</text>
+
+  <!-- ========== 注释层：失败复盘（引线加长，指向「两次误判」行中心） ========== -->
+  <g stroke="#1C1B17" stroke-opacity="0.3" fill="none" stroke-width="1" stroke-dasharray="3 3">
+    <path d="M794,380 V440 H826"/>
+  </g>
+  <circle cx="794" cy="380" r="2.5" fill="#1C1B17" fill-opacity="0.4"/>
+
+  <text x="838" y="420" font-family="Geist Mono, ui-monospace, monospace" font-size="11" fill="#6B6862" letter-spacing="0.1em">FAILURE POSTMORTEM · v1.0 → v1.1</text>
+  <text x="838" y="444" font-size="13" fill="#1C1B17">两次误判：婴童粉白被判「跑偏」／品牌驱动图判得太松</text>
+  <text x="838" y="466" font-size="12" fill="#6B6862">两次修法都落在标准库，未更换模型 —— 瓶颈在任务定义，不在模型能力。</text>
+
+</svg>

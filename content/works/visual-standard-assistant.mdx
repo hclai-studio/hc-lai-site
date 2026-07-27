@@ -65,9 +65,11 @@ I built a **dual-mode agent** on Dify, branching on whether an image was uploade
 - **Q&A (secondary)**: no image → knowledge retrieval → text answer, for everyday questions about the standard and design boundaries.
 
 <WorkImage
-  src="/works/visual-standard-assistant/workflow.png"
+  src="/works/visual-standard-assistant/workflow-visual-standard-v5.svg"
   caption="Dify 双模式工作流全景:以「有无上传图片」分流为判图 / 问答两条路径。 / The Dify workflow branches on image upload: judge-image mode vs. Q&A mode."
+  alt="流程图：用户输入经条件分支分流——无图走文本路径（知识检索 → 文字回答 → 输出 1），有图走图文路径（视觉分析 → 知识检索 → 图片判断 → 输出 2）；下方虚线注释记录两次误判的失败复盘。"
   placeholder={false}
+  wide
 />
 
 几个设计取舍:

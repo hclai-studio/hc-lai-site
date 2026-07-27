@@ -7,13 +7,15 @@ import { renderCaption } from './renderCaption';
 interface WorkImageProps {
   src: string;
   caption?: string;
+  alt?: string;
   placeholder?: boolean;
+  wide?: boolean;
 }
 
 const breakoutClass =
   "w-[min(880px,calc(100vw-3rem))] mx-[calc((100%-min(880px,calc(100vw-3rem)))/2)]";
 
-export default async function WorkImage({ src, caption, placeholder = false }: WorkImageProps) {
+export default async function WorkImage({ src, caption, alt, placeholder = false, wide = false }: WorkImageProps) {
   if (placeholder) {
     return (
       <figure className={breakoutClass}>
@@ -33,8 +35,17 @@ export default async function WorkImage({ src, caption, placeholder = false }: W
 
   const filePath = join(process.cwd(), 'public', src);
   const { width, height } = await sharp(readFileSync(filePath)).metadata();
+  const isSvg = src.toLowerCase().endsWith('.svg');
 
   return (
-    <WorkImageClient src={src} caption={caption} width={width!} height={height!} />
+    <WorkImageClient
+      src={src}
+      caption={caption}
+      alt={alt}
+      width={width!}
+      height={height!}
+      wide={wide}
+      isSvg={isSvg}
+    />
   );
 }

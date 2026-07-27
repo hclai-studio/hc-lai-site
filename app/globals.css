@@ -43,6 +43,15 @@
   --figure-gap-block:   64px; /* figure ↔ surrounding prose */
   --figure-gap-caption: 16px; /* image ↔ caption, unchanged from prior mt-4 */
 
+  /* Wide-figure width tier — for diagrams/charts whose content (e.g. small
+     node labels) needs more room than the standard 880px figure column.
+     Distinct from --hero-width-start: hero is full-bleed (edge to edge,
+     one per page, max), this stays inset with cream visible on both sides
+     like every other figure. 1320px matches workflow-visual-standard-v5.svg's
+     native size 1:1 at common desktop viewports, so its text renders at
+     true size instead of being scaled. */
+  --figure-width-wide: 1320px;
+
   /* Hero is the page's only full-bleed element — its resting width is wider
      than the 880px column-width figures use, so the first scroll-driven
      growth step (below) isn't a jarring +116%. 1280px ≈ Anthropic's own
