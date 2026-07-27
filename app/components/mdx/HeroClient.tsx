@@ -261,6 +261,11 @@ export default function HeroClient({ src, alt, width, height }: HeroClientProps)
 
     function maybeSnap() {
       snapIdleTimer = null;
+      // TEMP DEBUG — remove before shipping
+      (window as any).__snapDebug = {
+        eligible: isSnapEligible(), snapRafId, scrollY: window.scrollY, endScrollY,
+        within: withinSnapWindow(window.scrollY), hasSnappedThisVisit,
+      };
       if (!isSnapEligible() || snapRafId) return;
       if (!withinSnapWindow(window.scrollY) || hasSnappedThisVisit) return;
       hasSnappedThisVisit = true;
@@ -272,6 +277,7 @@ export default function HeroClient({ src, alt, width, height }: HeroClientProps)
     // snap cancel itself mid-flight and re-arm the idle timer against its
     // own motion.
     function onScrollInputEvent() {
+      (window as any).__snapDebugInputCount = ((window as any).__snapDebugInputCount || 0) + 1; // TEMP DEBUG
       cancelSnap(); // any real input hands control back immediately
       if (snapIdleTimer) clearTimeout(snapIdleTimer);
       snapIdleTimer = setTimeout(maybeSnap, SNAP_IDLE_MS);
