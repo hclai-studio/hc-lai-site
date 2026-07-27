@@ -381,6 +381,33 @@ export default function BrandMark({ className = "" }: { className?: string }) {
     window.addEventListener("resize", onResize);
     render(computePSmooth());
 
+    // ProjectHeader's title falls back to Times New Roman (~84px taller —
+    // one extra line — than the loaded Instrument Serif) until
+    // font-display:swap finishes, reflowing the hero underneath it.
+    // computeHeroEndScrollY() (in updateWorkPageThresholds() above) may have
+    // measured during that fallback window, so THRESHOLD_FACE/LAI could
+    // already be stale by the time this effect finishes running — this was
+    // root-caused and fixed before, then lost when v3.9/v3.10 got reverted
+    // back to a pre-fix commit. Re-deriving once fonts.ready resolves
+    // catches it regardless of which way the load race went. Cancels any
+    // in-flight stage sequence first — one already running toward a target
+    // computed from stale thresholds has no other way to self-correct.
+    let cancelled = false;
+    document.fonts.ready.then(() => {
+      if (cancelled) return;
+      updateWorkPageThresholds();
+      if (smoothSeqRaf !== null) { cancelAnimationFrame(smoothSeqRaf); smoothSeqRaf = null; }
+      smoothSeqActive = false;
+      if (tweenRaf !== null) { cancelAnimationFrame(tweenRaf); tweenRaf = null; }
+      discreteSeqActive = false;
+      if (isDiscrete) {
+        syncDiscreteState();
+      } else {
+        smoothStage = stageFromScrollY(window.scrollY);
+        render(computePSmooth());
+      }
+    });
+
     const blink = setInterval(() => {
       if (pRef.current <= 0.9) return;
       [dotOneRef.current, dotTwoRef.current].forEach(el => {
@@ -391,6 +418,7 @@ export default function BrandMark({ className = "" }: { className?: string }) {
     }, 5000);
 
     return () => {
+      cancelled = true;
       window.removeEventListener("wheel",  onWheel);
       window.removeEventListener("scroll", onScroll);
       window.removeEventListener("resize", onResize);
