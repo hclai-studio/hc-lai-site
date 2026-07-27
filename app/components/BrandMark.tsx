@@ -139,6 +139,19 @@ export default function BrandMark({ className = "" }: { className?: string }) {
     let discreteState = 0;   // 0=face  1=H.C.  2=H.C.Lai
     let discreteTarget = 1;  // tracks current tween p-target to skip redundant tweens
 
+    // Smooth path (Mac trackpad / LinearMouse-style continuous wheel input) has
+    // no notion of "stage" by default — computePSmooth() is a stateless position
+    // map, recomputed fresh from scrollY every frame. That's fine for ordinary
+    // small steps, but a single large jump (LinearMouse "By Lines" can move
+    // 150-250px per tick) can skip clean over the ~100px window where the
+    // intermediate "H.C." state is the only thing rendered, so it's never drawn
+    // — face jumps straight to "H.C. Lai". smoothStage below mirrors
+    // discreteState's 0/1/2 bookkeeping but is driven independently, so this
+    // never touches the Windows discrete state machine's own variables/behavior.
+    let smoothStage    = 0;
+    let smoothSeqRaf: number | null = null;
+    let smoothSeqActive = false;
+
     // Home page: unchanged, fixed thresholds — zero behavior change there.
     // Work pages: THRESHOLD_FACE used to be a hand-tuned absolute scrollY
     // (600) that only happened to line up because it was tuned against one
@@ -172,6 +185,7 @@ export default function BrandMark({ className = "" }: { className?: string }) {
       THRESHOLD_LAI  = THRESHOLD_FACE + LAI_GAP;
     }
     updateWorkPageThresholds();
+    smoothStage = stageFromScrollY(window.scrollY);
 
     const P_FACE = 1;
     const P_HC   = 0.27; // build=0, contract=0, retract=1 → clean H.C.
@@ -227,6 +241,74 @@ export default function BrandMark({ className = "" }: { className?: string }) {
       }
     }
 
+    // Same 0/1/2 classification syncDiscreteState() uses, reused so the smooth
+    // path's stage bookkeeping stays anchored to the exact same thresholds.
+    function stageFromScrollY(y: number) {
+      return y >= THRESHOLD_LAI ? 2 : y >= THRESHOLD_FACE ? 1 : 0;
+    }
+    function stageP(stage: number) {
+      return stage === 2 ? P_LAI : stage === 1 ? P_HC : P_FACE;
+    }
+
+    // Tweens pRef from its current value to the fixed p-constant for one
+    // stage step (same duration heuristic as startTween(), which already
+    // guarantees ≥300ms per leg), then hands control to onDone.
+    function tweenSmoothLeg(toStage: number, onDone: () => void) {
+      const fromP  = pRef.current;
+      const toP    = stageP(toStage);
+      const pDist  = Math.abs(toP - fromP);
+      const ms     = pDist > 0.50 ? 520 : 380;
+      const t0     = performance.now();
+      function tick(now: number) {
+        const t = clamp((now - t0) / ms);
+        render(fromP + (toP - fromP) * easeOutQuint(t), true);
+        if (t < 1) {
+          smoothSeqRaf = requestAnimationFrame(tick);
+        } else {
+          smoothStage  = toStage;
+          smoothSeqRaf = null;
+          onDone();
+        }
+      }
+      smoothSeqRaf = requestAnimationFrame(tick);
+    }
+
+    // Steps smoothStage one stage at a time toward target instead of jumping
+    // straight there, so a large single scroll (e.g. LinearMouse "By Lines")
+    // can't skip the window where the intermediate "H.C." stage is the only
+    // thing rendered. Runs uninterrupted even if more scroll input arrives
+    // mid-sequence (per brief); once the originally-requested target is
+    // reached, re-checks live scrollY in case it moved further meanwhile.
+    function runSmoothSequence(target: number) {
+      smoothSeqActive = true;
+      function step() {
+        if (smoothStage === target) {
+          smoothSeqActive = false;
+          updateSmoothStage();
+          return;
+        }
+        const next = smoothStage + (target > smoothStage ? 1 : -1);
+        tweenSmoothLeg(next, step);
+      }
+      step();
+    }
+
+    // Entry point for the smooth (Mac/touch) continuous path — replaces bare
+    // render(computePSmooth()) calls. Ordinary small-step scrolling (target
+    // within one stage of the current one) renders exactly as before, every
+    // frame, straight from scrollY — zero behavior change there. Only a jump
+    // that skips a whole stage detours through runSmoothSequence().
+    function updateSmoothStage() {
+      if (smoothSeqActive) return; // an in-flight catch-up owns rendering — don't interrupt
+      const target = stageFromScrollY(window.scrollY);
+      if (Math.abs(target - smoothStage) > 1) {
+        runSmoothSequence(target);
+        return;
+      }
+      smoothStage = target;
+      render(computePSmooth());
+    }
+
     function onWheel(e: WheelEvent) {
       const was = isDiscrete;
       isDiscrete = e.deltaMode === 1 || (e.deltaMode === 0 && Math.abs(e.deltaY) >= 50);
@@ -234,7 +316,7 @@ export default function BrandMark({ className = "" }: { className?: string }) {
         if (!was) syncDiscreteState(); // snap to correct state on first discrete event
       } else if (was) {
         if (tweenRaf !== null) { cancelAnimationFrame(tweenRaf); tweenRaf = null; }
-        render(computePSmooth());
+        updateSmoothStage();
       }
     }
 
@@ -243,13 +325,13 @@ export default function BrandMark({ className = "" }: { className?: string }) {
         syncDiscreteState(); // position-based: fires for fast, slow, keyboard, scrollbar
       } else {
         if (scrollRaf !== null) return;
-        scrollRaf = requestAnimationFrame(() => { scrollRaf = null; render(computePSmooth()); });
+        scrollRaf = requestAnimationFrame(() => { scrollRaf = null; updateSmoothStage(); });
       }
     }
 
     function onResize() {
       updateWorkPageThresholds();
-      if (!isDiscrete) render(computePSmooth());
+      if (!isDiscrete) updateSmoothStage();
     }
 
     window.addEventListener("wheel",  onWheel,  { passive: true });
@@ -270,8 +352,9 @@ export default function BrandMark({ className = "" }: { className?: string }) {
       window.removeEventListener("wheel",  onWheel);
       window.removeEventListener("scroll", onScroll);
       window.removeEventListener("resize", onResize);
-      if (scrollRaf !== null) cancelAnimationFrame(scrollRaf);
-      if (tweenRaf  !== null) cancelAnimationFrame(tweenRaf);
+      if (scrollRaf   !== null) cancelAnimationFrame(scrollRaf);
+      if (tweenRaf    !== null) cancelAnimationFrame(tweenRaf);
+      if (smoothSeqRaf !== null) cancelAnimationFrame(smoothSeqRaf);
       clearInterval(blink);
     };
   }, [render]);
