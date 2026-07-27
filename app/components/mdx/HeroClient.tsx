@@ -27,8 +27,6 @@ const END_VIEWPORT_FRACTION = 0.5; // hero center at 50% (vertically centered) o
 // fully-grown hero sits fully on-screen with symmetric cream above/below
 const SPAN_VH_FRACTION = 0.3; // scroll span = 30% of viewport height, anchored off the end trigger
 const CONVERGED_THRESHOLD = 0.001;
-const SNAP_IDLE_MS = 150; // no wheel/touch/keydown for this long = "input stopped"
-const SNAP_DURATION_MS = 350; // 300–400ms, ease-out to match hero's own power2.out
 
 export default function HeroClient({ src, alt, width, height }: HeroClientProps) {
   const imgRef = useRef<HTMLImageElement>(null);
@@ -49,19 +47,6 @@ export default function HeroClient({ src, alt, width, height }: HeroClientProps)
     let containingBlockWidth = 0;
     let cur = 0;
     let rafId = 0;
-
-    // Snap-to-center state (v3.10). Real scroll input lands in ~100px
-    // quantized notches, and endScrollY differs page to page (ProjectHeader
-    // height varies with title length) — so the true symmetric point almost
-    // never coincides with where a notch happens to land, by an amount that
-    // looks page-specific but is really just "how far this notch missed".
-    // Rather than chase that with faster convergence or predictive LOGO
-    // timing, snap scrollY itself to endScrollY once input stops inside the
-    // fully-visible window — hero/LOGO's own scroll listeners then land
-    // exactly where they're designed to, unmodified.
-    let snapRafId = 0;
-    let snapIdleTimer: ReturnType<typeof setTimeout> | null = null;
-    let hasSnappedThisVisit = false;
 
     // Trigger positions and start/end sizes are computed once here (and again
     // on resize) — never re-derived from the element's own current rect mid-
@@ -201,8 +186,6 @@ export default function HeroClient({ src, alt, width, height }: HeroClientProps)
     }
 
     function handleResize() {
-      cancelSnap();
-      hasSnappedThisVisit = false; // endScrollY (and the window around it) may have moved
       computeTriggers();
       requestTick();
     }
@@ -213,7 +196,6 @@ export default function HeroClient({ src, alt, width, height }: HeroClientProps)
           cancelAnimationFrame(rafId);
           rafId = 0;
         }
-        cancelSnap();
         applyStatic();
       } else {
         computeTriggers();
@@ -221,117 +203,20 @@ export default function HeroClient({ src, alt, width, height }: HeroClientProps)
       }
     }
 
-    function isSnapEligible() {
-      return !mqMobile.matches && !mqReduced.matches;
-    }
-
-    function withinSnapWindow(y: number) {
-      return Math.abs(y - endScrollY) <= HERO_BAND;
-    }
-
-    function cancelSnap() {
-      if (snapRafId) {
-        cancelAnimationFrame(snapRafId);
-        snapRafId = 0;
-      }
-    }
-
-    // Tweens window.scrollY itself to endScrollY, ease-out, over
-    // SNAP_DURATION_MS — hero's own 'scroll' listener (tick/requestTick) and
-    // BrandMark's LOGO listeners react to the resulting scroll events
-    // exactly as they already do for real user scrolling, so they land
-    // precisely where they're each designed to without any changes of their
-    // own. window.scrollTo (not a CSS scroll-behavior) so this stays
-    // frame-by-frame cancelable.
-    function runSnap() {
-      const fromY = window.scrollY;
-      const toY = endScrollY;
-      const distance = toY - fromY;
-      if (distance === 0) return;
-      const start = performance.now();
-
-      function step(now: number) {
-        const t = Math.min(1, (now - start) / SNAP_DURATION_MS);
-        const eased = 1 - Math.pow(1 - t, 2); // power2.out — same character as hero's own easing
-        window.scrollTo(0, fromY + distance * eased);
-        snapRafId = t < 1 ? requestAnimationFrame(step) : 0;
-      }
-      snapRafId = requestAnimationFrame(step);
-    }
-
-    function maybeSnap() {
-      snapIdleTimer = null;
-      if (!isSnapEligible() || snapRafId) return;
-      if (!withinSnapWindow(window.scrollY) || hasSnappedThisVisit) return;
-      hasSnappedThisVisit = true;
-      runSnap();
-    }
-
-    // wheel/touchstart/keydown, not 'scroll' — 'scroll' also fires from
-    // runSnap()'s own window.scrollTo calls, so using it here would let the
-    // snap cancel itself mid-flight and re-arm the idle timer against its
-    // own motion.
-    function onScrollInputEvent() {
-      cancelSnap(); // any real input hands control back immediately
-      if (snapIdleTimer) clearTimeout(snapIdleTimer);
-      snapIdleTimer = setTimeout(maybeSnap, SNAP_IDLE_MS);
-    }
-
-    // Re-arms for the next visit as soon as scrollY leaves the window —
-    // separate from the idle-triggered snap-in above, so a single pass
-    // through the window without stopping doesn't get "used up".
-    function trackSnapWindowMembership() {
-      if (!withinSnapWindow(window.scrollY)) hasSnappedThisVisit = false;
-    }
-
     computeTriggers();
     requestTick();
 
-    // ProjectHeader's title is set with an explicit 'Instrument Serif',
-    // 'Times New Roman' fallback and font-display:swap — so on first paint
-    // it very often renders in the Times New Roman fallback (measured
-    // ~84px taller here, exactly one line-height, since the fallback wraps
-    // to an extra line the real font doesn't) and reflows once Instrument
-    // Serif finishes loading. If computeTriggers() above ran during that
-    // fallback window, everything it measured — the hero's resting
-    // position, its end-state center, endScrollY — is stale by however much
-    // that reflow shifts the hero afterward. This raced silently: whichever
-    // page's specific title happened to need an already-cached font chunk
-    // came out looking correct, and whichever needed a fresh network fetch
-    // came out with mismatched cream bands and a LOGO threshold that didn't
-    // line up with the hero's real end state, with no visible error either
-    // way. Re-running once fonts.ready resolves (guaranteed to be after any
-    // swap-triggered reflow) catches and corrects that regardless of which
-    // way the race went.
-    let cancelled = false;
-    document.fonts.ready.then(() => {
-      if (cancelled) return;
-      computeTriggers();
-      requestTick();
-    });
-
     window.addEventListener('scroll', requestTick, { passive: true });
-    window.addEventListener('scroll', trackSnapWindowMembership, { passive: true });
     window.addEventListener('resize', handleResize);
     mqMobile.addEventListener('change', handleMediaChange);
     mqReduced.addEventListener('change', handleMediaChange);
-    window.addEventListener('wheel', onScrollInputEvent, { passive: true });
-    window.addEventListener('touchstart', onScrollInputEvent, { passive: true });
-    window.addEventListener('keydown', onScrollInputEvent);
 
     return () => {
-      cancelled = true;
       window.removeEventListener('scroll', requestTick);
-      window.removeEventListener('scroll', trackSnapWindowMembership);
       window.removeEventListener('resize', handleResize);
       mqMobile.removeEventListener('change', handleMediaChange);
       mqReduced.removeEventListener('change', handleMediaChange);
-      window.removeEventListener('wheel', onScrollInputEvent);
-      window.removeEventListener('touchstart', onScrollInputEvent);
-      window.removeEventListener('keydown', onScrollInputEvent);
       if (rafId) cancelAnimationFrame(rafId);
-      cancelSnap();
-      if (snapIdleTimer) clearTimeout(snapIdleTimer);
     };
   }, []);
 
