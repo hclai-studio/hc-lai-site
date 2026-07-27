@@ -171,6 +171,26 @@ export default function BrandMark({ className = "" }: { className?: string }) {
     }
     updateWorkPageThresholds();
 
+    // Same font-swap hazard HeroClient.tsx guards against: ProjectHeader's
+    // title falls back to Times New Roman (measured ~84px taller — one
+    // extra line — than the loaded Instrument Serif) until font-display:swap
+    // finishes the real font, reflowing the hero underneath it.
+    // computeHeroEndScrollY() above may have measured during that fallback
+    // window, so THRESHOLD_LAI/FACE could already be stale by the time this
+    // effect finishes running. Re-deriving once fonts.ready resolves (and
+    // re-syncing whichever path — discrete or smooth — is currently active)
+    // catches that regardless of which way the load race went.
+    let cancelled = false;
+    document.fonts.ready.then(() => {
+      if (cancelled) return;
+      updateWorkPageThresholds();
+      if (isDiscrete) {
+        syncDiscreteState();
+      } else {
+        render(computePSmooth());
+      }
+    });
+
     const P_FACE = 1;
     const P_HC   = 0.27; // build=0, contract=0, retract=1 → clean H.C.
     const P_LAI  = 0;
@@ -261,6 +281,7 @@ export default function BrandMark({ className = "" }: { className?: string }) {
     }, 5000);
 
     return () => {
+      cancelled = true;
       window.removeEventListener("wheel",  onWheel);
       window.removeEventListener("scroll", onScroll);
       window.removeEventListener("resize", onResize);

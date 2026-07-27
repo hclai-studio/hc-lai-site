@@ -206,12 +206,36 @@ export default function HeroClient({ src, alt, width, height }: HeroClientProps)
     computeTriggers();
     requestTick();
 
+    // ProjectHeader's title is set with an explicit 'Instrument Serif',
+    // 'Times New Roman' fallback and font-display:swap — so on first paint
+    // it very often renders in the Times New Roman fallback (measured
+    // ~84px taller here, exactly one line-height, since the fallback wraps
+    // to an extra line the real font doesn't) and reflows once Instrument
+    // Serif finishes loading. If computeTriggers() above ran during that
+    // fallback window, everything it measured — the hero's resting
+    // position, its end-state center, endScrollY — is stale by however much
+    // that reflow shifts the hero afterward. This raced silently: whichever
+    // page's specific title happened to need an already-cached font chunk
+    // came out looking correct, and whichever needed a fresh network fetch
+    // came out with mismatched cream bands and a LOGO threshold that didn't
+    // line up with the hero's real end state, with no visible error either
+    // way. Re-running once fonts.ready resolves (guaranteed to be after any
+    // swap-triggered reflow) catches and corrects that regardless of which
+    // way the race went.
+    let cancelled = false;
+    document.fonts.ready.then(() => {
+      if (cancelled) return;
+      computeTriggers();
+      requestTick();
+    });
+
     window.addEventListener('scroll', requestTick, { passive: true });
     window.addEventListener('resize', handleResize);
     mqMobile.addEventListener('change', handleMediaChange);
     mqReduced.addEventListener('change', handleMediaChange);
 
     return () => {
+      cancelled = true;
       window.removeEventListener('scroll', requestTick);
       window.removeEventListener('resize', handleResize);
       mqMobile.removeEventListener('change', handleMediaChange);
