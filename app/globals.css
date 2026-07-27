@@ -105,8 +105,16 @@
 @layer base {
   *, *::before, *::after { box-sizing: border-box; }
 
-  ::selection, ::-moz-selection {
+  /* Written as two separate rules, not one comma-grouped selector list —
+     Chrome treats an unrecognized selector (::-moz-selection) anywhere in a
+     shared list as invalidating the whole rule, silently dropping the
+     ::selection half too and leaving the browser-default blue in place. */
+  ::selection {
     background: rgba(184, 92, 56, 0.22); /* terracotta, low-opacity — replaces browser-default blue */
+    color: inherit;
+  }
+  ::-moz-selection {
+    background: rgba(184, 92, 56, 0.22);
     color: inherit;
   }
 
