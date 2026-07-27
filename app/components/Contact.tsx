@@ -71,7 +71,7 @@ export default function Contact() {
             hello@hclai.studio
           </a>
 
-          <p className="font-mono text-ink-muted text-[10px] tracking-[0.12em]">
+          <p className="font-sans text-ink-muted text-[14px] tracking-[0.01em] leading-[1.6]">
             Cold emails welcome. Replies guaranteed if I can.
           </p>
         </div>

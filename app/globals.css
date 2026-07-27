@@ -105,6 +105,11 @@
 @layer base {
   *, *::before, *::after { box-sizing: border-box; }
 
+  ::selection, ::-moz-selection {
+    background: rgba(184, 92, 56, 0.22); /* terracotta, low-opacity — replaces browser-default blue */
+    color: inherit;
+  }
+
   /*
    * html must NOT have overflow:hidden — that turns html into a scroll container,
    * giving the page two scrollbars (one on html, one on body).
