@@ -9,6 +9,7 @@ import JudgmentCard from '@/app/components/mdx/JudgmentCard';
 import DecisionTable from '@/app/components/mdx/DecisionTable';
 import StatRow from '@/app/components/mdx/StatRow';
 import CompareBars from '@/app/components/mdx/CompareBars';
+import FigureCaption from '@/app/components/mdx/FigureCaption';
 
 export function useMDXComponents(components: MDXComponents): MDXComponents {
   return {
@@ -23,5 +24,6 @@ export function useMDXComponents(components: MDXComponents): MDXComponents {
     DecisionTable,
     StatRow,
     CompareBars,
+    FigureCaption,
   };
 }
