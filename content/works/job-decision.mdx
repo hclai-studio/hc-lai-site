@@ -160,6 +160,26 @@ Takeaway: path selection is not about "which is most advanced" — it is about "
 
 What this section validates is decision efficiency, not market response — reply rate and interview conversion depend on the market rather than the tool, and are tracked separately.
 
+<figure className="w-[min(880px,calc(100vw-3rem))] mx-[calc((100%-min(880px,calc(100vw-3rem)))/2)]">
+  <div className="flex flex-col gap-4">
+    <StatRow
+      stats={[
+        { value: "108", label: "岗位判断总数" },
+        { value: "3h41m", label: "全链路累计耗时" },
+        { value: "10×", label: "效率提升倍数", accent: true },
+      ]}
+    />
+    <CompareBars
+      before={{ label: "人工判断", value: "5 min / 个" }}
+      after={{ label: "工作流判断", value: "30 s / 个" }}
+      ratio={10}
+    />
+  </div>
+  <figcaption className="font-sans text-ink-muted text-[14px] tracking-[0.01em] leading-[1.6] text-left mt-[var(--figure-gap-caption)] [text-wrap:pretty]">
+    上:108 个岗位的判断总量与全链路耗时——耗时按台账时间戳分段统计,间隔超过 15 分钟即切为新时段,共 7 段。下:单次判断本身的用时,不含贴入 JD、等待解析与归档。 / Top: totals across 108 verdicts; elapsed time measured from log timestamps, split into sessions at gaps over 15 minutes — seven sessions in all. Bottom: time for the verdict step itself, excluding JD intake and archiving.
+  </figcaption>
+</figure>
+
 ### 初步观察 / Initial Observations
 
 决策卡的"方向判断"在多次实测中有效识别了 title 与实际方向的偏差（例：title 标注"AI 产品经理"，决策卡识别为"偏技术实验向，含 ComfyUI / 模型训练要求"）。
