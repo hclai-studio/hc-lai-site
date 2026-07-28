@@ -12,6 +12,7 @@ interface WorkImageClientProps {
   height: number;
   wide?: boolean;
   isSvg?: boolean;
+  svgMarkup?: string;
 }
 
 export default function WorkImageClient({
@@ -22,6 +23,7 @@ export default function WorkImageClient({
   height,
   wide = false,
   isSvg = false,
+  svgMarkup,
 }: WorkImageClientProps) {
   const [open, setOpen] = useState(false);
   const [visible, setVisible] = useState(false);
@@ -68,20 +70,18 @@ export default function WorkImageClient({
   return (
     <>
       <figure className={breakoutClass}>
-        {isSvg ? (
-          <div className="rounded-xl border border-ink/10 bg-white overflow-hidden">
-            {/* eslint-disable-next-line @next/next/no-img-element -- vector source: next/image's optimizer refuses SVGs without dangerouslyAllowSVG, and scaling loss doesn't apply here. */}
-            <img
-              src={src}
-              alt={resolvedAlt}
-              width={width}
-              height={height}
-              loading="lazy"
-              decoding="async"
-              onClick={() => setOpen(true)}
-              className="block w-full h-auto cursor-zoom-in transition-opacity duration-300 hover:opacity-90"
-            />
-          </div>
+        {isSvg && svgMarkup ? (
+          <div
+            role="img"
+            aria-label={resolvedAlt}
+            onClick={() => setOpen(true)}
+            className="rounded-xl border border-ink/10 bg-white overflow-hidden cursor-zoom-in transition-opacity duration-300 hover:opacity-90 [&>svg]:block [&>svg]:w-full [&>svg]:h-auto"
+            // Inlined (not <img src>) so the diagram's text inherits the
+            // site's self-hosted fonts — see WorkImage.tsx for why. Source is
+            // our own repo asset (read at build time from public/), never
+            // user input, so this isn't an XSS vector.
+            dangerouslySetInnerHTML={{ __html: svgMarkup }}
+          />
         ) : (
           <Image
             src={src}
@@ -115,14 +115,14 @@ export default function WorkImageClient({
           >
             ×
           </button>
-          {isSvg ? (
-            // eslint-disable-next-line @next/next/no-img-element -- same vector-source reasoning as the inline figure above; also lets this reuse the one source file at full quality at any zoom.
-            <img
-              src={src}
-              alt={resolvedAlt}
-              className={`max-w-[95vw] max-h-[90vh] w-auto h-auto object-contain cursor-default
+          {isSvg && svgMarkup ? (
+            <div
+              role="img"
+              aria-label={resolvedAlt}
+              className={`max-w-[95vw] max-h-[90vh] cursor-default [&>svg]:block [&>svg]:max-w-[95vw] [&>svg]:max-h-[90vh] [&>svg]:w-auto [&>svg]:h-auto
                 transition-all duration-200 ${visible ? 'opacity-100 scale-100' : 'opacity-0 scale-95'}`}
               onClick={(e) => e.stopPropagation()}
+              dangerouslySetInnerHTML={{ __html: svgMarkup }}
             />
           ) : (
             <Image

@@ -23,6 +23,20 @@
   font-display: swap;
 }
 
+/* Literal-name alias for the same Geist Mono file next/font/local already loads
+   under an internal hashed family (exposed only via --font-geist-mono, never as
+   the string "Geist Mono"). Hand-authored SVGs (e.g. inlined diagrams) reference
+   the family by its plain name since they can't reach a React-scoped CSS
+   variable at author time — this makes that literal reference resolve to the
+   real self-hosted font instead of silently falling through to the system
+   monospace fallback. Same src, so no extra network fetch beyond a cache hit. */
+@font-face {
+  font-family: 'Geist Mono';
+  src: url('./fonts/GeistMonoVF.woff') format('woff');
+  font-weight: 100 900;
+  font-display: swap;
+}
+
 /* ── Design tokens (CSS variables) ─────────────────────────────────── */
 :root {
   --cream:       #F2EFE9;

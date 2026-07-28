@@ -34,8 +34,16 @@ export default async function WorkImage({ src, caption, alt, placeholder = false
   }
 
   const filePath = join(process.cwd(), 'public', src);
-  const { width, height } = await sharp(readFileSync(filePath)).metadata();
+  const fileBuffer = readFileSync(filePath);
+  const { width, height } = await sharp(fileBuffer).metadata();
   const isSvg = src.toLowerCase().endsWith('.svg');
+
+  // Inlined (not <img src>) so it becomes part of the page DOM and can inherit
+  // the site's self-hosted @font-face rules — an SVG loaded via <img> is a
+  // separate document with no access to the host page's CSS at all, so any
+  // font-family it declares (however it's spelled) falls back to whatever the
+  // visitor's OS happens to have installed.
+  const svgMarkup = isSvg ? fileBuffer.toString('utf-8') : undefined;
 
   return (
     <WorkImageClient
@@ -46,6 +54,7 @@ export default async function WorkImage({ src, caption, alt, placeholder = false
       height={height!}
       wide={wide}
       isSvg={isSvg}
+      svgMarkup={svgMarkup}
     />
   );
 }
