@@ -39,6 +39,10 @@ Round / State 管理
 记录 project_id / round / prompt / feedback / output / history
 ```
 
+这套流程落在本地工作台上是这样的。
+
+Here is how that flow runs in the local workbench.
+
 <WorkImage src="/works/nanobanana/workflow-ui.png" caption="Nanobanana 建筑生图工作台——两阶段生成流程的本地操作界面。 / The Nanobanana workbench — the local interface for the generation workflow, run in two stages." placeholder={false} />
 
 ## 04｜设计与验证 Design & Validation
@@ -101,7 +105,15 @@ Validation & Boundary Reflection
 
 <WorkImage src="/works/nanobanana/round2-anchor.png" caption="Round 2 锚点图——case_04a 与 case_04b 两版结果共同的出发底图，锁定几何与构图基准。 / Round 2 anchor — the shared base image both case_04a and case_04b were generated from, locking the geometric and compositional baseline." placeholder={false} />
 
+保守版只补环境,不动体量与机位。
+
+The conservative pass adds environment only, leaving massing and camera untouched.
+
 <WorkImage src="/works/nanobanana/case-04a.png" caption="case_04a · 保守版结果——从 Round 2 锚点图出发，修改幅度取保守档。 / case_04a · the conservative pass — generated from the Round 2 anchor with a minimal change budget." placeholder={false} />
+
+推进版在同一起点上继续推进环境与光影。
+
+The forward pass builds further on the same starting frame.
 
 <WorkImage src="/works/nanobanana/case-04b.png" caption="case_04b · 推进版结果——同一张锚点图出发，允许更激进的修改幅度。 / case_04b · the aggressive pass — from the same anchor, with a wider change budget." placeholder={false} />
 

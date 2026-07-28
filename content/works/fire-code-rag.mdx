@@ -32,6 +32,12 @@ This project uses GB 55037-2022 as the knowledge source to build a RAG QA assist
 - **Coze** — Hierarchical chunking (chapter → section → clause: X → X.Y → X.Y.Z), preserving each clause's semantic integrity
 - **Dify** — General + 1024-character cap (platform default), kept as a control group to test how chunking affects retrieval quality
 
+<WorkImage
+  src="/works/fire-code-rag/kb-segments.png"
+  caption="知识库入库:GB 55037-2022 按条文层级切分为 113 个 segments，保留章节结构以支持逐条召回。 / Knowledge base: GB 55037-2022 split into 113 segments along its clause hierarchy, preserving structure for verbatim recall."
+  placeholder={false}
+/>
+
 ### 检索方式 / Retrieval
 
 - **Coze** —— Hybrid(语义 + 全文混合检索),Top K = 5,相似度阈值 0.50
@@ -49,12 +55,6 @@ This project uses GB 55037-2022 as the knowledge source to build a RAG QA assist
 - **Prompt layer** — every answer must carry a citation in the form "GB 55037-2022, Clause X.Y.Z"
 - **Knowledge-settings layer** — a polite-refusal fallback configured for no-recall cases
 - **Test layer** — coverage spans both paths: in-scope answering and out-of-scope refusal
-
-<WorkImage
-  src="/works/fire-code-rag/kb-segments.png"
-  caption="知识库入库:GB 55037-2022 按条文层级切分为 113 个 segments，保留章节结构以支持逐条召回。 / Knowledge base: GB 55037-2022 split into 113 segments along its clause hierarchy, preserving structure for verbatim recall."
-  placeholder={false}
-/>
 
 ## 03 | 效果验证 Validation
 
@@ -76,11 +76,9 @@ The same query, across three retrieval configurations:
 - **Dify · economical index (keyword)** — recalled mixed preface content and hallucinated
 - **Dify · high-quality index (semantic)** — correctly recalled Clause 1.0.2, aligned with Coze
 
-> **关键工程结论 / Key finding**
->
-> 把 LLM 从 gpt-4o-mini 升级到 gpt-4o 后,Bot 仍然产生错位回答;但仅将索引模式从「经济(关键词倒排)」切到「高质量(向量语义)」,即使保持原 gpt-4o-mini,Bot 也恢复正确召回。在术语—语义错配显著的领域文档(规范 / 法律 / 医学)上,**检索质量决定 RAG 系统的上限,模型能力只是下限**——投入更强的模型不会修复检索缺陷。
->
-> Upgrading the LLM from gpt-4o-mini to gpt-4o did not fix the misaligned answers. But switching the index mode alone — from economical (keyword inverted-index) to high-quality (vector semantic) — restored correct recall even on the original gpt-4o-mini. On domain documents with sharp term-vs-semantics mismatch (codes, law, medicine), **retrieval quality sets the ceiling of a RAG system and the model only sets the floor** — throwing a stronger model at a retrieval defect won't fix it.
+同一个问题,先看 Coze 版的返回。
+
+The same question, first through the Coze build.
 
 <WorkImage
   src="/works/fire-code-rag/coze-correct.png"
@@ -88,17 +86,31 @@ The same query, across three retrieval configurations:
   placeholder={false}
 />
 
+换到 Dify、索引模式设为经济索引,同一个问题的返回变了。
+
+Switching to Dify with the economical index, the same question returns something else.
+
 <WorkImage
   src="/works/fire-code-rag/dify-hallucination.png"
   caption="Dify · 经济索引(关键词):召回了前言混合内容的幻觉案例。 / Dify · economical index (keyword mode): a hallucination case that recalled mixed preface content instead of the target clause."
   placeholder={false}
 />
 
+只把索引模式换成高质量索引,其余配置不动。
+
+Switching only the index mode to high-quality, everything else unchanged.
+
 <WorkImage
   src="/works/fire-code-rag/dify-fixed.png"
   caption="Dify · 高质量索引(语义):召回结果与 Coze 对齐。 / Dify · high-quality index (semantic): recall aligns with Coze."
   placeholder={false}
 />
+
+> **关键工程结论 / Key finding**
+>
+> 把 LLM 从 gpt-4o-mini 升级到 gpt-4o 后,Bot 仍然产生错位回答;但仅将索引模式从「经济(关键词倒排)」切到「高质量(向量语义)」,即使保持原 gpt-4o-mini,Bot 也恢复正确召回。在术语—语义错配显著的领域文档(规范 / 法律 / 医学)上,**检索质量决定 RAG 系统的上限,模型能力只是下限**——投入更强的模型不会修复检索缺陷。
+>
+> Upgrading the LLM from gpt-4o-mini to gpt-4o did not fix the misaligned answers. But switching the index mode alone — from economical (keyword inverted-index) to high-quality (vector semantic) — restored correct recall even on the original gpt-4o-mini. On domain documents with sharp term-vs-semantics mismatch (codes, law, medicine), **retrieval quality sets the ceiling of a RAG system and the model only sets the floor** — throwing a stronger model at a retrieval defect won't fix it.
 
 ### 拒答路径 / Out-of-Scope Refusal
 
@@ -142,6 +154,12 @@ Coze and Dify give the product shape of RAG: chunking, embeddings, retrieval, an
 
 [s1mple4869/langchain-rag-firecode ↗](https://github.com/s1mple4869/langchain-rag-firecode)
 
+<WorkImage
+  src="/works/fire-code-rag/langchain-repo.png"
+  caption="LangChain 版的 GitHub 仓库首页——从零手写的完整 RAG 管线，按 step 脚本分步组织。 / The GitHub repo for the LangChain build — the complete hand-written RAG pipeline, organized as step-by-step scripts."
+  placeholder={false}
+/>
+
 ### 技术栈 / Tech Stack
 
 - **框架 / Framework** —— LangChain(LCEL)
@@ -160,6 +178,12 @@ Coze and Dify give the product shape of RAG: chunking, embeddings, retrieval, an
 2. **DeepSeek-V3 as the LLM** — very low cost and directly reachable domestically; RAG doesn't demand extreme reasoning, so DeepSeek is more than enough.
 3. **Secrets kept out of code** — API keys live in .env + .gitignore, never in the repo.
 
+<WorkImage
+  src="/works/fire-code-rag/langchain-code.png"
+  caption="step5_rag.py 的核心 LCEL 链路——检索、Prompt 组装与生成显式串成一条链，每一步取舍可见。 / The core LCEL chain in step5_rag.py — retrieval, prompt assembly, and generation wired explicitly into one chain, every decision visible."
+  placeholder={false}
+/>
+
 ### 测试效果 / Test Results
 
 **Test 1(正常问题 / In-scope)**
@@ -170,6 +194,12 @@ Q:民用建筑的耐火等级是怎么规定的? / How are fire-resistance ratin
 
 Q:民用建筑的容积率上限是多少? / What is the maximum plot ratio for civil buildings?<br/>A:「检索到的条文未提及民用建筑容积率上限的相关规定。该问题超出本规范范围,无法回答。」 / "The retrieved clauses do not mention any limit on plot ratio for civil buildings. This question is outside the scope of this code and cannot be answered."
 
+<WorkImage
+  src="/works/fire-code-rag/langchain-test.png"
+  caption="测试 1 + 测试 2 的命令行原始输出——正向召回与超纲拒答，两组行为一屏对照。 / Raw output from the command line for Tests 1 and 2 — in-scope recall and out-of-scope refusal, side by side."
+  placeholder={false}
+/>
+
 对比 Dify 早期版本(gpt-4o-mini + 经济索引)曾幻觉编造 1.0.1 条款——LangChain 版本完全消除幻觉,再次印证检索质量是 RAG 可靠性的根本,而非 LLM 推理能力。
 
 Where the early Dify build (gpt-4o-mini + economical index) once hallucinated a fabricated Clause 1.0.1, the LangChain build eliminated hallucination entirely — reaffirming that retrieval quality, not LLM reasoning, is the foundation of RAG reliability.
@@ -179,23 +209,5 @@ Where the early Dify build (gpt-4o-mini + economical index) once hallucinated a 
 - 手写管线与低代码路径行为对齐——同一知识源，两条路径，召回结果可比对 / Hand-written and low-code RAG pipelines produce aligned behavior — same source, two paths, comparable recall
 - LangChain LCEL、向量库、嵌入模型、prompt engineering 作为工程组合的联动方式 / LangChain LCEL, vector store, embedding model, and prompt engineering as an integrated engineering stack
 - 检索质量与切块策略是 RAG 可靠性的根本，不是 LLM 推理能力 / Retrieval quality and chunking strategy are the foundation of RAG reliability, not LLM reasoning
-
-<WorkImage
-  src="/works/fire-code-rag/langchain-repo.png"
-  caption="LangChain 版的 GitHub 仓库首页——从零手写的完整 RAG 管线，按 step 脚本分步组织。 / The GitHub repo for the LangChain build — the complete hand-written RAG pipeline, organized as step-by-step scripts."
-  placeholder={false}
-/>
-
-<WorkImage
-  src="/works/fire-code-rag/langchain-code.png"
-  caption="step5_rag.py 的核心 LCEL 链路——检索、Prompt 组装与生成显式串成一条链，每一步取舍可见。 / The core LCEL chain in step5_rag.py — retrieval, prompt assembly, and generation wired explicitly into one chain, every decision visible."
-  placeholder={false}
-/>
-
-<WorkImage
-  src="/works/fire-code-rag/langchain-test.png"
-  caption="测试 1 + 测试 2 的命令行原始输出——正向召回与超纲拒答，两组行为一屏对照。 / Raw output from the command line for Tests 1 and 2 — in-scope recall and out-of-scope refusal, side by side."
-  placeholder={false}
-/>
 
 </CaseExpandable>
