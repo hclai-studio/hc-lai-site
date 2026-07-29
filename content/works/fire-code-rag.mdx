@@ -36,6 +36,7 @@ This project uses GB 55037-2022 as the knowledge source to build a RAG QA assist
   src="/works/fire-code-rag/kb-segments.png"
   caption="知识库入库:GB 55037-2022 按条文层级切分为 113 个 segments，保留章节结构以支持逐条召回。 / Knowledge base: GB 55037-2022 split into 113 segments along its clause hierarchy, preserving structure for verbatim recall."
   placeholder={false}
+  quality={90}
 />
 
 ### 检索方式 / Retrieval
@@ -84,6 +85,7 @@ The same question, first through the Coze build.
   src="/works/fire-code-rag/coze-correct.png"
   caption="Coze 版正向测试的实际回答——目标条文第 1.0.2 条被逐字召回，未出现改写或杜撰。 / The Coze build on the in-scope test — target Clause 1.0.2 recalled verbatim, with no paraphrase or fabrication."
   placeholder={false}
+  quality={90}
 />
 
 换到 Dify、索引模式设为经济索引,同一个问题的返回变了。
@@ -94,6 +96,7 @@ Switching to Dify with the economical index, the same question returns something
   src="/works/fire-code-rag/dify-hallucination.png"
   caption="Dify · 经济索引(关键词):召回了前言混合内容的幻觉案例。 / Dify · economical index (keyword mode): a hallucination case that recalled mixed preface content instead of the target clause."
   placeholder={false}
+  quality={90}
 />
 
 只把索引模式换成高质量索引,其余配置不动。
@@ -104,6 +107,7 @@ Switching only the index mode to high-quality, everything else unchanged.
   src="/works/fire-code-rag/dify-fixed.png"
   caption="Dify · 高质量索引(语义):仅切换索引模式、其余配置不变,召回即与 Coze 对齐,逐字返回目标条文。 / Dify · high-quality index (semantic): with only the index mode changed and everything else untouched, recall aligns with Coze and returns the target clause verbatim."
   placeholder={false}
+  quality={90}
 />
 
 > **关键工程结论 / Key finding**
@@ -158,6 +162,7 @@ Coze and Dify give the product shape of RAG: chunking, embeddings, retrieval, an
   src="/works/fire-code-rag/langchain-repo.png"
   caption="LangChain 版的 GitHub 仓库首页——从零手写的完整 RAG 管线，按 step 脚本分步组织。 / The GitHub repo for the LangChain build — the complete hand-written RAG pipeline, organized as step-by-step scripts."
   placeholder={false}
+  quality={90}
 />
 
 ### 技术栈 / Tech Stack
@@ -208,6 +213,7 @@ Q:民用建筑的容积率上限是多少? / What is the maximum plot ratio for 
   src="/works/fire-code-rag/langchain-test.png"
   caption="测试 1 + 测试 2 的命令行原始输出——正向召回与超纲拒答，两组行为一屏对照。 / Raw output from the command line for Tests 1 and 2 — in-scope recall and out-of-scope refusal, side by side."
   placeholder={false}
+  quality={90}
 />
 
 对比 Dify 早期版本(gpt-4o-mini + 经济索引)曾幻觉编造 1.0.1 条款——LangChain 版本完全消除幻觉,再次印证检索质量是 RAG 可靠性的根本,而非 LLM 推理能力。

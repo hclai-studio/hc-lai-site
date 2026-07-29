@@ -43,7 +43,7 @@ Round / State 管理
 
 The same flow, in its local workbench interface.
 
-<WorkImage src="/works/nanobanana/workflow-ui.png" caption="Nanobanana 建筑生图工作台——两阶段生成流程的本地操作界面。 / The Nanobanana workbench — the local interface for the generation workflow, run in two stages." placeholder={false} />
+<WorkImage src="/works/nanobanana/workflow-ui.png" caption="Nanobanana 建筑生图工作台——两阶段生成流程的本地操作界面。 / The Nanobanana workbench — the local interface for the generation workflow, run in two stages." placeholder={false} quality={90} />
 
 ## 04｜设计与验证 Design & Validation
 
@@ -68,12 +68,12 @@ Structured Feedback Design
 - 设计 keep / fix / avoid 结构化 feedback 格式，用于表达"保留什么、修改什么、避免什么"。
 - A structured feedback format based on keep / fix / avoid — separating what should be preserved, improved, and avoided, so each revision request is unambiguous.
 
-### 本地工作台 MVP 搭建
+### 工作台搭建
 
-Local Workflow UI MVP
+Workbench Build
 
-- 使用 Claude Code 搭建本地 Streamlit 工作台，实现上传图片、选择阶段、运行生成、继续下一轮、前后对比和历史轮次查看。
-- A lightweight local Streamlit workspace supporting image upload, stage selection, generation runs, next-round continuation, before/after comparison, and historical round review.
+- 使用 Claude Code 搭建本地 Streamlit 工作台。
+- Built a local Streamlit workbench using Claude Code.
 
 ### 方法论验证与边界记录
 
@@ -88,7 +88,7 @@ Validation & Boundary Reflection
 
 原本需要通过命令行执行的流程，被整理成一个本地网页工作台。用户可以上传白模图或参考图，选择 stage1 / stage2 路线，运行生成，并在下一轮选择标准 feedback case 或手动输入修改意见。
 
-<WorkImage src="/works/nanobanana/mvp-demo.png" caption="界面支持当前项目状态、最新输出图、前后轮对比、历史轮次回看与本地路径提示。 / The interface tracks current project state, the latest output, before/after comparison, round history, and local file-path hints." placeholder={false} />
+<WorkImage src="/works/nanobanana/mvp-demo.png" caption="界面支持当前项目状态、最新输出图、前后轮对比、历史轮次回看与本地路径提示。 / The interface tracks current project state, the latest output, before/after comparison, round history, and local file-path hints." placeholder={false} quality={90} />
 
 ## 06｜方法论验证 Validation: case_04a vs case_04b
 
@@ -105,15 +105,15 @@ Validation & Boundary Reflection
 
 <WorkImage src="/works/nanobanana/round2-anchor.png" caption="Round 2 锚点图——case_04a 与 case_04b 两版结果共同的出发底图，锁定几何与构图基准。 / Round 2 anchor — the shared base image both case_04a and case_04b were generated from, locking the geometric and compositional baseline." placeholder={false} />
 
-保守版只补环境,不动体量与机位。
+保守版的 feedback 只要求轻微补充环境、尽量不洗图。
 
-The conservative pass adds environment only, leaving massing and camera untouched.
+The conservative pass asked only for light environmental additions, with minimal rework.
 
 <WorkImage src="/works/nanobanana/case-04a.png" caption="case_04a · 保守版结果——从 Round 2 锚点图出发，修改幅度取保守档。 / case_04a · the conservative pass — generated from the Round 2 anchor with a minimal change budget." placeholder={false} />
 
-推进版在同一起点上继续推进环境与光影。
+推进版则明确要求增加前景、人物、车辆与地面细节。
 
-The forward pass builds further on the same starting frame.
+The forward pass explicitly asked for foreground, figures, vehicles, and ground detail.
 
 <WorkImage src="/works/nanobanana/case-04b.png" caption="case_04b · 推进版结果——同一张锚点图出发，允许更激进的修改幅度。 / case_04b · the aggressive pass — from the same anchor, with a wider change budget." placeholder={false} />
 

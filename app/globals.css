@@ -45,6 +45,7 @@
   --ink-muted:   #6B6862;
   --terracotta:  #B85C38;
   --line:        rgba(28, 27, 23, 0.12);
+  --selection-bg: rgba(184, 92, 56, 0.35); /* terracotta, was 0.22 — bump here to retune */
   --ease-out:    cubic-bezier(0.16, 1, 0.3, 1);
   --font-instrument-serif: 'Instrument Serif', 'Times New Roman', serif;
 
@@ -133,11 +134,11 @@
      shared list as invalidating the whole rule, silently dropping the
      ::selection half too and leaving the browser-default blue in place. */
   ::selection {
-    background: rgba(184, 92, 56, 0.22); /* terracotta, low-opacity — replaces browser-default blue */
+    background: var(--selection-bg); /* terracotta, low-opacity — replaces browser-default blue */
     color: inherit;
   }
   ::-moz-selection {
-    background: rgba(184, 92, 56, 0.22);
+    background: var(--selection-bg);
     color: inherit;
   }
 

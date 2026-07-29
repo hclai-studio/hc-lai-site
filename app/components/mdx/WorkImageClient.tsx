@@ -13,6 +13,7 @@ interface WorkImageClientProps {
   wide?: boolean;
   isSvg?: boolean;
   svgMarkup?: string;
+  quality?: number;
 }
 
 export default function WorkImageClient({
@@ -24,6 +25,7 @@ export default function WorkImageClient({
   wide = false,
   isSvg = false,
   svgMarkup,
+  quality = 80,
 }: WorkImageClientProps) {
   const [open, setOpen] = useState(false);
   const [visible, setVisible] = useState(false);
@@ -97,7 +99,7 @@ export default function WorkImageClient({
             width={width}
             height={height}
             sizes="(max-width: 920px) 100vw, 880px"
-            quality={80}
+            quality={quality}
             onClick={() => setOpen(true)}
             className="w-full h-auto rounded-xl border border-ink/10 cursor-zoom-in transition-opacity duration-300 hover:opacity-90"
           />

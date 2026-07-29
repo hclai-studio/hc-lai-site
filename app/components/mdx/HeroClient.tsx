@@ -252,7 +252,7 @@ export default function HeroClient({ src, alt, width, height }: HeroClientProps)
       width={width}
       height={height}
       priority
-      sizes="(max-width: 767px) 100vw, 100vw"
+      sizes="150vw"
       className="case-hero"
     />
   );

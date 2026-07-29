@@ -10,12 +10,13 @@ interface WorkImageProps {
   alt?: string;
   placeholder?: boolean;
   wide?: boolean;
+  quality?: number;
 }
 
 const breakoutClass =
   "w-[min(880px,calc(100vw-3rem))] mx-[calc((100%-min(880px,calc(100vw-3rem)))/2)]";
 
-export default async function WorkImage({ src, caption, alt, placeholder = false, wide = false }: WorkImageProps) {
+export default async function WorkImage({ src, caption, alt, placeholder = false, wide = false, quality }: WorkImageProps) {
   if (placeholder) {
     return (
       <figure className={breakoutClass}>
@@ -55,6 +56,7 @@ export default async function WorkImage({ src, caption, alt, placeholder = false
       wide={wide}
       isSvg={isSvg}
       svgMarkup={svgMarkup}
+      quality={quality}
     />
   );
 }
