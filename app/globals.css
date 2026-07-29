@@ -592,6 +592,25 @@
   color: var(--ink);
 }
 
+/* Dark variant for a single code block (fire-code-rag's LangChain LCEL
+   snippet) — same site-wide pre/code rules above, just three token swaps.
+   Scoped to a wrapper class rather than a new global default since the
+   other two code blocks on-site (job-decision, nanobanana) are plain-text
+   workflow diagrams, not code, and weren't part of this brief. */
+.code-dark .prose-works pre,
+.code-dark pre {
+  background: var(--ink);
+  border: none;
+  border-radius: 12px;
+}
+.code-dark .prose-works pre code,
+.code-dark pre code {
+  color: var(--cream);
+}
+.code-dark pre::first-line {
+  color: var(--ink-muted);
+}
+
 /* Work list description — same serif stack as detail page body */
 .work-desc {
   font-family: Georgia, 'Chiron Sung HK', 'Noto Serif SC', serif;

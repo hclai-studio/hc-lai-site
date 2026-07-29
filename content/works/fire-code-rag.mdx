@@ -183,6 +183,7 @@ Coze and Dify give the product shape of RAG: chunking, embeddings, retrieval, an
 2. **DeepSeek-V3 as the LLM** — very low cost and directly reachable domestically; RAG doesn't demand extreme reasoning, so DeepSeek is more than enough.
 3. **Secrets kept out of code** — API keys live in .env + .gitignore, never in the repo.
 
+<div className="code-dark">
 <figure>
 
 ```python
@@ -198,6 +199,7 @@ chain = (
 <FigureCaption caption="step5_rag.py 的核心 LCEL 链路——检索、Prompt 组装与生成显式串成一条链，每一步取舍可见。 / The core LCEL chain in step5_rag.py — retrieval, prompt assembly, and generation wired explicitly into one chain, every decision visible." />
 
 </figure>
+</div>
 
 ### 测试效果 / Test Results
 
