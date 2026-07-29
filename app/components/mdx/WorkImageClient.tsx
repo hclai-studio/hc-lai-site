@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, type CSSProperties } from 'react';
 import Image from 'next/image';
 import { renderCaption, stripCaptionCode } from './renderCaption';
 
@@ -51,8 +51,13 @@ export default function WorkImageClient({
     setTimeout(() => setOpen(false), 200);
   }
 
+  // Capped at the image's own native width (via --fig-native-w, set inline
+  // below) as well as 880px — a screenshot narrower than the 880 tier no
+  // longer gets stretched up to fill it. For every existing image at or
+  // above 880px native width this is a no-op (min() just keeps picking
+  // 880px), so it only changes anything for the below-880 outliers.
   const narrowBreakoutClass =
-    "w-[min(880px,calc(100vw-3rem))] mx-[calc((100%-min(880px,calc(100vw-3rem)))/2)]";
+    "w-[min(880px,var(--fig-native-w),calc(100vw-3rem))] mx-[calc((100%-min(880px,var(--fig-native-w),calc(100vw-3rem)))/2)]";
   // Wide tier keeps the same 24px-per-side cream margin as the narrow tier
   // down to the point --figure-width-wide itself becomes the constraint, but
   // switches to a tighter 16px-per-side margin below 768px — at that width
@@ -64,12 +69,15 @@ export default function WorkImageClient({
 
   const resolvedAlt = alt ?? (caption ? stripCaptionCode(caption) : '');
 
-  const lightboxWidth = 1760;
+  // Same native-width cap as the inline figure — a screenshot narrower than
+  // 1760 was previously always upscaled to 1760px in the lightbox regardless
+  // of source resolution.
+  const lightboxWidth = Math.min(1760, width);
   const lightboxHeight = Math.round((lightboxWidth * height) / width);
 
   return (
     <>
-      <figure className={breakoutClass}>
+      <figure className={breakoutClass} style={!wide ? ({ '--fig-native-w': `${width}px` } as CSSProperties) : undefined}>
         {isSvg && svgMarkup ? (
           <div
             role="img"
@@ -91,7 +99,7 @@ export default function WorkImageClient({
             sizes="(max-width: 920px) 100vw, 880px"
             quality={80}
             onClick={() => setOpen(true)}
-            className="w-full h-auto rounded-xl cursor-zoom-in transition-opacity duration-300 hover:opacity-90"
+            className="w-full h-auto rounded-xl border border-ink/10 cursor-zoom-in transition-opacity duration-300 hover:opacity-90"
           />
         )}
         {caption && (

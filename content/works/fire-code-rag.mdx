@@ -102,7 +102,7 @@ Switching only the index mode to high-quality, everything else unchanged.
 
 <WorkImage
   src="/works/fire-code-rag/dify-fixed.png"
-  caption="Dify · 高质量索引(语义):召回结果与 Coze 对齐。 / Dify · high-quality index (semantic): recall aligns with Coze."
+  caption="Dify · 高质量索引(语义):仅切换索引模式、其余配置不变,召回即与 Coze 对齐,逐字返回目标条文。 / Dify · high-quality index (semantic): with only the index mode changed and everything else untouched, recall aligns with Coze and returns the target clause verbatim."
   placeholder={false}
 />
 
@@ -178,11 +178,21 @@ Coze and Dify give the product shape of RAG: chunking, embeddings, retrieval, an
 2. **DeepSeek-V3 as the LLM** — very low cost and directly reachable domestically; RAG doesn't demand extreme reasoning, so DeepSeek is more than enough.
 3. **Secrets kept out of code** — API keys live in .env + .gitignore, never in the repo.
 
-<WorkImage
-  src="/works/fire-code-rag/langchain-code.png"
-  caption="step5_rag.py 的核心 LCEL 链路——检索、Prompt 组装与生成显式串成一条链，每一步取舍可见。 / The core LCEL chain in step5_rag.py — retrieval, prompt assembly, and generation wired explicitly into one chain, every decision visible."
-  placeholder={false}
-/>
+<figure>
+
+```python
+# 6. 用 LCEL 拼链
+chain = (
+    {"context": retriever | format_docs, "question": RunnablePassthrough()}
+    | prompt
+    | llm
+    | StrOutputParser()
+)
+```
+
+<FigureCaption caption="step5_rag.py 的核心 LCEL 链路——检索、Prompt 组装与生成显式串成一条链，每一步取舍可见。 / The core LCEL chain in step5_rag.py — retrieval, prompt assembly, and generation wired explicitly into one chain, every decision visible." />
+
+</figure>
 
 ### 测试效果 / Test Results
 
