@@ -43,10 +43,23 @@ function loadRows(project: string): TaskRow[] {
     }));
 }
 
-const dividerMiddleShadow = 'shadow-[inset_0_1px_0_0_rgba(28,27,23,0.1)]';
+// Flattened equivalent of ink/10% blended over white (rgb(28,27,23) @ 10%
+// on rgb(255,255,255) ≈ rgb(232,232,232)) — used opaque instead of
+// translucent so the divider reads identically over the cream Source Quote
+// column as it does everywhere else. A translucent rgba here would blend
+// differently against cream (#F2EFE9) than against the white card, making
+// the line look like it changes color/weight exactly where it crosses that
+// column.
+const DIVIDER_COLOR = '#E8E8E8';
+// Literal static string, not built from DIVIDER_COLOR — Tailwind's content
+// scanner does a text scan of this file and can't resolve a
+// dynamically-interpolated class name (see DecisionTable.tsx for the same
+// note), so a template-literal version of this silently produces a class
+// with no matching generated CSS.
+const dividerMiddleShadow = 'shadow-[inset_0_1px_0_0_#E8E8E8]';
 
 function dividerEdgeStyle(edge: 'first' | 'last') {
-  const color = 'rgba(28,27,23,0.1)';
+  const color = DIVIDER_COLOR;
   const gradient =
     edge === 'first'
       ? `linear-gradient(to right, transparent 10px, ${color} 10px)`

@@ -24,10 +24,15 @@ const ROWS: ChecklistRow[] = [
   { item: '造价信息输入', status: 'Partial', notes: '预算红线、上限、计价范围 / 假设', priority: 'P0' },
 ];
 
-const dividerMiddleShadow = 'shadow-[inset_0_1px_0_0_rgba(28,27,23,0.1)]';
+// Same flattened ink/10%-on-white value as TaskTable.tsx — kept opaque so
+// the divider doesn't shift color crossing the cream Notes column.
+const DIVIDER_COLOR = '#E8E8E8';
+// Literal static string, not built from DIVIDER_COLOR — see TaskTable.tsx
+// for why a template-literal version silently loses its CSS.
+const dividerMiddleShadow = 'shadow-[inset_0_1px_0_0_#E8E8E8]';
 
 function dividerEdgeStyle(edge: 'first' | 'last') {
-  const color = 'rgba(28,27,23,0.1)';
+  const color = DIVIDER_COLOR;
   const gradient =
     edge === 'first'
       ? `linear-gradient(to right, transparent 10px, ${color} 10px)`
@@ -86,7 +91,7 @@ export default function Checklist({
                 return (
                   <tr key={i}>
                     <td
-                      className={`min-h-[54px] py-3 px-3 align-middle text-left font-sans text-ink-muted text-[13px] leading-[1.6] [text-wrap:pretty] ${dividerMiddleShadow}`}
+                      className="min-h-[54px] py-3 px-3 align-middle text-left font-sans text-ink-muted text-[13px] leading-[1.6] [text-wrap:pretty]"
                       style={dividerEdgeStyle('first')}
                     >
                       {row.item}
@@ -94,7 +99,7 @@ export default function Checklist({
                     <td className={`min-h-[54px] py-3 px-3 align-middle text-center ${dividerMiddleShadow}`}>
                       <StatusCell status={row.status} />
                     </td>
-                    <td className={`min-h-[54px] py-3 px-3 align-middle text-left font-sans text-ink-muted text-[13px] leading-[1.6] [text-wrap:pretty] bg-cream ${isLast ? 'rounded-b-lg' : ''}`}>
+                    <td className={`min-h-[54px] py-3 px-3 align-middle text-left font-sans text-ink-muted text-[13px] leading-[1.6] [text-wrap:pretty] bg-cream ${dividerMiddleShadow} ${isLast ? 'rounded-b-lg' : ''}`}>
                       {row.notes}
                     </td>
                     <td
