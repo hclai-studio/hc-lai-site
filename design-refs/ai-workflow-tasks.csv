@@ -1,0 +1,13 @@
+﻿Priority,Task,Owner,Due,Dependency,Status,Notes,Project,Source Quote
+P0,明确汇报时间/形式/受众,TBD,,领导确认,Not started,决定输出颗粒度,Ex01_ClientChange,工期也比较赶，下周要出一版可汇报的方向。
+P0,输出3个入口概念方向（低成本）,Me,08-Mar-26,预算上限,In progress,以材料策略和界面层次为主,Ex01_ClientChange,入口不够有仪式感，希望更有到达感。
+P1,夜景亮点策略（克制表达）,Me,09-Mar-26,灯光预算,Not started,走导视 + 线性光 + 局部重点照明,Ex01_ClientChange,希望夜景有亮点，但不想很商业化。
+P1,整理风险清单（造价/工期/风格）,Me,09-Mar-26,施工反馈,Not started,外企汇报风，短而清晰,Ex01_ClientChange,预算很紧，最好不要增加复杂材料。
+P2,备选材料/节点示意,TBD,,材料供货信息,Not started,优先常规材料，避免复杂做法,Ex01_ClientChange,预算很紧，最好不要增加复杂材料。
+P2,整理一页汇报结构,Me,10-Mar-26,领导意见,Not started,1分钟可读,Ex01_ClientChange,下周要出一版可汇报的方向。
+P0,定义 3 个方向的命名、核心策略与差异点（每个方向 3–5 条要点）,Me,,当前项目范围/目标与可用资源信息,Not started,先拉开三个方向的差异，避免只是换皮,Ex02_LeadershipRequest,下周汇报需要 3 个方向。
+P0,为每个方向输出亮点清单（可落地表述，不超过 5 条/方向）,Me,,3 个方向定义完成,Not started,每个方向一句核心亮点总结,Ex02_LeadershipRequest,每个方向要有亮点和风险点。
+P0,为每个方向输出风险点清单，并按造价/施工难度/工期分类,Me,,3 个方向定义完成；基础成本/工期约束信息,Not started,每类风险一句解释,Ex02_LeadershipRequest,重点关注造价、施工难度、工期。
+P1,为每个方向给出风险对策（降本、降难度、压工期的具体动作）,Me,,风险点清单完成,Not started,对策要具体，不要只写原则,Ex02_LeadershipRequest,每个方向要有亮点和风险点。
+P1,形成汇报文本骨架（外企风格：短句、结论先行、可执行）,Me,,亮点与风险点完成,Not started,先做 1 页结论，再补支撑页,Ex02_LeadershipRequest,希望文本更像外企风格：短、清晰、可执行。
+P0,明确下周汇报的具体日期与评审口径（造价/难度/工期权重）,TBD,,领导/项目秘书确认,Not started,这是后续排期和推荐逻辑的前提,Ex02_LeadershipRequest,下周汇报需要 3 个方向。

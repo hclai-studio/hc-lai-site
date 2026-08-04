@@ -423,10 +423,10 @@
 }
 
 /* ── Table — editorial, framed, no zebra stripes ────────────────── */
-/* :not(.decision-table) guards exempt DecisionTable (app/components/mdx/DecisionTable.tsx),
-   which owns its own border/background/spacing and must not inherit this generic
-   markdown-table styling. */
-.prose-works table:not(.decision-table) {
+/* :not(...) guards exempt DecisionTable, TaskTable, and Checklist (all in
+   app/components/mdx/), which each own their own border/background/spacing
+   and must not inherit this generic markdown-table styling. */
+.prose-works table:not(.decision-table):not(.task-table):not(.checklist-table) {
   width: 100%;
   border-collapse: collapse;
   margin-top: 24px;
@@ -434,7 +434,7 @@
   border: 1px solid var(--line);
 }
 
-.prose-works table:not(.decision-table) th {
+.prose-works table:not(.decision-table):not(.task-table):not(.checklist-table) th {
   font-family: var(--font-geist-mono), 'Noto Sans SC', 'Menlo', monospace;
   font-size: 11px;
   font-weight: 400;
@@ -446,7 +446,7 @@
   border-bottom: 1px solid var(--line);
 }
 
-.prose-works table:not(.decision-table) td {
+.prose-works table:not(.decision-table):not(.task-table):not(.checklist-table) td {
   font-family: 'NumDigitsOnly', Georgia, 'Chiron Sung HK', 'Noto Serif SC', serif;
   font-size: 15px;
   font-weight: 400;
@@ -456,13 +456,13 @@
 }
 
 /* horizontal row separators — but NOT after the last data row */
-.prose-works table:not(.decision-table) tbody tr:not(:last-child) td {
+.prose-works table:not(.decision-table):not(.task-table):not(.checklist-table) tbody tr:not(:last-child) td {
   border-bottom: 1px solid var(--line);
 }
 
 /* vertical column separators */
-.prose-works table:not(.decision-table) th:not(:last-child),
-.prose-works table:not(.decision-table) td:not(:last-child) {
+.prose-works table:not(.decision-table):not(.task-table):not(.checklist-table) th:not(:last-child),
+.prose-works table:not(.decision-table):not(.task-table):not(.checklist-table) td:not(:last-child) {
   border-right: 1px solid var(--line);
 }
 

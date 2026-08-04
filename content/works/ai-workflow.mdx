@@ -76,6 +76,14 @@ To make AI output **reliable, traceable, and reviewable**, the workflow enforces
 - 任务用动作动词 —— "Define three direction strategies"(优), "Think about options"(劣)
 - 输出语言明确控制 —— 标题双语 / 主体中文 / 数据库字段名英文
 
+<figure className="w-[min(880px,calc(100vw-3rem))] mx-[calc((100%-min(880px,calc(100vw-3rem)))/2)]">
+  <div className="flex flex-col gap-8">
+    <TaskTable />
+    <Checklist />
+  </div>
+  <FigureCaption caption="同一套 schema 在两类输入下的不同形态。上:由甲方口头反馈生成的任务表,负责人未定时写 TBD、日期未定时留空而非填入「下周」。下:由需求文档生成的检查清单,列名整体改为 Item / Status / Notes / Priority——它回答的不是「谁在什么时候做什么」,而是「哪些信息还缺」。节选 6 条,完整清单共 13 条。 / The same schema, two shapes. Top: a task table generated from verbal client feedback — Owner falls back to TBD, and Due is left blank rather than filled with 'next week.' Bottom: a checklist generated from a requirements document, where the columns shift to Item / Status / Notes / Priority — it answers not 'who does what by when' but 'what information is still missing.' Six of 13 rows shown." />
+</figure>
+
 ## 04 | 场景验证 Scenarios
 
 这套 workflow 在 4 类典型场景下做了结构验证，input 为模拟样本。每个 case 包含一段 messy input 与完整的 A–E 输出，验证的是 schema 能否承接不同类型的混乱输入，而不是真实项目中的产出效果。
