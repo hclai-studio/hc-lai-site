@@ -59,18 +59,18 @@ function dividerEdgeStyle(edge: 'first' | 'last') {
   };
 }
 
+// Text hierarchy is deliberately flat (ink-muted/400 everywhere) except the
+// two "gap" markers — Owner:TBD and Status:Missing — which alone jump to
+// ink/700. Priority no longer distinguishes P0, since this figure argues
+// schema structure, not task urgency.
 function PriorityCell({ priority }: { priority: string }) {
-  const isP0 = priority === 'P0';
-  return (
-    <span className={`font-mono text-[13px] ${isP0 ? 'text-ink font-bold' : 'text-ink-muted font-normal'}`}>
-      {priority}
-    </span>
-  );
+  return <span className="font-mono text-[13px] text-ink-muted font-normal">{priority}</span>;
 }
 
 function OwnerCell({ owner }: { owner: string }) {
+  const isTBD = owner === 'TBD';
   return (
-    <span className={`font-mono text-[13px] ${owner === 'Me' ? 'text-ink' : 'text-ink-muted'}`}>
+    <span className={`font-mono text-[13px] ${isTBD ? 'text-ink font-bold' : 'text-ink-muted font-normal'}`}>
       {owner}
     </span>
   );
@@ -78,12 +78,13 @@ function OwnerCell({ owner }: { owner: string }) {
 
 export default function TaskTable({
   project = 'Ex01_ClientChange',
-  label = 'CASE 01 · 甲方变更 → TASK TABLE',
+  label = '口头反馈 · CLIENT FEEDBACK → TASK TABLE',
 }: {
   project?: string;
   label?: string;
 }) {
   const rows = loadRows(project);
+  const lastIndex = rows.length - 1;
 
   return (
     <div>
@@ -106,32 +107,32 @@ export default function TaskTable({
                 <th scope="col" className="min-h-[54px] py-3 px-1 align-middle text-center font-sans font-normal text-ink-muted text-[11px] tracking-[0.02em]">Task</th>
                 <th scope="col" className="min-h-[54px] py-3 px-1 align-middle text-center font-sans font-normal text-ink-muted text-[11px] tracking-[0.02em]">Owner</th>
                 <th scope="col" className="min-h-[54px] py-3 px-1 align-middle text-center font-sans font-normal text-ink-muted text-[11px] tracking-[0.02em]">Due</th>
-                <th scope="col" className="min-h-[54px] py-3 px-1 align-middle text-center font-sans font-normal text-ink-muted text-[11px] tracking-[0.02em] bg-cream">Source Quote</th>
+                <th scope="col" className="min-h-[54px] py-3 px-1 align-middle text-center font-sans font-normal text-ink-muted text-[11px] tracking-[0.02em] bg-cream rounded-t-lg">Source Quote</th>
               </tr>
             </thead>
             <tbody>
               {rows.map((row, i) => {
-                const showDivider = true;
+                const isLast = i === lastIndex;
                 return (
                   <tr key={i}>
                     <td
-                      className={`min-h-[54px] py-3 px-3 align-middle text-center ${showDivider ? dividerMiddleShadow : ''}`}
-                      style={showDivider ? dividerEdgeStyle('first') : undefined}
+                      className="min-h-[54px] py-3 px-3 align-middle text-center"
+                      style={dividerEdgeStyle('first')}
                     >
                       <PriorityCell priority={row.priority} />
                     </td>
-                    <td className={`min-h-[54px] py-3 px-3 align-middle text-left font-sans text-ink text-[13px] leading-[1.6] [text-wrap:pretty] ${showDivider ? dividerMiddleShadow : ''}`}>
+                    <td className={`min-h-[54px] py-3 px-3 align-middle text-left font-sans text-ink-muted text-[13px] leading-[1.6] [text-wrap:pretty] ${dividerMiddleShadow}`}>
                       {row.task}
                     </td>
-                    <td className={`min-h-[54px] py-3 px-3 align-middle text-center ${showDivider ? dividerMiddleShadow : ''}`}>
+                    <td className={`min-h-[54px] py-3 px-3 align-middle text-center ${dividerMiddleShadow}`}>
                       <OwnerCell owner={row.owner} />
                     </td>
-                    <td className={`min-h-[54px] py-3 px-3 align-middle text-center font-mono text-[13px] text-ink-muted ${showDivider ? dividerMiddleShadow : ''}`}>
+                    <td className={`min-h-[54px] py-3 px-3 align-middle text-center font-mono text-[13px] text-ink-muted ${dividerMiddleShadow}`}>
                       {formatDue(row.due)}
                     </td>
                     <td
-                      className={`min-h-[54px] py-3 px-3 align-middle text-left font-sans text-ink-muted text-[13px] leading-[1.6] [text-wrap:pretty] bg-cream ${showDivider ? dividerMiddleShadow : ''}`}
-                      style={showDivider ? dividerEdgeStyle('last') : undefined}
+                      className={`min-h-[54px] py-3 px-3 align-middle text-left font-sans text-ink-muted text-[13px] leading-[1.6] [text-wrap:pretty] bg-cream ${isLast ? 'rounded-b-lg' : ''}`}
+                      style={dividerEdgeStyle('last')}
                     >
                       {row.sourceQuote}
                     </td>
@@ -154,7 +155,7 @@ export default function TaskTable({
               <span className="text-ink-muted text-[13px]">·</span>
               <span className="font-mono text-[13px] text-ink-muted">{formatDue(row.due)}</span>
             </div>
-            <p className="font-sans text-ink text-[13px] leading-[1.6] mt-2 [text-wrap:pretty]">{row.task}</p>
+            <p className="font-sans text-ink-muted text-[13px] leading-[1.6] mt-2 [text-wrap:pretty]">{row.task}</p>
             <p className="font-sans text-ink-muted text-[13px] leading-[1.6] mt-3 bg-cream rounded-lg p-3 [text-wrap:pretty]">
               {row.sourceQuote}
             </p>

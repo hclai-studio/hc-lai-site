@@ -12,6 +12,9 @@ interface ChecklistRow {
 // source. Where a bullet has a trailing "(...)" aside, it's extracted here
 // as Notes; the 2 of these 6 rows without one show "—" rather than
 // inventing content that isn't in the original text.
+// TODO: swap to design-refs/ai-workflow-checklist.csv (real Notion export,
+// 4 native columns) once the author drops it in — this parenthetical-split
+// logic goes away at that point.
 const ROWS: ChecklistRow[] = [
   { item: '交付页数与结构明确', status: 'Clear', notes: '1 页总结 + 2 页支撑', priority: 'P0' },
   { item: '评审时间的具体日期与截止时间', status: 'Missing', notes: '—', priority: 'P0' },
@@ -37,30 +40,24 @@ function dividerEdgeStyle(edge: 'first' | 'last') {
   };
 }
 
+// Flat ink-muted/400 hierarchy — only Status:Missing (the "gap" marker)
+// jumps to ink/700, matching TaskTable's Owner:TBD treatment.
 function StatusCell({ status }: { status: ChecklistRow['status'] }) {
-  const cls =
-    status === 'Missing'
-      ? 'text-ink font-bold'
-      : status === 'Partial'
-        ? 'text-ink font-normal'
-        : 'text-ink-muted font-normal';
+  const cls = status === 'Missing' ? 'text-ink font-bold' : 'text-ink-muted font-normal';
   return <span className={`font-sans text-[13px] ${cls}`}>{status}</span>;
 }
 
 function PriorityCell({ priority }: { priority: string }) {
-  const isP0 = priority === 'P0';
-  return (
-    <span className={`font-mono text-[13px] ${isP0 ? 'text-ink font-bold' : 'text-ink-muted font-normal'}`}>
-      {priority}
-    </span>
-  );
+  return <span className="font-mono text-[13px] text-ink-muted font-normal">{priority}</span>;
 }
 
 export default function Checklist({
-  label = 'MINI CASE 02 · 需求收集 → CHECKLIST',
+  label = '需求文档 · REQUIREMENTS DOC → CHECKLIST',
 }: {
   label?: string;
 }) {
+  const lastIndex = ROWS.length - 1;
+
   return (
     <div>
       <div className="font-mono text-[12px] tracking-[0.1em] text-ink-muted mb-2">{label}</div>
@@ -79,30 +76,30 @@ export default function Checklist({
               <tr>
                 <th scope="col" className="min-h-[54px] py-3 px-1 align-middle text-center font-sans font-normal text-ink-muted text-[11px] tracking-[0.02em]">Item</th>
                 <th scope="col" className="min-h-[54px] py-3 px-1 align-middle text-center font-sans font-normal text-ink-muted text-[11px] tracking-[0.02em]">Status</th>
-                <th scope="col" className="min-h-[54px] py-3 px-1 align-middle text-center font-sans font-normal text-ink-muted text-[11px] tracking-[0.02em] bg-cream">Notes</th>
+                <th scope="col" className="min-h-[54px] py-3 px-1 align-middle text-center font-sans font-normal text-ink-muted text-[11px] tracking-[0.02em] bg-cream rounded-t-lg">Notes</th>
                 <th scope="col" className="min-h-[54px] py-3 px-1 align-middle text-center font-sans font-normal text-ink-muted text-[11px] tracking-[0.02em]">Priority</th>
               </tr>
             </thead>
             <tbody>
               {ROWS.map((row, i) => {
-                const showDivider = true;
+                const isLast = i === lastIndex;
                 return (
                   <tr key={i}>
                     <td
-                      className={`min-h-[54px] py-3 px-3 align-middle text-left font-sans text-ink text-[13px] leading-[1.6] [text-wrap:pretty] ${showDivider ? dividerMiddleShadow : ''}`}
-                      style={showDivider ? dividerEdgeStyle('first') : undefined}
+                      className={`min-h-[54px] py-3 px-3 align-middle text-left font-sans text-ink-muted text-[13px] leading-[1.6] [text-wrap:pretty] ${dividerMiddleShadow}`}
+                      style={dividerEdgeStyle('first')}
                     >
                       {row.item}
                     </td>
-                    <td className={`min-h-[54px] py-3 px-3 align-middle text-center ${showDivider ? dividerMiddleShadow : ''}`}>
+                    <td className={`min-h-[54px] py-3 px-3 align-middle text-center ${dividerMiddleShadow}`}>
                       <StatusCell status={row.status} />
                     </td>
-                    <td className={`min-h-[54px] py-3 px-3 align-middle text-left font-sans text-ink-muted text-[13px] leading-[1.6] [text-wrap:pretty] bg-cream ${showDivider ? dividerMiddleShadow : ''}`}>
+                    <td className={`min-h-[54px] py-3 px-3 align-middle text-left font-sans text-ink-muted text-[13px] leading-[1.6] [text-wrap:pretty] bg-cream ${isLast ? 'rounded-b-lg' : ''}`}>
                       {row.notes}
                     </td>
                     <td
-                      className={`min-h-[54px] py-3 px-3 align-middle text-center ${showDivider ? dividerMiddleShadow : ''}`}
-                      style={showDivider ? dividerEdgeStyle('last') : undefined}
+                      className="min-h-[54px] py-3 px-3 align-middle text-center"
+                      style={dividerEdgeStyle('last')}
                     >
                       <PriorityCell priority={row.priority} />
                     </td>
@@ -123,7 +120,7 @@ export default function Checklist({
               <span className="text-ink-muted text-[13px]">·</span>
               <StatusCell status={row.status} />
             </div>
-            <p className="font-sans text-ink text-[13px] leading-[1.6] mt-2 [text-wrap:pretty]">{row.item}</p>
+            <p className="font-sans text-ink-muted text-[13px] leading-[1.6] mt-2 [text-wrap:pretty]">{row.item}</p>
             <p className="font-sans text-ink-muted text-[13px] leading-[1.6] mt-3 bg-cream rounded-lg p-3 [text-wrap:pretty]">
               {row.notes}
             </p>
