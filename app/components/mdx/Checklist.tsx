@@ -1,3 +1,6 @@
+import { readFileSync } from 'node:fs';
+import { join } from 'node:path';
+
 interface ChecklistRow {
   item: string;
   status: 'Missing' | 'Partial' | 'Clear';
@@ -5,34 +8,38 @@ interface ChecklistRow {
   priority: string;
 }
 
-// Transcribed verbatim from content/works/ai-workflow.mdx, Mini Case 02 |
-// Requirement Intake, Output B "Checklist" — first 6 of 13 total rows.
-// That list is flat "Item(parenthetical) — Status,Priority" bullets, not a
-// 4-column table: there's no separately-authored "Notes" field in the
-// source. Where a bullet has a trailing "(...)" aside, it's extracted here
-// as Notes; the 2 of these 6 rows without one show "—" rather than
-// inventing content that isn't in the original text.
-// TODO: swap to design-refs/ai-workflow-checklist.csv (real Notion export,
-// 4 native columns) once the author drops it in — this parenthetical-split
-// logic goes away at that point.
-const ROWS: ChecklistRow[] = [
-  { item: '交付页数与结构明确', status: 'Clear', notes: '1 页总结 + 2 页支撑', priority: 'P0' },
-  { item: '评审时间的具体日期与截止时间', status: 'Missing', notes: '—', priority: 'P0' },
-  { item: '1 页总结页的信息架构', status: 'Partial', notes: '结论先行', priority: 'P0' },
-  { item: '三个方向的定义与命名', status: 'Missing', notes: '每个方向一句话定位', priority: 'P0' },
-  { item: '三方向差异的对比维度与口径', status: 'Partial', notes: '—', priority: 'P0' },
-  { item: '造价信息输入', status: 'Partial', notes: '预算红线、上限、计价范围 / 假设', priority: 'P0' },
-];
+// Real Notion export (converted from the author's .xlsx-as-.csv — see the
+// migration note in design-refs/ for that detail). Column order in the file
+// is Item/Status/Notes/Priority; this component reorders for display only,
+// the source data and design-refs/ai-workflow-checklist.csv itself are
+// untouched.
+function loadRows(limit: number): ChecklistRow[] {
+  const filePath = join(process.cwd(), 'design-refs', 'ai-workflow-checklist.csv');
+  const text = readFileSync(filePath, 'utf-8').replace(/^﻿/, '').replace(/\r\n/g, '\n');
+  const lines = text.trim().split('\n');
+  const header = lines[0].split(',');
+  const col = (name: string) => header.indexOf(name);
+  const iI = col('Item'), sI = col('Status'), nI = col('Notes'), pI = col('Priority');
+
+  return lines
+    .slice(1, 1 + limit)
+    .map((line) => line.split(','))
+    .map((cols) => ({
+      item: cols[iI],
+      status: cols[sI] as ChecklistRow['status'],
+      notes: cols[nI],
+      priority: cols[pI],
+    }));
+}
 
 // Same flattened ink/10%-on-white value as TaskTable.tsx — kept opaque so
 // the divider doesn't shift color crossing the cream Notes column.
-const DIVIDER_COLOR = '#E8E8E8';
-// Literal static string, not built from DIVIDER_COLOR — see TaskTable.tsx
-// for why a template-literal version silently loses its CSS.
+// Literal static string, not built from a variable — see TaskTable.tsx for
+// why a template-literal version silently loses its CSS.
 const dividerMiddleShadow = 'shadow-[inset_0_1px_0_0_#E8E8E8]';
 
 function dividerEdgeStyle(edge: 'first' | 'last') {
-  const color = DIVIDER_COLOR;
+  const color = '#E8E8E8';
   const gradient =
     edge === 'first'
       ? `linear-gradient(to right, transparent 10px, ${color} 10px)`
@@ -58,55 +65,60 @@ function PriorityCell({ priority }: { priority: string }) {
 
 export default function Checklist({
   label = '需求文档 · REQUIREMENTS DOC → CHECKLIST',
+  limit = 6,
 }: {
   label?: string;
+  limit?: number;
 }) {
-  const lastIndex = ROWS.length - 1;
+  const rows = loadRows(limit);
+  const lastIndex = rows.length - 1;
 
   return (
     <div>
       <div className="font-mono text-[12px] tracking-[0.1em] text-ink-muted mb-2">{label}</div>
 
-      {/* Desktop / tablet: real table */}
+      {/* Desktop / tablet: real table. Column order — Priority / Item /
+          Status / Notes — mirrors TaskTable: shared Priority column leftmost,
+          cream column rightmost and same 350px width. */}
       <div className="hidden sm:block rounded-xl border border-ink/10 bg-white overflow-hidden">
         <div className="p-5">
           <table className="checklist-table w-full table-fixed border-collapse">
             <colgroup>
+              <col className="w-[60px]" />
               <col className="w-[330px]" />
               <col className="w-[100px]" />
               <col className="w-[350px]" />
-              <col className="w-[60px]" />
             </colgroup>
             <thead>
               <tr>
+                <th scope="col" className="min-h-[54px] py-3 px-1 align-middle text-center font-sans font-normal text-ink-muted text-[11px] tracking-[0.02em]">Priority</th>
                 <th scope="col" className="min-h-[54px] py-3 px-1 align-middle text-center font-sans font-normal text-ink-muted text-[11px] tracking-[0.02em]">Item</th>
                 <th scope="col" className="min-h-[54px] py-3 px-1 align-middle text-center font-sans font-normal text-ink-muted text-[11px] tracking-[0.02em]">Status</th>
                 <th scope="col" className="min-h-[54px] py-3 px-1 align-middle text-center font-sans font-normal text-ink-muted text-[11px] tracking-[0.02em] bg-cream rounded-t-lg">Notes</th>
-                <th scope="col" className="min-h-[54px] py-3 px-1 align-middle text-center font-sans font-normal text-ink-muted text-[11px] tracking-[0.02em]">Priority</th>
               </tr>
             </thead>
             <tbody>
-              {ROWS.map((row, i) => {
+              {rows.map((row, i) => {
                 const isLast = i === lastIndex;
                 return (
                   <tr key={i}>
                     <td
-                      className="min-h-[54px] py-3 px-3 align-middle text-left font-sans text-ink-muted text-[13px] leading-[1.6] [text-wrap:pretty]"
+                      className="min-h-[54px] py-3 px-3 align-middle text-center"
                       style={dividerEdgeStyle('first')}
                     >
+                      <PriorityCell priority={row.priority} />
+                    </td>
+                    <td className={`min-h-[54px] py-3 px-3 align-middle text-left font-sans text-ink-muted text-[13px] leading-[1.6] [text-wrap:pretty] ${dividerMiddleShadow}`}>
                       {row.item}
                     </td>
                     <td className={`min-h-[54px] py-3 px-3 align-middle text-center ${dividerMiddleShadow}`}>
                       <StatusCell status={row.status} />
                     </td>
-                    <td className={`min-h-[54px] py-3 px-3 align-middle text-left font-sans text-ink-muted text-[13px] leading-[1.6] [text-wrap:pretty] bg-cream ${dividerMiddleShadow} ${isLast ? 'rounded-b-lg' : ''}`}>
-                      {row.notes}
-                    </td>
                     <td
-                      className="min-h-[54px] py-3 px-3 align-middle text-center"
+                      className={`min-h-[54px] py-3 px-3 align-middle text-left font-sans text-ink-muted text-[13px] leading-[1.6] [text-wrap:pretty] bg-cream ${isLast ? 'rounded-b-lg' : ''}`}
                       style={dividerEdgeStyle('last')}
                     >
-                      <PriorityCell priority={row.priority} />
+                      {row.notes}
                     </td>
                   </tr>
                 );
@@ -116,9 +128,10 @@ export default function Checklist({
         </div>
       </div>
 
-      {/* Mobile: stacked cards */}
+      {/* Mobile: stacked cards — top row stays Priority · Status regardless
+          of the desktop column order above. */}
       <div className="sm:hidden flex flex-col gap-3">
-        {ROWS.map((row, i) => (
+        {rows.map((row, i) => (
           <div key={i} className="rounded-xl border border-ink/10 bg-white p-3">
             <div className="flex items-center gap-2">
               <PriorityCell priority={row.priority} />

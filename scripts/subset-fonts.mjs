@@ -34,8 +34,14 @@ import { join, extname } from 'node:path';
 import subsetFont from 'subset-font';
 
 const ROOT = process.cwd();
-const SCAN_DIRS = ['content', 'app'];
-const SCAN_EXTENSIONS = new Set(['.mdx', '.tsx', '.ts']);
+// design-refs is included for the .csv data files that TaskTable.tsx and
+// Checklist.tsx read at request time (ai-workflow-tasks.csv,
+// ai-workflow-checklist.csv) — their actual rendered characters live in that
+// data, not in the component source, so scanning only content/app missed
+// them entirely. The other design-refs files (.md notes, reference images)
+// are untouched since they're not in SCAN_EXTENSIONS.
+const SCAN_DIRS = ['content', 'app', 'design-refs'];
+const SCAN_EXTENSIONS = new Set(['.mdx', '.tsx', '.ts', '.csv']);
 
 const SAFETY_BASELINE =
   // Printable ASCII
