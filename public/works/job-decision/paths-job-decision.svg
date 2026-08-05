@@ -1,0 +1,89 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 880 520" width="880" height="520" font-family="Noto Sans SC, PingFang SC, sans-serif">
+
+  <rect x="0" y="0" width="880" height="520" fill="#FFFFFF"/>
+
+  <defs>
+    <marker id="arrowP" viewBox="0 0 8 8" refX="6.5" refY="4" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,1 L6.5,4 L0,7" fill="none" stroke="#1C1B17" stroke-opacity="0.45" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/>
+    </marker>
+  </defs>
+
+  <!-- ========== 连线：起点 → 三条路径 ========== -->
+  <g stroke="#1C1B17" stroke-opacity="0.3" stroke-width="1.1" fill="none">
+    <path d="M184,218 H200 Q208,218 208,210 V102 Q208,94 216,94 H264" marker-end="url(#arrowP)"/>
+    <path d="M184,218 H264" marker-end="url(#arrowP)"/>
+    <path d="M184,218 H200 Q208,218 208,226 V334 Q208,342 216,342 H264" marker-end="url(#arrowP)"/>
+  </g>
+
+  <!-- 路径 1 / 2：虚线 + 终止叉号（注释层，不占重点色） -->
+  <g stroke="#1C1B17" stroke-opacity="0.3" stroke-width="1.1" fill="none" stroke-dasharray="3 3">
+    <path d="M484,94 H510"/><path d="M534,94 H564"/>
+    <path d="M484,218 H510"/><path d="M534,218 H564"/>
+  </g>
+  <g stroke="#1C1B17" stroke-opacity="0.35" stroke-width="1.2" stroke-linecap="round">
+    <path d="M517,89 L527,99"/><path d="M527,89 L517,99"/>
+    <path d="M517,213 L527,223"/><path d="M527,213 L517,223"/>
+  </g>
+
+  <!-- 路径 3：实线通路 -->
+  <g stroke="#1C1B17" stroke-opacity="0.3" stroke-width="1.1" fill="none">
+    <path d="M484,342 H564" marker-end="url(#arrowP)"/>
+  </g>
+
+  <!-- ========== 泳道标签（浮空，12px） ========== -->
+  <g font-family="Geist Mono, ui-monospace, monospace" font-size="12" fill="#6B6862" letter-spacing="0.1em">
+    <text x="280" y="42">PATH 01</text>
+    <text x="280" y="166">PATH 02</text>
+  </g>
+  <text x="280" y="290" font-family="Geist Mono, ui-monospace, monospace" font-size="12" fill="#B85C38" letter-spacing="0.1em">PATH 03</text>
+
+  <!-- ========== 起点 ========== -->
+  <rect x="36" y="176" width="148" height="84" rx="8" fill="#F2EFE9" stroke="#1C1B17" stroke-opacity="0.15"/>
+  <text x="52" y="201" font-size="16" fill="#1C1B17">落地路径</text>
+  <text x="52" y="225" font-size="12" fill="#6B6862">同一判断逻辑</text>
+  <text x="52" y="244" font-size="12" fill="#6B6862">三种执行方式</text>
+
+  <!-- ========== 路径 1 · 接口自动化（撞墙） ========== -->
+  <rect x="264" y="52" width="220" height="84" rx="8" fill="#FFFFFF" stroke="#1C1B17" stroke-opacity="0.15"/>
+  <text x="280" y="77" font-size="16" fill="#1C1B17">接口自动化</text>
+  <text x="280" y="101" font-size="12" fill="#6B6862">调用开源 CLI 直接操作平台</text>
+  <text x="280" y="120" font-size="11" fill="#6B6862" font-family="Geist Mono, ui-monospace, monospace">boss-cli</text>
+
+  <rect x="564" y="52" width="280" height="84" rx="8" fill="#FFFFFF" stroke="#1C1B17" stroke-opacity="0.3" stroke-dasharray="4 3"/>
+  <text x="580" y="77" font-size="16" fill="#6B6862">触发风控</text>
+  <text x="580" y="101" font-size="12" fill="#6B6862">只读 search 可跑通，批量触发风控</text>
+  <text x="580" y="120" font-size="12" fill="#6B6862">平台对高频自动化不友好</text>
+
+  <!-- ========== 路径 2 · 浮窗注入（撞墙） ========== -->
+  <rect x="264" y="176" width="220" height="84" rx="8" fill="#FFFFFF" stroke="#1C1B17" stroke-opacity="0.15"/>
+  <text x="280" y="201" font-size="16" fill="#1C1B17">浮窗注入</text>
+  <text x="280" y="225" font-size="12" fill="#6B6862">在网页右侧注入判断面板</text>
+  <text x="280" y="244" font-size="11" fill="#6B6862" font-family="Geist Mono, ui-monospace, monospace">Tampermonkey</text>
+
+  <rect x="564" y="176" width="280" height="84" rx="8" fill="#FFFFFF" stroke="#1C1B17" stroke-opacity="0.3" stroke-dasharray="4 3"/>
+  <text x="580" y="201" font-size="16" fill="#6B6862">反调试拦截</text>
+  <text x="580" y="225" font-size="12" fill="#6B6862">强反 DevTools 检测 + 布局改版</text>
+  <text x="580" y="244" font-size="12" fill="#6B6862">思路成立，但选错了战场</text>
+
+  <!-- ========== 路径 3 · 命令行半自动（跑通，全图唯一 terracotta） ========== -->
+  <rect x="264" y="300" width="220" height="84" rx="8" fill="#FFFFFF" stroke="#1C1B17" stroke-opacity="0.15"/>
+  <text x="280" y="325" font-size="16" fill="#1C1B17">命令行半自动</text>
+  <text x="280" y="349" font-size="12" fill="#6B6862">人工贴入 JD，本地解析判断</text>
+  <text x="280" y="368" font-size="11" fill="#6B6862" font-family="Geist Mono, ui-monospace, monospace">jd CLI</text>
+
+  <rect x="564" y="300" width="280" height="84" rx="8" fill="#B85C38" fill-opacity="0.1" stroke="#B85C38" stroke-width="1.5"/>
+  <text x="580" y="325" font-size="16" font-weight="700" fill="#B85C38" font-family="Geist Mono, ui-monospace, monospace">30 s / 岗位</text>
+  <text x="580" y="349" font-size="12" fill="#B85C38" fill-opacity="0.85">零风控风险 · 双轨留痕</text>
+  <text x="580" y="368" font-size="12" fill="#B85C38" fill-opacity="0.85">当前主流程</text>
+
+  <!-- ========== 注释层：选型心得 ========== -->
+  <g stroke="#1C1B17" stroke-opacity="0.3" fill="none" stroke-width="1" stroke-dasharray="3 3">
+    <path d="M110,260 V447 Q110,455 118,455 H268"/>
+  </g>
+  <circle cx="110" cy="260" r="2.5" fill="#1C1B17" fill-opacity="0.4"/>
+
+  <text x="280" y="434" font-family="Geist Mono, ui-monospace, monospace" font-size="12" fill="#6B6862" letter-spacing="0.1em">TRADE-OFF · 选型心得</text>
+  <text x="280" y="460" font-size="13" fill="#1C1B17">不是「哪个最先进」，而是「哪个能在平台约束下持续跑」。</text>
+  <text x="280" y="482" font-size="12" fill="#6B6862">两条废弃路径各有留存：wrapper 的 STOP 机制成为「只读不投」原则，浮窗架构留作后续平台适配基础。</text>
+
+</svg>

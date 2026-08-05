@@ -14,6 +14,7 @@ interface WorkImageClientProps {
   isSvg?: boolean;
   svgMarkup?: string;
   quality?: number;
+  disableNativeWidthCap?: boolean;
 }
 
 export default function WorkImageClient({
@@ -26,6 +27,7 @@ export default function WorkImageClient({
   isSvg = false,
   svgMarkup,
   quality = 80,
+  disableNativeWidthCap = false,
 }: WorkImageClientProps) {
   const [open, setOpen] = useState(false);
   const [visible, setVisible] = useState(false);
@@ -58,8 +60,14 @@ export default function WorkImageClient({
   // longer gets stretched up to fill it. For every existing image at or
   // above 880px native width this is a no-op (min() just keeps picking
   // 880px), so it only changes anything for the below-880 outliers.
-  const narrowBreakoutClass =
-    "w-[min(880px,var(--fig-native-w),calc(100vw-3rem))] mx-[calc((100%-min(880px,var(--fig-native-w),calc(100vw-3rem)))/2)]";
+  // disableNativeWidthCap drops the native-width floor for the rare figure
+  // that must match its neighbor's column width instead of staying 1:1 —
+  // see mechanism-ai-workflow.svg (native 824px, deliberately rendered at
+  // the standard 880px tier so it doesn't step in from the TaskTable/
+  // Checklist figure directly beneath it).
+  const narrowBreakoutClass = disableNativeWidthCap
+    ? "w-[min(880px,calc(100vw-3rem))] mx-[calc((100%-min(880px,calc(100vw-3rem)))/2)]"
+    : "w-[min(880px,var(--fig-native-w),calc(100vw-3rem))] mx-[calc((100%-min(880px,var(--fig-native-w),calc(100vw-3rem)))/2)]";
   // Wide tier keeps the same 24px-per-side cream margin as the narrow tier
   // down to the point --figure-width-wide itself becomes the constraint, but
   // switches to a tighter 16px-per-side margin below 768px — at that width

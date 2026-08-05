@@ -26,18 +26,11 @@ This project is a semi-agentic architectural image iteration workflow prototype.
 
 ## 03｜工作流怎么设计 Workflow Design
 
-```
-白模主图输入
-↓
-Stage 1｜白模锁几何
-锁定体量 / 建筑数量 / 主机位
-↓
-Stage 2｜反馈推进
-基于上一轮图像 + feedback case 继续生成
-↓
-Round / State 管理
-记录 project_id / round / prompt / feedback / output / history
-```
+<WorkImage
+  src="/works/nanobanana/pipeline-nanobanana.svg"
+  alt="流程图：白模主图输入后依次经过多个 Stage（白模锁几何、反馈推进、持续推进等）；左侧一条竖向轨道以强调色贯穿全图，代表 Round / State 管理层，与各阶段分别接入。"
+  placeholder={false}
+/>
 
 同一套流程,在本地工作台中的界面形态。
 

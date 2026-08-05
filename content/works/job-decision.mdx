@@ -54,28 +54,11 @@ So this workflow does not aim to "increase reply rate." It keeps the judgment ru
 
 ## 03 | 工作流怎么设计 Workflow Design
 
-```
-JD 文本输入（截图 OCR / 复制粘贴）
-        ↓
-Claude API 实时解析（嵌入个人背景 + 判断模板）
-        ↓
-五维度判断
-  · 岗位偏向（应用层 / support / workflow / ops vs 工程 / 算法）
-  · 核心要求（文档 / 协同 / 用户支持 / 工程实现）
-  · 个人匹配点
-  · 风险点（工程深度 / 英文要求 / title 名实不符）
-  · 综合结论（主投 / 可冲 / 暂不主攻）
-        ↓
-版本匹配
-  · 简历 A / B / C（产品运营 / 平台支持 / 应用运营）
-  · 招呼语 A / B / C（与简历同向）
-        ↓
-结构化决策卡输出（10 字段）
-        ↓
-本地双轨留存
-  · Markdown：每岗一份，便于回看
-  · CSV 台账：用于后续回复率统计
-```
+<WorkImage
+  src="/works/job-decision/pipeline-job-decision.svg"
+  alt="流程图：竖排六个阶段——JD 文本输入、实时解析（Claude API）、五维度判断、版本匹配、结构化决策卡（以强调色标出）、本地双轨留存；每个阶段右侧列出对应细节说明。"
+  placeholder={false}
+/>
 
 ### 设计原则 / Design Principles
 
@@ -96,6 +79,12 @@ When JD extraction fails or direction cannot be inferred, the card explicitly ou
 在到达当前命令行半自动版本之前，先后实践 / 评估过三条技术路径，每条因为不同原因调整方向。完整记录构成了项目的 **Failure Postmortem 档案**——这是 ops 工作里"决策可追溯"的核心实践。
 
 Before arriving at the current CLI semi-automatic version, three technical paths were explored and adjusted. The full record forms the project's **Failure Postmortem archive** — a core practice of "traceable decision-making" in ops work.
+
+<WorkImage
+  src="/works/job-decision/paths-job-decision.svg"
+  alt="路线图：并列三条技术路径——接口自动化（标注废弃）、浮窗注入（标注废弃）、命令行半自动（标注当前主流程，结果节点以强调色标出）；底部注释区说明两条废弃路径均保留原始记录。"
+  placeholder={false}
+/>
 
 ### 路径 1 | BOSS CLI 接口自动化 / API Automation
 

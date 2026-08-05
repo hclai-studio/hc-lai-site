@@ -1,0 +1,59 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 824 580" width="824" height="580" font-family="Noto Sans SC, PingFang SC, sans-serif">
+
+  <rect x="0" y="0" width="824" height="580" fill="#FFFFFF"/>
+
+  <defs>
+    <marker id="arrowM5" viewBox="0 0 8 8" refX="6.5" refY="4" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,1 L6.5,4 L0,7" fill="none" stroke="#1C1B17" stroke-opacity="0.45" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/>
+    </marker>
+  </defs>
+
+  <!-- ========== 主脉连线（全部为直线） ========== -->
+  <g stroke="#1C1B17" stroke-opacity="0.3" stroke-width="1.1" fill="none">
+    <path d="M220,154 H264" marker-end="url(#arrowM5)"/>
+    <path d="M560,154 H604" marker-end="url(#arrowM5)"/>
+    <path d="M412,316 V268" marker-end="url(#arrowM5)"/>
+  </g>
+
+  <!-- ========== 01 四类输入（宽 184 = a） ========== -->
+  <rect x="36" y="64" width="184" height="180" rx="8" fill="#FFFFFF" stroke="#1C1B17" stroke-opacity="0.15"/>
+  <text x="52" y="96" font-size="16" fill="#1C1B17">四类输入</text>
+  <text x="52" y="118" font-size="12" fill="#6B6862">非结构化、片段化</text>
+  <g font-size="12" fill="#6B6862">
+    <text x="52" y="150">·</text><text x="66" y="150">甲方变更</text>
+    <text x="52" y="174">·</text><text x="66" y="174">领导汇报要求</text>
+    <text x="52" y="198">·</text><text x="66" y="198">内部会议纪要</text>
+    <text x="52" y="222">·</text><text x="66" y="222">需求收集 / 文档</text>
+  </g>
+
+  <!-- ========== 02 同一套 Schema（模型介入，铺 cream） ========== -->
+  <rect x="264" y="40" width="296" height="228" rx="8" fill="#F2EFE9" stroke="#1C1B17" stroke-opacity="0.15"/>
+  <text x="280" y="72" font-size="16" fill="#1C1B17">同一套 Schema A–E</text>
+  <text x="280" y="94" font-size="12" fill="#6B6862">结构一致，按场景差异化扩展</text>
+  <g font-size="12" fill="#6B6862">
+    <text x="280" y="130" font-family="Geist Mono, ui-monospace, monospace">A</text><text x="302" y="130">汇报摘要 Executive Summary</text>
+    <text x="280" y="158" font-family="Geist Mono, ui-monospace, monospace">B</text><text x="302" y="158">可追踪任务表 Task Table</text>
+    <text x="280" y="186" font-family="Geist Mono, ui-monospace, monospace">C</text><text x="302" y="186">风险与对策 Risks &amp; Mitigations</text>
+    <text x="280" y="214" font-family="Geist Mono, ui-monospace, monospace">D</text><text x="302" y="214">待确认问题 Open Questions</text>
+    <text x="280" y="242" font-family="Geist Mono, ui-monospace, monospace">E</text><text x="302" y="242">假设与溯源 Assumptions &amp; Source</text>
+  </g>
+
+  <!-- ========== 03 人工审核（宽 184 = b，与四类输入垂直居中对齐，全图唯一 terracotta） ========== -->
+  <rect x="604" y="116" width="184" height="76" rx="8" fill="#B85C38" fill-opacity="0.1" stroke="#B85C38" stroke-width="1.5"/>
+  <text x="620" y="148" font-size="16" font-weight="700" fill="#B85C38">人工审核</text>
+  <text x="620" y="174" font-size="12" fill="#B85C38" fill-opacity="0.85">对外沟通前必须经过</text>
+
+  <!-- ========== 治理原则（约束层，右边界对齐 788） ========== -->
+  <rect x="36" y="316" width="752" height="248" rx="8" fill="#FFFFFF" stroke="#1C1B17" stroke-opacity="0.15"/>
+  <text x="52" y="350" font-size="16" fill="#1C1B17">治理原则</text>
+  <text x="52" y="372" font-size="12" fill="#6B6862">六条硬规则，约束生成与发出</text>
+  <g font-size="12" fill="#6B6862">
+    <text x="52" y="406">·</text><text x="66" y="406">不编造缺失信息</text><text x="310" y="406">No fabrication of missing facts, dates, owners, or decisions</text>
+    <text x="52" y="432">·</text><text x="66" y="432">未知信息显性化</text><text x="310" y="432">Unknowns go into Open Questions / Assumptions, never hidden in Notes</text>
+    <text x="52" y="458">·</text><text x="66" y="458">原句溯源</text><text x="310" y="458">Important interpretations link back to source quotes</text>
+    <text x="52" y="484">·</text><text x="66" y="484">字段规范</text><text x="310" y="484">Due field is date-only or blank; Priority uses only P0–P3; no relative time</text>
+    <text x="52" y="510">·</text><text x="66" y="510">已知与未知分离</text><text x="310" y="510">Known execution data and unresolved questions stay separate</text>
+    <text x="52" y="536">·</text><text x="66" y="536">对外使用前必须人工审核</text><text x="310" y="536">Human review required before any external-facing communication</text>
+  </g>
+
+</svg>

@@ -1,0 +1,71 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 880 666" width="880" height="666" font-family="Noto Sans SC, PingFang SC, sans-serif">
+
+  <rect x="0" y="0" width="880" height="666" fill="#FFFFFF"/>
+
+  <defs>
+    <marker id="arrowW" viewBox="0 0 8 8" refX="6.5" refY="4" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,1 L6.5,4 L0,7" fill="none" stroke="#1C1B17" stroke-opacity="0.45" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/>
+    </marker>
+  </defs>
+
+  <!-- ========== 主脉连线 ========== -->
+  <g stroke="#1C1B17" stroke-opacity="0.3" stroke-width="1.1" fill="none">
+    <path d="M237,102 V130" marker-end="url(#arrowW)"/>
+    <path d="M237,192 V220" marker-end="url(#arrowW)"/>
+    <path d="M237,360 V388" marker-end="url(#arrowW)"/>
+    <path d="M237,450 V478" marker-end="url(#arrowW)"/>
+    <path d="M237,540 V568" marker-end="url(#arrowW)"/>
+  </g>
+
+  <!-- ========== 01 输入 ========== -->
+  <rect x="137" y="40" width="200" height="62" rx="8" fill="#FFFFFF" stroke="#1C1B17" stroke-opacity="0.15"/>
+  <text x="237" y="77" font-size="16" fill="#1C1B17" text-anchor="middle">JD 文本输入</text>
+  <g font-size="12" fill="#6B6862">
+    <text x="369" y="62">· 截图 OCR 识别</text>
+    <text x="369" y="88">· 或直接复制粘贴 JD 原文</text>
+  </g>
+
+  <!-- ========== 02 解析（LLM 介入，铺 cream） ========== -->
+  <rect x="137" y="130" width="200" height="62" rx="8" fill="#F2EFE9" stroke="#1C1B17" stroke-opacity="0.15"/>
+  <text x="237" y="167" font-size="16" fill="#1C1B17" text-anchor="middle">实时解析</text>
+  <g font-size="12" fill="#6B6862">
+    <text x="369" y="152">· 调用 Claude API 实时解析 JD</text>
+    <text x="369" y="178">· 嵌入个人背景与判断模板</text>
+  </g>
+
+  <!-- ========== 03 五维度判断 ========== -->
+  <rect x="137" y="220" width="200" height="140" rx="8" fill="#FFFFFF" stroke="#1C1B17" stroke-opacity="0.15"/>
+  <text x="237" y="296" font-size="16" fill="#1C1B17" text-anchor="middle">五维度判断</text>
+  <g font-size="12" fill="#6B6862">
+    <text x="369" y="242">· 岗位偏向（应用层 / support / workflow / ops vs 工程 / 算法）</text>
+    <text x="369" y="268">· 核心要求（文档 / 协同 / 用户支持 / 工程实现）</text>
+    <text x="369" y="294">· 个人匹配点</text>
+    <text x="369" y="320">· 风险点（工程深度 / 英文要求 / title 名实不符）</text>
+    <text x="369" y="346">· 综合结论（主投 / 可冲 / 暂不主攻）</text>
+  </g>
+
+  <!-- ========== 04 版本匹配 ========== -->
+  <rect x="137" y="388" width="200" height="62" rx="8" fill="#FFFFFF" stroke="#1C1B17" stroke-opacity="0.15"/>
+  <text x="237" y="425" font-size="16" fill="#1C1B17" text-anchor="middle">版本匹配</text>
+  <g font-size="12" fill="#6B6862">
+    <text x="369" y="410">· 简历 A / B / C（产品运营 / 平台支持 / 应用运营）</text>
+    <text x="369" y="436">· 招呼语 A / B / C（与简历同向）</text>
+  </g>
+
+  <!-- ========== 05 决策卡输出（全图唯一 terracotta） ========== -->
+  <rect x="137" y="478" width="200" height="62" rx="8" fill="#B85C38" fill-opacity="0.1" stroke="#B85C38" stroke-width="1.5"/>
+  <text x="237" y="515" font-size="16" font-weight="700" fill="#B85C38" text-anchor="middle">结构化决策卡</text>
+  <g font-size="12" fill="#6B6862">
+    <text x="369" y="500">· 每岗一张，固定 10 个字段</text>
+    <text x="369" y="526">· 方向判断 / 匹配点 / 风险点 / 版本推荐 / 投递结论</text>
+  </g>
+
+  <!-- ========== 06 本地双轨留存 ========== -->
+  <rect x="137" y="568" width="200" height="62" rx="8" fill="#FFFFFF" stroke="#1C1B17" stroke-opacity="0.15"/>
+  <text x="237" y="605" font-size="16" fill="#1C1B17" text-anchor="middle">本地双轨留存</text>
+  <g font-size="12" fill="#6B6862">
+    <text x="369" y="590">· Markdown：每岗一份，便于回看</text>
+    <text x="369" y="616">· CSV 台账：用于后续回复率统计</text>
+  </g>
+
+</svg>
