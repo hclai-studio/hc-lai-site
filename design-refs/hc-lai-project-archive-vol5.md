@@ -461,7 +461,7 @@ Figma 的三个实际代价：多一道翻译（导出→实现，两次转译�
 | 2 | `paths-job-decision-v6.svg` | 880×520 | job-decision 04 节开头段之后 | PATH 03 结果节点 |
 | 3 | `pipeline-job-decision-v3.svg` | 880×666 | job-decision 03 节（替换纯文本代码块） | 结构化决策卡 |
 | 4 | `pipeline-nanobanana-v6.svg` | 880×612 | nanobanana 03 节（替换纯文本代码块） | 左侧 Round/State 竖轨 |
-| 5 | `mechanism-ai-workflow-v6.svg` | **824×580** | ai-workflow 03 节（双表组件之前） | 人工审核 |
+| 5 | `mechanism-ai-workflow-v7.svg` | **824×604** | ai-workflow 03 节（双表组件之前） | 人工审核 |
 
 **#2 技术路径选型图**：三条落地路径——接口自动化（触发风控）、浮窗注入（反调试拦截 + 布局改版）、命令行半自动（30 s/岗位，当前主流程）。通路走实线 + 箭头 + terracotta，两条死路走注释层语汇（虚线边框 + ✕ + 标题退到 ink-muted）。**读者扫一眼就知道哪条活着，不用读完才明白。**
 
@@ -546,7 +546,7 @@ Stage X 措辞：`何时收手由人判断` → **`是否继续下一轮由人�
 ### 4.2 收尾账
 - [ ] **DecisionTable 分隔线统一**：实测白底行 `rgb(232,232,232)`、cream 底行 `rgb(221,218,212)`，应改为不透明色（双表已改，DecisionTable 未改）
 - [ ] **MDX 与数据源不一致**：ai-workflow 里 Case01 第 ① 条任务「梳理入口"仪式感/到达感"可用设计手段清单」在 CSV 中**没有出处** —— 删或补
-- [ ] 站内其余代码块是否一并改深色（两个纯文本流程图若被 SVG 替换则自动消失，需复查还剩哪些）
+- [ ] 站内其余代码块是否一并改深色（job-decision、nanobanana 的两个纯文本流程图已随 SVG 替换消失，需复查还剩哪些）
 - [ ] hero 别名 `@font-face` 未被预加载，弱网下可能有 FOUT —— 有机会时验证
 - [ ] 规范升 **v1.1**（合并 handoff 第 4 节的 7 条新条款 + 5 条踩坑 + 4 条工作方法）
 - [ ] 本卷与 handoff 存入 `design-refs/` / 知识库
