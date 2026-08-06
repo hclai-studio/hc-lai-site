@@ -56,6 +56,7 @@ So this workflow does not aim to "increase reply rate." It keeps the judgment ru
 
 <WorkImage
   src="/works/job-decision/pipeline-job-decision.svg"
+  caption="单个岗位从 JD 文本到归档的完整链路。模型负责解析与五维度判断，输出固定 10 字段的决策卡；是否投递由人决定。双轨留存中，Markdown 供回看，`decisions_log.csv` 台账用于后续统计。 / The full path a single posting takes, from raw JD text to archive. The model handles parsing and the five-dimension judgment, producing a decision card with ten fixed fields; whether to apply is decided by the person. Of the two archives, Markdown is for re-reading and `decisions_log.csv` feeds later statistics."
   alt="流程图：竖排六个阶段——JD 文本输入、实时解析（Claude API）、五维度判断、版本匹配、结构化决策卡（以强调色标出）、本地双轨留存；每个阶段右侧列出对应细节说明。"
   placeholder={false}
 />
@@ -82,6 +83,7 @@ Before arriving at the current CLI semi-automatic version, three technical paths
 
 <WorkImage
   src="/works/job-decision/paths-job-decision.svg"
+  caption="三条技术路径的先后尝试与结果。接口自动化与浮窗注入分别撞上平台风控与反调试检测，命令行半自动成为当前主流程。两条废弃路径各有留存——wrapper 的 STOP 机制与浮窗架构都被保留了下来。 / Three technical paths, tried in order. API automation hit the platform's risk control and the browser overlay hit anti-DevTools detection; the CLI semi-automatic path became the main pipeline. Neither dead end was wasted — the wrapper's STOP mechanism and the overlay architecture were both kept."
   alt="路线图：并列三条技术路径——接口自动化（标注废弃）、浮窗注入（标注废弃）、命令行半自动（标注当前主流程，结果节点以强调色标出）；底部注释区说明两条废弃路径均保留原始记录。"
   placeholder={false}
 />
