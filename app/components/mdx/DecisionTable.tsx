@@ -168,21 +168,39 @@ function primaryCellShadow(edge: "first" | "middle" | "last") {
   return "shadow-[inset_0_1.5px_0_0_#B85C38,inset_0_-1.5px_0_0_#B85C38]";
 }
 
-// The plain inter-row divider (uniform ink/10 weight, no header exception) is
-// a DIFFERENT case from the primary outline above: it's just a straight rule
-// that should stop dead 10px short of each edge, not curve into the corner.
-// Clipping a box-shadow with border-radius doesn't truncate it — it traces
-// the full rounded arc, producing a little hook where the line curls into the
-// corner instead of ending flat. A background-image gradient with a hard
-// color stop gives a genuine blunt cutoff, so the middle cells use a plain
-// shadow (no rounding, no issue) while the first/last cells use this gradient
-// via inline style.
-function dividerMiddleShadow() {
-  return "shadow-[inset_0_1px_0_0_rgba(28,27,23,0.1)]";
+// The plain inter-row divider (no header exception) is a DIFFERENT case from
+// the primary outline above: it's just a straight rule that should stop dead
+// 10px short of each edge, not curve into the corner. Clipping a box-shadow
+// with border-radius doesn't truncate it — it traces the full rounded arc,
+// producing a little hook where the line curls into the corner instead of
+// ending flat. A background-image gradient with a hard color stop gives a
+// genuine blunt cutoff, so the middle cells use a plain shadow (no rounding,
+// no issue) while the first/last cells use this gradient via inline style.
+//
+// Color is a pre-flattened opaque value, not a translucent ink/10 — a
+// translucent line blends differently over this row's own white vs. cream
+// fill, so the same nominal color reads as two different shades depending on
+// which row it crosses (chart-language-spec-v1.1.md 1.6). Each row picks the
+// value that matches its own background: white/skip rows use `#E8E8E8`
+// (ink/10% flattened over white), stretch rows (full cream fill) use
+// `#DDDAD4` (ink/10% flattened over cream `#F2EFE9`).
+function dividerColor(verdict: Verdict): string {
+  return verdict === "stretch" ? "#DDDAD4" : "#E8E8E8";
 }
 
-function dividerEdgeStyle(edge: "first" | "last") {
-  const color = "rgba(28,27,23,0.1)";
+// Literal static strings per branch, not built from the color variable —
+// Tailwind's content scanner does a text-based scan of this file and can't
+// resolve a dynamically-interpolated class name (see primaryCellShadow above
+// for the same note), so a template-literal version of this would silently
+// produce a class with no matching generated CSS.
+function dividerMiddleShadow(verdict: Verdict) {
+  return verdict === "stretch"
+    ? "shadow-[inset_0_1px_0_0_#DDDAD4]"
+    : "shadow-[inset_0_1px_0_0_#E8E8E8]";
+}
+
+function dividerEdgeStyle(edge: "first" | "last", verdict: Verdict) {
+  const color = dividerColor(verdict);
   const gradient =
     edge === "first"
       ? `linear-gradient(to right, transparent 10px, ${color} 10px)`
@@ -245,28 +263,28 @@ export default function DecisionTable() {
                   <tr key={i} className={rowFill(row.verdict)}>
                     <td
                       className={`min-h-[54px] py-3 px-3 align-middle text-center font-mono text-ink text-[13px] tracking-[0.05em] ${isPrimary ? "font-bold" : ""} ${rowEdgeRadius(row.verdict, "first")} ${isPrimary ? primaryCellShadow("first") : ""}`}
-                      style={showDivider ? dividerEdgeStyle("first") : undefined}
+                      style={showDivider ? dividerEdgeStyle("first", row.verdict) : undefined}
                     >
                       {row.date}
                     </td>
                     <td
-                      className={`min-h-[54px] py-3 px-3 align-middle text-center ${isPrimary ? primaryCellShadow("middle") : showDivider ? dividerMiddleShadow() : ""}`}
+                      className={`min-h-[54px] py-3 px-3 align-middle text-center ${isPrimary ? primaryCellShadow("middle") : showDivider ? dividerMiddleShadow(row.verdict) : ""}`}
                     >
                       <RoleCell role={row.role} roleQualifier={row.roleQualifier} bold={isPrimary} />
                     </td>
                     <td
-                      className={`min-h-[54px] py-3 px-3 align-middle text-left font-sans text-ink text-[13px] leading-[1.6] [text-wrap:pretty] ${isPrimary ? "font-bold" : ""} ${isPrimary ? primaryCellShadow("middle") : showDivider ? dividerMiddleShadow() : ""}`}
+                      className={`min-h-[54px] py-3 px-3 align-middle text-left font-sans text-ink text-[13px] leading-[1.6] [text-wrap:pretty] ${isPrimary ? "font-bold" : ""} ${isPrimary ? primaryCellShadow("middle") : showDivider ? dividerMiddleShadow(row.verdict) : ""}`}
                     >
                       {row.risk}
                     </td>
                     <td
-                      className={`min-h-[54px] py-3 px-3 align-middle text-center ${isPrimary ? `${primaryCellShadow("middle")} bg-white` : showDivider ? dividerMiddleShadow() : ""}`}
+                      className={`min-h-[54px] py-3 px-3 align-middle text-center ${isPrimary ? `${primaryCellShadow("middle")} bg-white` : showDivider ? dividerMiddleShadow(row.verdict) : ""}`}
                     >
                       <VerdictBadge verdict={row.verdict} />
                     </td>
                     <td
                       className={`min-h-[54px] py-3 px-3 align-middle text-left font-sans text-ink text-[13px] leading-[1.6] [text-wrap:pretty] ${isPrimary ? "font-bold" : ""} ${rowEdgeRadius(row.verdict, "last")} ${isPrimary ? primaryCellShadow("last") : ""}`}
-                      style={showDivider ? dividerEdgeStyle("last") : undefined}
+                      style={showDivider ? dividerEdgeStyle("last", row.verdict) : undefined}
                     >
                       {row.reason}
                     </td>
