@@ -38,9 +38,11 @@ export default async function WorkPage({ params }: { params: { slug: string } })
   return (
     <div className="min-h-screen bg-cream text-ink pt-[72px] md:pt-[80px]">
       {/* ── MDX content ── */}
-      <article className="prose-works">
-        <Content />
-      </article>
+      <main>
+        <article className="prose-works">
+          <Content />
+        </article>
+      </main>
 
       {/* ── More work ── */}
       <footer className="border-t border-line mx-6 md:mx-12 mt-[80px] pt-[60px] pb-[120px]">
