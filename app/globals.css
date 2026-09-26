@@ -15,7 +15,7 @@
 /* Digits-only face: 0-9 and numeric punctuation → Geist Mono lining figures */
 @font-face {
   font-family: 'NumDigitsOnly';
-  src: url('./fonts/GeistMonoVF.woff') format('woff');
+  src: url('/fonts/geist-mono/GeistMonoVF.woff') format('woff');
   unicode-range: U+0030-0039, U+002D, U+002F, U+002C, U+002E, U+0025;
   font-weight: 100 900;
   font-feature-settings: "tnum" 1, "lnum" 1;
@@ -23,16 +23,15 @@
   font-display: swap;
 }
 
-/* Literal-name alias for the same Geist Mono file next/font/local already loads
-   under an internal hashed family (exposed only via --font-geist-mono, never as
-   the string "Geist Mono"). Hand-authored SVGs (e.g. inlined diagrams) reference
-   the family by its plain name since they can't reach a React-scoped CSS
-   variable at author time — this makes that literal reference resolve to the
-   real self-hosted font instead of silently falling through to the system
-   monospace fallback. Same src, so no extra network fetch beyond a cache hit. */
+/* The one Geist Mono face. Served from public/ at a stable URL (preloaded in
+   layout.tsx) so this face, NumDigitsOnly above and --font-geist-mono all share
+   a single download. It used to be loaded twice: next/font/local emitted one
+   hashed copy and this @font-face made webpack emit another (66KB each).
+   Hand-authored SVGs (e.g. inlined diagrams) reference the family by its plain
+   name "Geist Mono", which resolves here. */
 @font-face {
   font-family: 'Geist Mono';
-  src: url('./fonts/GeistMonoVF.woff') format('woff');
+  src: url('/fonts/geist-mono/GeistMonoVF.woff') format('woff');
   font-weight: 100 900;
   font-display: swap;
 }
@@ -48,6 +47,7 @@
   --selection-bg: rgba(184, 92, 56, 0.35); /* terracotta, was 0.22 — bump here to retune */
   --ease-out:    cubic-bezier(0.16, 1, 0.3, 1);
   --font-instrument-serif: 'Instrument Serif', 'Times New Roman', serif;
+  --font-geist-mono: 'Geist Mono';
 
   /* Nav */
   --nav-size:   15px;

@@ -10,13 +10,8 @@ const geist = localFont({
   display: "swap",
 });
 
-const geistMono = localFont({
-  src: "./fonts/GeistMonoVF.woff",
-  variable: "--font-geist-mono",
-  weight: "100 900",
-  display: "swap",
-});
-
+// Geist Mono is declared once in globals.css (served from /fonts/geist-mono/)
+// and preloaded below — not through next/font, which fetched a second copy.
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://hclai.studio"),
@@ -62,6 +57,14 @@ export default function RootLayout({
           type="font/woff2"
           crossOrigin="anonymous"
         />
+        {/* Geist Mono — category tags and years above the fold on every case page */}
+        <link
+          rel="preload"
+          href="/fonts/geist-mono/GeistMonoVF.woff"
+          as="font"
+          type="font/woff"
+          crossOrigin="anonymous"
+        />
         {/* Chiron Sung HK — single character-subset file (was 109 unicode-range slices) */}
         <link
           rel="preload"
@@ -81,7 +84,7 @@ export default function RootLayout({
         />
       </head>
       <body
-        className={`${geist.variable} ${geistMono.variable} font-sans antialiased bg-cream text-ink`}
+        className={`${geist.variable} font-sans antialiased bg-cream text-ink`}
       >
         <Header />
         {children}
