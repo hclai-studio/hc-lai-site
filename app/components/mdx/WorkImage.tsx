@@ -3,6 +3,7 @@ import { join } from 'node:path';
 import sharp from 'sharp';
 import WorkImageClient from './WorkImageClient';
 import { renderCaption } from './renderCaption';
+import { FIGURE_CAPTION_CLASS } from './FigureCaption';
 
 interface WorkImageProps {
   src: string;
@@ -27,7 +28,7 @@ export default async function WorkImage({ src, caption, alt, placeholder = false
           </span>
         </div>
         {caption && (
-          <figcaption className="font-sans text-ink-muted text-[14px] tracking-[0.01em] leading-[1.6] text-left mt-[var(--figure-gap-caption)] [text-wrap:pretty]">
+          <figcaption className={FIGURE_CAPTION_CLASS}>
             {renderCaption(caption)}
           </figcaption>
         )}
