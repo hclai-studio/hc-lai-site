@@ -70,10 +70,26 @@ export default function CaseExpandable({
         aria-expanded={isOpen}
         className="mt-6 w-full flex items-center gap-2 py-3 text-left group/btn outline-none"
       >
-        <span className="font-mono text-[15px] text-ink-muted group-hover/btn:text-terracotta transition-colors duration-300 select-none leading-none">
+        {/* Closed: terracotta at rest so first-time visitors (and phones,
+            which have no hover) can see this is an entry point; hover nudges
+            the arrow and underlines the label. Open: back to muted, terracotta
+            on hover — the colour marks what hasn't been opened yet. */}
+        <span
+          className={`font-mono text-[15px] select-none leading-none transition-transform duration-300 ${
+            isOpen
+              ? "text-ink-muted group-hover/btn:text-terracotta"
+              : "text-terracotta group-hover/btn:translate-x-1"
+          }`}
+        >
           {isOpen ? "▾" : "▸"}
         </span>
-        <span className="font-mono text-[13px] tracking-[0.08em] uppercase text-ink-muted group-hover/btn:text-terracotta transition-colors duration-300 select-none">
+        <span
+          className={`font-mono text-[13px] tracking-[0.08em] uppercase select-none underline-offset-[6px] decoration-1 transition-colors duration-300 ${
+            isOpen
+              ? "text-ink-muted group-hover/btn:text-terracotta"
+              : "text-terracotta decoration-transparent underline group-hover/btn:decoration-terracotta/50"
+          }`}
+        >
           {isOpen ? "COLLAPSE" : "READ FULL CASE"}
         </span>
       </button>
