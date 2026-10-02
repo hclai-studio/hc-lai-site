@@ -53,8 +53,10 @@ export default function QuickStartFlow() {
                 </span>
               )}
               <div role="listitem" className={`md:flex-1 md:min-w-0 rounded-[10px] px-4 py-3 md:px-3 md:py-4 ${TIER_CLASS[step.tier]}`}>
-                <span className="block font-sans font-bold text-ink text-[16px] leading-[1.3]">{step.title}</span>
-                <span className="block mt-1.5 font-sans text-ink-muted text-[12px] leading-[1.5]">{step.detail}</span>
+                {/* House style of the site's SVG diagrams: node titles 16px / 400 /
+                    Noto Sans SC; only the judgment node goes 700 + terracotta. */}
+                <span className={`block font-sans-cn text-[16px] leading-[1.3] ${step.tier === 'judge' ? 'font-bold text-terracotta' : 'font-normal text-ink'}`}>{step.title}</span>
+                <span className={`block mt-1.5 font-sans-cn text-[12px] leading-[1.5] ${step.tier === 'judge' ? 'text-terracotta/85' : 'text-ink-muted'}`}>{step.detail}</span>
                 <span className="block mt-2 font-mono text-ink-muted text-[11px] leading-[1.4]">{step.tag}</span>
               </div>
             </Fragment>
