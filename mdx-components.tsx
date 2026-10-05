@@ -12,6 +12,7 @@ import CompareBars from '@/app/components/mdx/CompareBars';
 import FigureCaption from '@/app/components/mdx/FigureCaption';
 import TaskTable from '@/app/components/mdx/TaskTable';
 import Checklist from '@/app/components/mdx/Checklist';
+import QuickStartFlow from '@/app/components/mdx/QuickStartFlow';
 
 export function useMDXComponents(components: MDXComponents): MDXComponents {
   return {
@@ -29,5 +30,6 @@ export function useMDXComponents(components: MDXComponents): MDXComponents {
     FigureCaption,
     TaskTable,
     Checklist,
+    QuickStartFlow,
   };
 }
