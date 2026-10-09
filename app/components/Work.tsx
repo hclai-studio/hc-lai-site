@@ -51,6 +51,11 @@ const works = [
   },
 ];
 
+// Preview variants differ only in this one class string (static literal so
+// Tailwind sees it — spec pitfall #13):
+//   A Chiron Sung HK 400 · B Noto Serif SC 700 · C Noto Sans SC 400
+const CN_TITLE_FONT = "font-serif-cn font-normal";
+
 export default function Work() {
   return (
     <section
@@ -78,15 +83,15 @@ export default function Work() {
             {/* Main content — flex-col gap-3 matching HTML work-body gap: 12px */}
             <div className="flex flex-col gap-3">
               <div>
-                <h3
-                  className="work-title font-normal text-ink [font-size:clamp(28px,3.4vw,38px)] leading-[1.1] tracking-[-0.015em]"
-                  style={{ fontFamily: "'Instrument Serif', 'Times New Roman', serif" }}
-                >
-                  {work.titleEn}
-                </h3>
-                {/* Chinese subtitle — Noto Sans SC, 16px, tracking 0.02em, mt 8px */}
-                <p className="font-sans-cn font-normal text-ink-muted text-[16px] leading-[1.5] tracking-[0.02em] mt-2">
+                {/* Chinese-first preview (2026-10-09): CN title leads, EN title
+                    becomes the annotation. Not .work-title — that rule pins
+                    Instrument Serif with !important, which would push the CN
+                    glyphs onto a system fallback. */}
+                <h3 className={`${CN_TITLE_FONT} text-ink [font-size:clamp(24px,2.8vw,32px)] leading-[1.3] tracking-[0.02em] [text-wrap:balance]`}>
                   {work.titleCn}
+                </h3>
+                <p className="font-serif font-normal text-ink-muted text-[18px] leading-[1.3] mt-2">
+                  {work.titleEn}
                 </p>
               </div>
               {/* Description — Noto Serif SC (not Sans SC), 15px, tracking 0.02em */}
