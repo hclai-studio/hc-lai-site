@@ -54,7 +54,7 @@ const works = [
 // Preview variants differ only in this one class string (static literal so
 // Tailwind sees it — spec pitfall #13):
 //   A Chiron Sung HK 400 · B Noto Serif SC 700 · C Noto Sans SC 400
-const CN_TITLE_FONT = "font-serif-cn font-bold";
+const CN_TITLE_FONT = "font-sans-cn font-normal";
 
 export default function Work() {
   return (
