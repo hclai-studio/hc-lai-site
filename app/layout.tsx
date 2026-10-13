@@ -4,7 +4,7 @@ import "./globals.css";
 import Header from "@/app/components/Header";
 
 const geist = localFont({
-  src: "./fonts/GeistVF.woff",
+  src: "./fonts/GeistVF.woff2",
   variable: "--font-geist",
   weight: "100 900",
   display: "swap",
@@ -60,9 +60,9 @@ export default function RootLayout({
         {/* Geist Mono — category tags and years above the fold on every case page */}
         <link
           rel="preload"
-          href="/fonts/geist-mono/GeistMonoVF.woff"
+          href="/fonts/geist-mono/GeistMonoVF.woff2"
           as="font"
-          type="font/woff"
+          type="font/woff2"
           crossOrigin="anonymous"
         />
         {/* Chiron Sung HK — single character-subset file (was 109 unicode-range slices) */}

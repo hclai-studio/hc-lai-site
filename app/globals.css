@@ -15,7 +15,7 @@
 /* Digits-only face: 0-9 and numeric punctuation → Geist Mono lining figures */
 @font-face {
   font-family: 'NumDigitsOnly';
-  src: url('/fonts/geist-mono/GeistMonoVF.woff') format('woff');
+  src: url('/fonts/geist-mono/GeistMonoVF.woff2') format('woff2');
   unicode-range: U+0030-0039, U+002D, U+002F, U+002C, U+002E, U+0025;
   font-weight: 100 900;
   font-feature-settings: "tnum" 1, "lnum" 1;
@@ -31,7 +31,7 @@
    name "Geist Mono", which resolves here. */
 @font-face {
   font-family: 'Geist Mono';
-  src: url('/fonts/geist-mono/GeistMonoVF.woff') format('woff');
+  src: url('/fonts/geist-mono/GeistMonoVF.woff2') format('woff2');
   font-weight: 100 900;
   font-display: swap;
 }
