@@ -13,12 +13,13 @@ interface WorkImageProps {
   wide?: boolean;
   quality?: number;
   disableNativeWidthCap?: boolean;
+  mobileSvgSrc?: string;
 }
 
 const breakoutClass =
   "w-[min(880px,calc(100vw-3rem))] mx-[calc((100%-min(880px,calc(100vw-3rem)))/2)]";
 
-export default async function WorkImage({ src, caption, alt, placeholder = false, wide = false, quality, disableNativeWidthCap = false }: WorkImageProps) {
+export default async function WorkImage({ src, caption, alt, placeholder = false, wide = false, quality, disableNativeWidthCap = false, mobileSvgSrc }: WorkImageProps) {
   if (placeholder) {
     return (
       <figure className={breakoutClass}>
@@ -47,6 +48,11 @@ export default async function WorkImage({ src, caption, alt, placeholder = false
   // font-family it declares (however it's spelled) falls back to whatever the
   // visitor's OS happens to have installed.
   const svgMarkup = isSvg ? fileBuffer.toString('utf-8') : undefined;
+  // Optional phone layout of the same diagram (stacked instead of side by
+  // side) for SVGs whose desktop width would shrink text below the 12px floor.
+  const mobileSvgMarkup = mobileSvgSrc
+    ? readFileSync(join(process.cwd(), 'public', mobileSvgSrc), 'utf-8')
+    : undefined;
 
   return (
     <WorkImageClient
@@ -60,6 +66,7 @@ export default async function WorkImage({ src, caption, alt, placeholder = false
       svgMarkup={svgMarkup}
       quality={quality}
       disableNativeWidthCap={disableNativeWidthCap}
+      mobileSvgMarkup={mobileSvgMarkup}
     />
   );
 }
