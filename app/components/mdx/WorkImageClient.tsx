@@ -16,6 +16,7 @@ interface WorkImageClientProps {
   svgMarkup?: string;
   quality?: number;
   disableNativeWidthCap?: boolean;
+  mobileSvgMarkup?: string;
 }
 
 export default function WorkImageClient({
@@ -29,6 +30,7 @@ export default function WorkImageClient({
   svgMarkup,
   quality = 80,
   disableNativeWidthCap = false,
+  mobileSvgMarkup,
 }: WorkImageClientProps) {
   const [open, setOpen] = useState(false);
   const [visible, setVisible] = useState(false);
@@ -89,12 +91,21 @@ export default function WorkImageClient({
   return (
     <>
       <figure className={breakoutClass} style={!wide ? ({ '--fig-native-w': `${width}px` } as CSSProperties) : undefined}>
+        {mobileSvgMarkup && (
+          // Phone layout: already at true size, so no lightbox (spec §6.2/§3.2).
+          <div
+            role="img"
+            aria-label={resolvedAlt}
+            className="md:hidden rounded-xl border border-ink/10 bg-white overflow-hidden [&>svg]:block [&>svg]:w-full [&>svg]:h-auto"
+            dangerouslySetInnerHTML={{ __html: mobileSvgMarkup }}
+          />
+        )}
         {isSvg && svgMarkup ? (
           <div
             role="img"
             aria-label={resolvedAlt}
             onClick={() => setOpen(true)}
-            className="rounded-xl border border-ink/10 bg-white overflow-hidden cursor-zoom-in transition-opacity duration-300 hover:opacity-90 [&>svg]:block [&>svg]:w-full [&>svg]:h-auto"
+            className={`${mobileSvgMarkup ? 'hidden md:block ' : ''}rounded-xl border border-ink/10 bg-white overflow-hidden cursor-zoom-in transition-opacity duration-300 hover:opacity-90 [&>svg]:block [&>svg]:w-full [&>svg]:h-auto`}
             // Inlined (not <img src>) so the diagram's text inherits the
             // site's self-hosted fonts — see WorkImage.tsx for why. Source is
             // our own repo asset (read at build time from public/), never
