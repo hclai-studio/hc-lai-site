@@ -9,15 +9,15 @@
     </marker>
   </defs>
 
-  <!-- ========== 主脉连线：输入 → Schema → 人工审核；治理原则从右侧约束 Schema ========== -->
+  <!-- ========== 主脉连线：输入 → Schema → 人工审核；治理原则从下方约束 Schema（与桌面版同向） ========== -->
   <g stroke="#1C1B17" stroke-opacity="0.3" stroke-width="1.1" fill="none">
-    <path d="M159,144 V176" marker-end="url(#arrowM5m)"/>
-    <path d="M159,404 V436" marker-end="url(#arrowM5m)"/>
-    <path d="M318,552 V298 Q318,290 310,290 H302" marker-end="url(#arrowM5m)"/>
+    <path d="M171,144 V176" marker-end="url(#arrowM5m)"/>
+    <path d="M106,404 V436" marker-end="url(#arrowM5m)"/>
+    <path d="M261,552 V404" marker-end="url(#arrowM5m)"/>
   </g>
 
   <!-- ========== 01 四类输入 ========== -->
-  <rect x="16" y="16" width="286" height="128" rx="8" fill="#FFFFFF" stroke="#1C1B17" stroke-opacity="0.15"/>
+  <rect x="16" y="16" width="310" height="128" rx="8" fill="#FFFFFF" stroke="#1C1B17" stroke-opacity="0.15"/>
   <text x="32" y="48" font-size="16" fill="#1C1B17">四类输入</text>
   <text x="32" y="70" font-size="12" fill="#6B6862">非结构化、片段化</text>
   <g font-size="12" fill="#6B6862">
@@ -28,7 +28,7 @@
   </g>
 
   <!-- ========== 02 同一套 Schema（模型介入，铺 cream） ========== -->
-  <rect x="16" y="176" width="286" height="228" rx="8" fill="#F2EFE9" stroke="#1C1B17" stroke-opacity="0.15"/>
+  <rect x="16" y="176" width="310" height="228" rx="8" fill="#F2EFE9" stroke="#1C1B17" stroke-opacity="0.15"/>
   <text x="32" y="208" font-size="16" fill="#1C1B17">同一套 Schema A–E</text>
   <text x="32" y="230" font-size="12" fill="#6B6862">结构一致，按场景差异化扩展</text>
   <g font-size="12" fill="#6B6862">
@@ -40,7 +40,7 @@
   </g>
 
   <!-- ========== 03 人工审核（全图唯一 terracotta） ========== -->
-  <rect x="16" y="436" width="286" height="76" rx="8" fill="#B85C38" fill-opacity="0.1" stroke="#B85C38" stroke-width="1.5"/>
+  <rect x="16" y="436" width="180" height="76" rx="8" fill="#B85C38" fill-opacity="0.1" stroke="#B85C38" stroke-width="1.5"/>
   <text x="32" y="468" font-size="16" font-weight="700" fill="#B85C38">人工审核</text>
   <text x="32" y="494" font-size="12" fill="#B85C38" fill-opacity="0.85">对外沟通前必须经过</text>
 
