@@ -14,6 +14,7 @@ import TaskTable from '@/app/components/mdx/TaskTable';
 import Checklist from '@/app/components/mdx/Checklist';
 import QuickStartFlow from '@/app/components/mdx/QuickStartFlow';
 import ProblemSources from '@/app/components/mdx/ProblemSources';
+import FailureRules from '@/app/components/mdx/FailureRules';
 
 export function useMDXComponents(components: MDXComponents): MDXComponents {
   return {
@@ -33,5 +34,6 @@ export function useMDXComponents(components: MDXComponents): MDXComponents {
     Checklist,
     QuickStartFlow,
     ProblemSources,
+    FailureRules,
   };
 }
