@@ -22,7 +22,11 @@ This project is a semi-agentic architectural image iteration workflow prototype.
 
 在建筑 AI 生图过程中，每一轮都需要重复组织白模图、参考图、项目背景、修改意见和 prompt。多轮修改时，上一轮图像、feedback、输出结果和文件路径也容易分散在聊天记录、文件夹和命令行之间。
 
+In architectural AI image generation, every round means assembling the same things again: the white-model image, reference images, project background, revision notes, and the prompt. Across multiple rounds, the previous image, its feedback, the outputs, and their file paths also end up scattered across chat logs, folders, and the command line.
+
 这个原型要验证的是：把"输入 → prompt 装配 → 出图 → 反馈 → 下一轮"这段流程结构化后，能否减少重复操作、让每一轮修改更可追踪。
+
+What this prototype sets out to test: once the loop of input → prompt assembly → image → feedback → next round is structured, does it cut down the repetitive work and make every revision easier to trace?
 
 ## 03｜工作流怎么设计 Workflow Design
 
@@ -78,9 +82,11 @@ Validation & Boundary Reflection
 
 ## 05｜工作台 MVP 展示 MVP Demo
 
-### 本地工作台 MVP
+### 本地工作台 MVP / Workbench MVP
 
 原本需要通过命令行执行的流程，被整理成一个本地网页工作台。用户可以上传白模图或参考图，选择 stage1 / stage2 路线，运行生成，并在下一轮选择标准 feedback case 或手动输入修改意见。
+
+A flow that used to run from the command line is organized into a local web workbench. Users can upload a white-model or reference image, choose the stage1 / stage2 route, run the generation, and in the next round either pick a standard feedback case or type in their own revision notes.
 
 <WorkImage src="/works/nanobanana/mvp-demo-round2.webp" caption="界面支持当前项目状态、最新输出图、前后轮对比、历史轮次回看与本地路径提示。 / The interface tracks current project state, the latest output, before/after comparison, round history, and local file-path hints." placeholder={false} quality={90} />
 
@@ -88,14 +94,22 @@ Validation & Boundary Reflection
 
 这一组测试不是为了证明某个 prompt 一定能生成更好的图，而是为了验证：当同一张图作为起点时，不同强度的 feedback 是否会带来可观察的推进差异。
 
-### 测试设计
+This test is not meant to prove that a particular prompt always produces a better image. It checks one thing: starting from the same image, do feedback instructions of different strength lead to observably different progress?
+
+### 测试设计 / Test Design
 
 为了验证"环境完成度"反馈是否需要不同强度档位，我将原 case_04 拆分为：
 
+To check whether feedback on environmental completeness needs different strength levels, I split the original case_04 into two:
+
 - case_04a｜保守版：轻微补充环境，尽量不洗图
+- case_04a · conservative pass: light environmental additions, minimal rework of the image
 - case_04b｜推进版：更明确增加前景、人物、车辆、地面细节和积水反射
+- case_04b · forward pass: explicitly adds foreground, figures, vehicles, ground detail, and reflections in standing water
 
 两组测试使用同一个 Round 2 图像作为起点，唯一变量是 feedback 强度。
+
+Both runs start from the same Round 2 image; the only variable is the strength of the feedback.
 
 <WorkImage src="/works/nanobanana/round2-anchor.png" caption="Round 2 锚点图——case_04a 与 case_04b 两版结果共同的出发底图，锁定几何与构图基准。 / Round 2 anchor — the shared base image both case_04a and case_04b were generated from, locking the geometric and compositional baseline." placeholder={false} />
 
@@ -111,20 +125,27 @@ The forward pass explicitly asked for foreground, figures, vehicles, and ground 
 
 <WorkImage src="/works/nanobanana/case-04b.png" caption="case_04b · 推进版结果——同一张锚点图出发，允许更激进的修改幅度。 / case_04b · the aggressive pass — from the same anchor, with a wider change budget." placeholder={false} />
 
-### 测试结论
+### 测试结论 / Findings
 
 - case_04b 能在保持建筑体量、主机位和主体材质关系稳定的前提下，明显提升环境完成度。
+- case_04b clearly raises environmental completeness while keeping the building massing, the main camera position, and the main material relationships stable.
 - case_04a 确实更保守，但推进效果不足，局部环境信息甚至可能回退。
+- case_04a is indeed more conservative, but it doesn't move the image far enough, and some local environmental detail may even regress.
 - 这说明 feedback 的"强度"本身是一个重要变量：过弱的反馈可能导致模型几乎不做改变，而更明确的反馈更适合推进中间图到最终汇报图状态。
+- So the strength of the feedback is itself an important variable: feedback that is too weak can leave the model changing almost nothing, while more explicit feedback is better at pushing an intermediate image toward a final presentation image.
 
 ## 07｜反思与边界 Reflection & Boundary
 
-### 反思
+### 反思 / Reflection
 
 这个原型并不一定比直接与强图像模型对话更高效。对于高审美、高语境、高模糊度的图像探索，开放式人机对话仍然更灵活。
 
+This prototype is not necessarily more efficient than talking to a strong image model directly. For image exploration that is high on aesthetics, context, and ambiguity, open-ended dialogue between person and model is still more flexible.
+
 它的价值不在于替代人工审美判断，而在于验证：当修改意图可以结构化表达时，系统能否自动承接上下文、管理轮次、记录反馈，并提供可追踪的多轮执行机制。
+
+Its value is not in replacing human aesthetic judgment, but in testing whether — once the intent of a revision can be expressed in a structured way — a system can carry the context forward on its own, manage rounds, record feedback, and provide a traceable mechanism for multi-round execution.
 
 因此，它更适合被理解为一个 AI workflow prototype，而非成熟生产工具。
 
-This prototype is not intended to replace open-ended visual dialogue with strong image models. Its value lies in workflow abstraction, state tracking, and controlled feedback validation.
+That is why it is better understood as an AI workflow prototype than as a mature production tool.
