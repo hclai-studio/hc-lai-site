@@ -14,12 +14,13 @@ interface WorkImageProps {
   quality?: number;
   disableNativeWidthCap?: boolean;
   mobileSvgSrc?: string;
+  mobileSrc?: string;
 }
 
 const breakoutClass =
   "w-[min(880px,calc(100vw-3rem))] mx-[calc((100%-min(880px,calc(100vw-3rem)))/2)]";
 
-export default async function WorkImage({ src, caption, alt, placeholder = false, wide = false, quality, disableNativeWidthCap = false, mobileSvgSrc }: WorkImageProps) {
+export default async function WorkImage({ src, caption, alt, placeholder = false, wide = false, quality, disableNativeWidthCap = false, mobileSvgSrc, mobileSrc }: WorkImageProps) {
   if (placeholder) {
     return (
       <figure className={breakoutClass}>
@@ -53,6 +54,14 @@ export default async function WorkImage({ src, caption, alt, placeholder = false
   const mobileSvgMarkup = mobileSvgSrc
     ? readFileSync(join(process.cwd(), 'public', mobileSvgSrc), 'utf-8')
     : undefined;
+  // The same idea for a photo: a phone arrangement of the same picture (e.g.
+  // a wide triptych restacked as a column) that would otherwise shrink to a
+  // sliver at phone width.
+  let mobileImage: { src: string; width: number; height: number } | undefined;
+  if (mobileSrc) {
+    const meta = await sharp(readFileSync(join(process.cwd(), 'public', mobileSrc))).metadata();
+    mobileImage = { src: mobileSrc, width: meta.width!, height: meta.height! };
+  }
 
   return (
     <WorkImageClient
@@ -67,6 +76,7 @@ export default async function WorkImage({ src, caption, alt, placeholder = false
       quality={quality}
       disableNativeWidthCap={disableNativeWidthCap}
       mobileSvgMarkup={mobileSvgMarkup}
+      mobileImage={mobileImage}
     />
   );
 }

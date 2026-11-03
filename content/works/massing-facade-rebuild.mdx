@@ -1,0 +1,149 @@
+<ProjectHeader
+  category="Agent Skill · Architecture · Blender"
+  titleEn={"Massing-based Facade Rebuild — A\u00A0Skill for AI Agents"}
+  titleCn="基于体块的立面重建"
+  year="2026"
+/>
+
+<Hero
+  src="/works/hero/hero-massing-facade-rebuild.webp"
+  alt="黄昏下的办公塔楼正式模型：平行四边形白框铺满看得到的两个立面，底部是穿孔屏风的底商，两旁是灰色体块。"
+/>
+
+## 01｜项目概述 Project Summary
+
+体块定几何，效果图定语言。
+
+The massing sets the geometry. The rendering sets the language.
+
+一个给 AI agent 用的 skill：在你已有的 SketchUp 体块上，把一张经你确认的效果图，转译成 Blender 里可编辑、可核验的立面模型。
+
+A skill for AI agents: take a rendering you have approved and translate it into an editable, verifiable facade model in Blender, built on your existing SketchUp massing.
+
+<WorkImage
+  src="/works/massing-facade-rebuild/apartment-pipeline.jpg"
+  mobileSrc="/works/massing-facade-rebuild/apartment-pipeline-mobile.jpg"
+  wide
+  caption="公寓案例的三步：SketchUp 体块 → 确认的效果图 → Blender 里的立面模型。效果图里的楼比体块高瘦；以体块为准，所以模型比效果图更横向舒展。 / The apartment case in three steps: SketchUp massing → approved rendering → facade model in Blender. The rendering drew the building taller and slimmer than the massing; the massing wins, so the model spreads wider than the rendering."
+  alt="三张图依次是：SketchUp 里的白色体块、确认的公寓效果图、Blender 里建好的公寓立面模型。"
+  placeholder={false}
+  quality={90}
+/>
+
+## 02｜为什么做这个 Why I Built This
+
+网上很多"AI 一句话建模"的演示，是对着一张照片凭空去建。真实项目不是这样：先有体块，再在体块上深化立面。层数、标高、尺寸由体块说了算，效果图只负责立面语言。
+
+Most "one-prompt AI modeling" demos build from a single photo, out of thin air. Real projects don't work that way. The massing comes first, and the facade is developed on top of it. Floor counts, levels and dimensions belong to the massing; the rendering only carries the facade language.
+
+这个 skill 把这条真实的设计流程交给 agent 来跑：体块不动，立面照着效果图长出来；看不清的地方如实标成推定，关键决定停下来问设计者。
+
+This skill hands that workflow to an agent. The massing stays untouched while the facade grows out of the rendering. Whatever can't be seen is recorded honestly as an inference, and key decisions go back to the designer.
+
+## 03｜它怎么工作 How It Works
+
+<StageGates />
+
+每个阶段都留下文件，换一个会话也能接着做。
+
+Every stage leaves files behind, so a new session can pick up where the last one stopped.
+
+## 04｜两个案例 Two Cases
+
+### 公寓：不规则洞口立面 / Apartment: Irregular Openings
+
+<WorkImage
+  src="/works/massing-facade-rebuild/apartment-detail.png"
+  caption="公寓效果图左端的局部：洞口大小不一，侧壁是斜的。这样的立面没法按一个标准开间复制，只能逐洞口判读。 / The left end of the apartment rendering: openings of different sizes, with angled side walls. A facade like this can't be built by repeating one standard bay; it has to be read opening by opening."
+  alt="公寓效果图左端的局部：大小不一的洞口和带玻璃栏板的阳台，前景有一棵树。"
+  placeholder={false}
+/>
+
+- 输入：SU 导出的 FBX、SU 截图、一张目标效果图、一张局部裁图
+- Inputs: FBX exported from SketchUp, a SketchUp screenshot, one target rendering, one detail crop
+- 成功的那一轮约 1 小时、约 315 万 token，基本用完一个 5 小时额度窗口（GPT-6 Astra，最高推理强度）
+- The successful run took about 1 hour and about 3.15M tokens, using up roughly one 5-hour quota window (GPT-6 Astra, highest reasoning effort)
+- 逐洞口记录 45 条；核验确认原始体块网格未变，新增构件不越界，未使用阵列修改器
+- 45 opening records; verification confirmed the original massing meshes were unchanged, new elements stayed in bounds, and no Array modifier was used
+- 被树挡住的两个洞口、图上看不出的进深，都标成了推定
+- Two openings hidden behind trees, and depths the image doesn't show, were marked as inferred
+
+### 办公塔楼：母题重复立面 / Office Tower: Repeating Motif
+
+- 30×30 米塔楼：8 米通高商业、20 层办公、4 米顶冠；只建效果图里看得到的两个面和它们的转角
+- A 30 × 30 m tower: 8 m double-height retail, 20 office floors, a 4 m crown. Only the two faces visible in the rendering and their shared corner were built
+- 效果图里一个单元只有十几个像素。看不清的部分，设计者先后补了一个单元模型、一小片排布、整面排布和关键尺寸（节距、逐层错位），以及一条转角规则
+- A single unit is only a dozen or so pixels in the rendering. To fill the gaps, the designer supplied a unit model, a small patch layout, a full-facade layout with key dimensions (pitch and per-floor offset), and a corner rule
+- 样件改了四轮，依次修正了形体、构造和构件关系；第一次铺满后，因为逐层错位没定，转角收头逐层不同，定了尺寸再重建
+- The samples went through four rounds, fixing form, construction logic and how neighbouring units meet. After the first full build, the corners terminated differently on every floor because the per-floor offset hadn't been fixed; the dimensions were set and the facade rebuilt
+- 全程 GPT-6 Astra、最高推理强度：从开考到交付约 8,300 万 token（已记录部分），主会话累计约 7 小时，前后近三周，中断续跑 20 次
+- GPT-6 Astra at the highest reasoning effort throughout: about 83M tokens from start to delivery (logged portion), about 7 hours of main-session run time, spread over nearly three weeks with 20 interrupted-and-resumed turns
+
+最后一轮，AI 已经能照效果图做到很像（中，白框约占立面的 72%）；设计者为办公采光，选了更细的框（右）。这个偏离记在 `adaptation.md` 里，是有意的取舍。
+
+In the last round the AI could already match the rendering closely (middle: white frames covering about 72% of the facade). For office daylight, the designer chose slimmer frames (right). That departure is recorded in `adaptation.md` as a deliberate trade-off.
+
+<WorkImage
+  src="/works/massing-facade-rebuild/tower-result.jpg"
+  caption="左：确认的效果图；中：照效果图做到的 B 档，框宽 550 毫米；右：设计者选定的正式模型，回到单元模型上标注的 300/200 毫米框条。B 档只作对照，不进正式模型。 / Left: the approved rendering. Middle: option B, matched to the rendering with 550 mm frames. Right: the designer's final model, back to the 300/200 mm frame bars marked on the unit model. Option B is kept for comparison only and is not part of the final model."
+  alt="三张塔楼图并排：左为确认的黄昏效果图，中为照效果图做到的 B 档模型，右为设计者选定的、框更细的正式模型。"
+  placeholder={false}
+  quality={90}
+/>
+
+## 05｜两个案例说明了什么 What the Two Cases Show
+
+- **效果图讲得清的，AI 一遍就能做对；讲不清的，要设计者来补规则。** 成本也跟着变：塔楼的 token 约是公寓成功那一轮的 26 倍。
+- **When the rendering makes the design clear, the AI gets it right in one pass. When it doesn't, the designer has to supply the rules.** Cost follows: the tower used about 26 times the tokens of the apartment's successful run.
+- **AI 能做到像，设计师决定要不要像。** 照图还原只是起点；采光、使用这些生图模型不管的事，由设计者拍板。
+- **The AI can make it look like the rendering. The designer decides whether it should.** Matching the image is only the starting point; daylight and use, which image generators ignore, are the designer's call.
+
+成本明细和统计口径见[实验记录 ↗](https://github.com/hclai-studio/massing-facade-rebuild/blob/main/references/benchmark-attempts.md#成本对比)。
+
+Cost details and how they were counted are in the experiment log (in Chinese).
+
+## 06｜人和 AI 各管什么 Who Decides What
+
+- **体块不可改。** 和效果图冲突时，以体块为准。
+- **The massing is fixed.** When it conflicts with the rendering, the massing wins.
+- **效果图是设计意图，不是施工图。** 构造按常规理解：玻璃和窗是标准矩形，异形造型是外挂的"衣服"。照图还原会影响采光、通风时，AI 指出来，由你取舍。
+- **A rendering is design intent, not a construction drawing.** Construction is read conventionally: glass and windows are standard rectangles, and shaped elements are cladding worn over them like clothing. When following the image would hurt daylight or ventilation, the AI flags it and you decide.
+- **局部推定可以，整体发明不行。** 进深、被遮挡的部分可以推定；整面怎么构成、怎么变化，必须来自效果图或设计者。
+- **Local inference is fine; inventing the whole facade is not.** Depths and hidden parts may be inferred. How the whole facade is composed and how it varies must come from the rendering or from the designer.
+- **设计意图归你，实现细节归 AI。** 构造逻辑、整体读感、关键尺度由你定；孔洞位置、尺寸微调由 AI 定；你还没想好的地方，AI 出两种方案给你挑。
+- **Design intent is yours; implementation detail is the AI's.** You set construction logic, the overall reading and key dimensions. The AI sets hole positions and fine adjustments. Where you haven't decided yet, the AI offers two options for you to pick from.
+- **看见的、推定的、修正的，分开写。** 每个判断都有出处；有意偏离效果图的地方，记为取舍。
+- **Visible, inferred and corrected are recorded separately.** Every judgment has a source, and deliberate departures from the rendering are recorded as trade-offs.
+
+完整规则见 [SKILL.md ↗](https://github.com/hclai-studio/massing-facade-rebuild/blob/main/SKILL.md)。
+
+The full rules are in SKILL.md.
+
+## 07｜边界与记录 Limits & Record
+
+### 已知限制 / Known Limitations
+
+- 细粒度的渐变肌理，生图模型画不清，目前不适合这个流程
+- Fine gradient textures: image generators can't render them clearly, so they don't suit this workflow yet
+- 母题在效果图里看不清时，需要设计者补单元模型和关键尺寸，返修和成本都会明显上升
+- When the motif can't be read from the rendering, the designer has to supply a unit model and key dimensions, and revisions and cost go up sharply
+- 核验只查构件的宽高边界，不查进深
+- Verification checks the width and height bounds of new elements, not their depth
+- SU 导出 FBX 有几个坑：分组名会被自动加编号，中文名会变成下划线，单位可能标错（阶段 1 会核对）
+- SketchUp's FBX export has a few traps: group names get numbered, non-English names turn into underscores, and units may be mislabeled (checked in Stage 1)
+- 只在 Codex + GPT-6 Astra 上完整测试过；四面全包、曲面体块还没测过
+- Fully tested only with Codex + GPT-6 Astra; four-sided wraps and curved massings are untested
+
+### 实验记录 / Experiment Log
+
+[实验记录 ↗](https://github.com/hclai-studio/massing-facade-rebuild/blob/main/references/benchmark-attempts.md)记下了两个案例从失败到成功的每一轮，也写清了哪些结论有证据、哪些没有。比如"Ultra 是成功的唯一原因"，就属于证据不支持的那一类；"塔楼贵只是因为立面类型"也是。
+
+The experiment log records every round of both cases, failures included, and separates the conclusions the evidence supports from the ones it doesn't. "Ultra was the sole reason for success" is one it doesn't support; so is "the tower cost more only because of its facade type".
+
+### GitHub 仓库 / Repository
+
+[hclai-studio/massing-facade-rebuild ↗](https://github.com/hclai-studio/massing-facade-rebuild)
+
+这个 skill 的规则和文档，是作者和 Claude（Anthropic）在一轮轮对话里一起磨出来的；建模和脚本由 Codex（GPT-6 Astra）在测试中写成。
+
+The rules and documentation of this skill were worked out by the author and Claude (Anthropic) over many rounds of conversation. The models and scripts were written by Codex (GPT-6 Astra) during the test runs.

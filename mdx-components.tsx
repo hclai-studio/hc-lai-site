@@ -15,6 +15,7 @@ import Checklist from '@/app/components/mdx/Checklist';
 import QuickStartFlow from '@/app/components/mdx/QuickStartFlow';
 import ProblemSources from '@/app/components/mdx/ProblemSources';
 import FailureRules from '@/app/components/mdx/FailureRules';
+import StageGates from '@/app/components/mdx/StageGates';
 
 export function useMDXComponents(components: MDXComponents): MDXComponents {
   return {
@@ -35,5 +36,6 @@ export function useMDXComponents(components: MDXComponents): MDXComponents {
     QuickStartFlow,
     ProblemSources,
     FailureRules,
+    StageGates,
   };
 }
