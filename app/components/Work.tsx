@@ -51,7 +51,7 @@ const works = [
   },
   {
     number: "06",
-    titleEn: "Massing-based Facade Rebuild — A Skill for AI Agents",
+    titleEn: "Massing-based Facade Rebuild — A\u00A0Skill for AI Agents",
     titleCn: "基于体块的立面重建",
     description:
       "一个给 AI agent 用的 skill：在已有的 SketchUp 体块上，把确认过的效果图转译成 Blender 里可编辑、可核验的立面模型。",

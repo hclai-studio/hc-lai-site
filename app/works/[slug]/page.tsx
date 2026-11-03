@@ -22,7 +22,7 @@ const moreWork = [
   { number: '03', titleEn: 'Semi-automated Job Decision Workflow',                    href: '/works/job-decision' },
   { number: '04', titleEn: 'Semi-agentic Architectural Image Iteration',              href: '/works/nanobanana' },
   { number: '05', titleEn: 'AI Workflow & Enablement Portfolio',                      href: '/works/ai-workflow' },
-  { number: '06', titleEn: 'Massing-based Facade Rebuild — A Skill for AI Agents',    href: '/works/massing-facade-rebuild' },
+  { number: '06', titleEn: 'Massing-based Facade Rebuild — A\u00A0Skill for AI Agents',    href: '/works/massing-facade-rebuild' },
 ];
 
 export function generateMetadata({ params }: { params: { slug: string } }): Metadata {
