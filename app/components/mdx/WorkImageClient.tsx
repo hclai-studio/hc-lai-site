@@ -17,6 +17,7 @@ interface WorkImageClientProps {
   quality?: number;
   disableNativeWidthCap?: boolean;
   mobileSvgMarkup?: string;
+  mobileImage?: { src: string; width: number; height: number };
 }
 
 export default function WorkImageClient({
@@ -31,9 +32,13 @@ export default function WorkImageClient({
   quality = 80,
   disableNativeWidthCap = false,
   mobileSvgMarkup,
+  mobileImage,
 }: WorkImageClientProps) {
   const [open, setOpen] = useState(false);
   const [visible, setVisible] = useState(false);
+  // Which picture the lightbox shows: a tap on the phone arrangement opens
+  // that arrangement, so it stays the shape the reader was looking at.
+  const [openMobile, setOpenMobile] = useState(false);
 
   useEffect(() => {
     if (open) {
@@ -85,8 +90,11 @@ export default function WorkImageClient({
   // Same native-width cap as the inline figure — a screenshot narrower than
   // 1760 was previously always upscaled to 1760px in the lightbox regardless
   // of source resolution.
-  const lightboxWidth = Math.min(1760, width);
-  const lightboxHeight = Math.round((lightboxWidth * height) / width);
+  const lbSrc = openMobile && mobileImage ? mobileImage.src : src;
+  const lbNativeW = openMobile && mobileImage ? mobileImage.width : width;
+  const lbNativeH = openMobile && mobileImage ? mobileImage.height : height;
+  const lightboxWidth = Math.min(1760, lbNativeW);
+  const lightboxHeight = Math.round((lightboxWidth * lbNativeH) / lbNativeW);
 
   return (
     <>
@@ -113,16 +121,36 @@ export default function WorkImageClient({
             dangerouslySetInnerHTML={{ __html: svgMarkup }}
           />
         ) : (
-          <Image
-            src={src}
-            alt={resolvedAlt}
-            width={width}
-            height={height}
-            sizes="(max-width: 920px) 100vw, 880px"
-            quality={quality}
-            onClick={() => setOpen(true)}
-            className="w-full h-auto rounded-xl border border-ink/10 cursor-zoom-in transition-opacity duration-300 hover:opacity-90"
-          />
+          <>
+            {mobileImage && (
+              <Image
+                src={mobileImage.src}
+                alt={resolvedAlt}
+                width={mobileImage.width}
+                height={mobileImage.height}
+                sizes="100vw"
+                quality={quality}
+                onClick={() => {
+                  setOpenMobile(true);
+                  setOpen(true);
+                }}
+                className="md:hidden w-full h-auto rounded-xl border border-ink/10 cursor-zoom-in transition-opacity duration-300 hover:opacity-90"
+              />
+            )}
+            <Image
+              src={src}
+              alt={resolvedAlt}
+              width={width}
+              height={height}
+              sizes={wide ? "(max-width: 1368px) 100vw, 1320px" : "(max-width: 920px) 100vw, 880px"}
+              quality={quality}
+              onClick={() => {
+                setOpenMobile(false);
+                setOpen(true);
+              }}
+              className={`${mobileImage ? 'hidden md:block ' : ''}w-full h-auto rounded-xl border border-ink/10 cursor-zoom-in transition-opacity duration-300 hover:opacity-90`}
+            />
+          </>
         )}
         {caption && (
           <figcaption className={FIGURE_CAPTION_CLASS}>
@@ -156,7 +184,7 @@ export default function WorkImageClient({
             />
           ) : (
             <Image
-              src={src}
+              src={lbSrc}
               alt={resolvedAlt}
               width={lightboxWidth}
               height={lightboxHeight}
