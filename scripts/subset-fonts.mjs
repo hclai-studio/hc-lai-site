@@ -15,12 +15,14 @@
 //     (hb_subset_input creation overflows its buffer). To regenerate:
 //       1. npm pack @fontpkg/chiron-sung-hk-vf && tar -xzf fontpkg-chiron-sung-hk-vf-*.tgz
 //       2. Pin the wght axis to 400 with fontTools (this is the only weight this site
-//          uses; Chinese bold text renders via Noto Serif SC 700 instead):
+//          uses; Chinese bold text renders via Noto Serif SC 700 instead). Pin the
+//          font's second axis, PADG, to its default 0 as well — left out, the
+//          output keeps fvar/gvar and the subset grows ~60% for nothing:
 //            python3 -c "
 //            from fontTools.ttLib import TTFont
 //            from fontTools.varLib.instancer import instantiateVariableFont
 //            f = TTFont('package/ChironSungHKVF.ttf')
-//            instantiateVariableFont(f, {'wght': 400}, inplace=True)
+//            instantiateVariableFont(f, {'wght': 400, 'PADG': 0}, inplace=True)
 //            f.save('fonts-src/chiron-sung-hk-static400.ttf')
 //            "
 //
