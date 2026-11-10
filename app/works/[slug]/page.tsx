@@ -17,12 +17,12 @@ export function generateStaticParams() {
 }
 
 const moreWork = [
-  { number: '01', titleEn: 'Encoding Design Judgment — A Visual Standard Assistant', href: '/works/visual-standard-assistant' },
-  { number: '02', titleEn: 'Cross-Platform RAG — Fire Code QA Assistant',            href: '/works/fire-code-rag' },
-  { number: '03', titleEn: 'Semi-automated Job Decision Workflow',                    href: '/works/job-decision' },
-  { number: '04', titleEn: 'Semi-agentic Architectural Image Iteration',              href: '/works/nanobanana' },
-  { number: '05', titleEn: 'AI Workflow & Enablement Portfolio',                      href: '/works/ai-workflow' },
-  { number: '06', titleEn: 'Massing-based Facade Rebuild — A\u00A0Skill for AI Agents',    href: '/works/massing-facade-rebuild' },
+  { number: '01', titleEn: 'Massing-based Facade Rebuild — A\u00A0Skill for AI Agents',    href: '/works/massing-facade-rebuild' },
+  { number: '02', titleEn: 'Encoding Design Judgment — A Visual Standard Assistant', href: '/works/visual-standard-assistant' },
+  { number: '03', titleEn: 'Cross-Platform RAG — Fire Code QA Assistant',            href: '/works/fire-code-rag' },
+  { number: '04', titleEn: 'Semi-automated Job Decision Workflow',                    href: '/works/job-decision' },
+  { number: '05', titleEn: 'Semi-agentic Architectural Image Iteration',              href: '/works/nanobanana' },
+  { number: '06', titleEn: 'AI Workflow & Enablement Portfolio',                      href: '/works/ai-workflow' },
 ];
 
 export function generateMetadata({ params }: { params: { slug: string } }): Metadata {

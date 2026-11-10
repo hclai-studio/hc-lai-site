@@ -1,6 +1,16 @@
 const works = [
   {
     number: "01",
+    titleEn: "Massing-based Facade Rebuild — A\u00A0Skill for AI Agents",
+    titleCn: "基于体块的立面重建",
+    description:
+      "一个给 AI agent 用的 skill：在已有的 SketchUp 体块上，把确认过的效果图转译成 Blender 里可编辑、可核验的立面模型。",
+    tags: ["Agent Skill", "Architecture"],
+    year: "2026",
+    href: "/works/massing-facade-rebuild",
+  },
+  {
+    number: "02",
     titleEn: "Encoding Design Judgment — A Visual Standard Assistant",
     titleCn: "电商主图视觉标准对齐助手",
     description:
@@ -10,7 +20,7 @@ const works = [
     href: "/works/visual-standard-assistant",
   },
   {
-    number: "02",
+    number: "03",
     titleEn: "Cross-Platform RAG — Fire Code QA Assistant",
     titleCn: "建筑防火规范智能问答助手",
     description:
@@ -20,7 +30,7 @@ const works = [
     href: "/works/fire-code-rag",
   },
   {
-    number: "03",
+    number: "04",
     titleEn: "Semi-automated Job Decision Workflow",
     titleCn: "AI 求职决策助手",
     description:
@@ -30,7 +40,7 @@ const works = [
     href: "/works/job-decision",
   },
   {
-    number: "04",
+    number: "05",
     titleEn: "Semi-agentic Architectural Image Iteration",
     titleCn: "Nanobanana 半自动建筑工作流",
     description:
@@ -40,7 +50,7 @@ const works = [
     href: "/works/nanobanana",
   },
   {
-    number: "05",
+    number: "06",
     titleEn: "AI Workflow & Enablement Portfolio",
     titleCn: "AI 工作流与运营支持原型",
     description:
@@ -48,16 +58,6 @@ const works = [
     tags: ["AI Workflow", "Structured"],
     year: "2026",
     href: "/works/ai-workflow",
-  },
-  {
-    number: "06",
-    titleEn: "Massing-based Facade Rebuild — A\u00A0Skill for AI Agents",
-    titleCn: "基于体块的立面重建",
-    description:
-      "一个给 AI agent 用的 skill：在已有的 SketchUp 体块上，把确认过的效果图转译成 Blender 里可编辑、可核验的立面模型。",
-    tags: ["Agent Skill", "Architecture"],
-    year: "2026",
-    href: "/works/massing-facade-rebuild",
   },
 ];
 
