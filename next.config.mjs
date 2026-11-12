@@ -1,5 +1,6 @@
 import createMDX from '@next/mdx';
 import remarkGfm from 'remark-gfm';
+import rehypeNumRuns from './lib/rehype-num-runs.mjs';
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
@@ -25,6 +26,7 @@ const nextConfig = {
 const withMDX = createMDX({
   options: {
     remarkPlugins: [remarkGfm],
+    rehypePlugins: [rehypeNumRuns],
   },
 });
 

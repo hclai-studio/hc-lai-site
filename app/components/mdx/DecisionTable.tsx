@@ -1,4 +1,5 @@
 import { FIGURE_CAPTION_CLASS } from './FigureCaption';
+import withNums from './withNums';
 
 type Verdict = "primary" | "stretch" | "skip";
 
@@ -316,13 +317,13 @@ export default function DecisionTable() {
                 <VerdictBadge verdict={row.verdict} />
               </div>
               <p className={`font-mono text-ink text-[12px] tracking-[0.05em] mt-1 ${isPrimary ? "font-bold" : ""}`}>
-                {row.date}
+                {withNums(row.date)}
               </p>
               <p className={`font-sans text-ink text-[13px] leading-[1.6] mt-2 ${isPrimary ? "font-bold" : ""}`}>
-                {row.risk}
+                {withNums(row.risk)}
               </p>
               <p className={`font-sans text-ink text-[13px] leading-[1.6] mt-2 ${isPrimary ? "font-bold" : ""}`}>
-                {row.reason}
+                {withNums(row.reason)}
               </p>
             </div>
           );

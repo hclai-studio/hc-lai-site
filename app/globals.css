@@ -23,10 +23,27 @@
   font-display: swap;
 }
 
+/* The same digits without the punctuation, for running text (.prose-works p,
+   lists, markdown table cells, strong). In a sentence a comma, period, hyphen
+   or slash belongs to the words around it; from a monospace face it sits
+   apart from them ("massing ." / "5 - hour"), so here it falls through to
+   Georgia. Punctuation inside a number (8,300 · 5.3.3 · 55037-2022 · 300/200)
+   is wrapped in <span class="num"> at build time (lib/rehype-num-runs.mjs) and
+   keeps the full NumDigitsOnly face, so numbers render as before. */
+@font-face {
+  font-family: 'NumDigitsText';
+  src: url('/fonts/geist-mono/GeistMonoVF.woff2') format('woff2');
+  unicode-range: U+0030-0039, U+0025;
+  font-weight: 100 900;
+  font-feature-settings: "tnum" 1, "lnum" 1;
+  size-adjust: 95%;
+  font-display: swap;
+}
+
 /* The one Geist Mono face. Served from public/ at a stable URL (preloaded in
-   layout.tsx) so this face, NumDigitsOnly above and --font-geist-mono all share
-   a single download. It used to be loaded twice: next/font/local emitted one
-   hashed copy and this @font-face made webpack emit another (66KB each).
+   layout.tsx) so this face, the two NumDigits faces above and --font-geist-mono
+   all share a single download. It used to be loaded twice: next/font/local
+   emitted one hashed copy and this @font-face made webpack emit another (66KB each).
    Hand-authored SVGs (e.g. inlined diagrams) reference the family by its plain
    name "Geist Mono", which resolves here. */
 @font-face {
@@ -370,7 +387,7 @@
 
 /* Body — Georgia + Chiron Sung HK 400 (VF axis), 17px */
 .prose-works p {
-  font-family: 'NumDigitsOnly', Georgia, 'Chiron Sung HK', 'Noto Serif SC', serif;
+  font-family: 'NumDigitsText', Georgia, 'Chiron Sung HK', 'Noto Serif SC', serif;
   font-weight: 400;
   font-size: 17px;
   line-height: 1.85;
@@ -390,9 +407,15 @@
    embolden, it doesn't force fallthrough). So bold text drops Chiron from the stack
    entirely here, landing on Noto Serif SC 700 for a real bold face. */
 .prose-works strong {
-  font-family: 'NumDigitsOnly', Georgia, 'Noto Serif SC', serif;
+  font-family: 'NumDigitsText', Georgia, 'Noto Serif SC', serif;
   font-weight: 700;
   font-synthesis-weight: none;
+}
+
+/* A number with punctuation inside it, in running text: back to the full
+   digit face so its , . - / stay monospace (see NumDigitsText above). */
+.prose-works .num {
+  font-family: 'NumDigitsOnly', Georgia, serif;
 }
 
 /* font-serif-cn (About, JudgmentCard) — same real-bold fallback as .prose-works strong,
@@ -407,7 +430,7 @@
   display: flex;
   flex-direction: column;
   gap: 12px;
-  font-family: 'NumDigitsOnly', Georgia, 'Chiron Sung HK', 'Noto Serif SC', serif;
+  font-family: 'NumDigitsText', Georgia, 'Chiron Sung HK', 'Noto Serif SC', serif;
   font-weight: 400;
   font-size: 17px;
   color: var(--ink);
@@ -447,7 +470,7 @@
 }
 
 .prose-works table:not(.decision-table):not(.task-table):not(.checklist-table) td {
-  font-family: 'NumDigitsOnly', Georgia, 'Chiron Sung HK', 'Noto Serif SC', serif;
+  font-family: 'NumDigitsText', Georgia, 'Chiron Sung HK', 'Noto Serif SC', serif;
   font-size: 15px;
   font-weight: 400;
   color: var(--ink);
