@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import withNums from "./withNums";
 
 interface CaseExpandableProps {
   title: string;
@@ -26,15 +27,15 @@ export default function CaseExpandable({
   const preview = (
     <>
       <p className="font-mono text-[10px] tracking-[0.12em] uppercase text-ink-muted mb-1 mt-4">Scenario</p>
-      <p>{scenario}</p>
+      <p>{withNums(scenario)}</p>
 
       <p className="font-mono text-[10px] tracking-[0.12em] uppercase text-ink-muted mb-1 mt-4">Why it matters</p>
-      <p>{whyItMatters}</p>
+      <p>{withNums(whyItMatters)}</p>
 
       <p className="font-mono text-[10px] tracking-[0.12em] uppercase text-ink-muted mb-1 mt-4">Findings</p>
       <ul>
         {whatItProves.map((item, i) => (
-          <li key={i}>{item}</li>
+          <li key={i}>{withNums(item)}</li>
         ))}
       </ul>
     </>
